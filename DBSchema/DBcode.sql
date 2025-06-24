@@ -130,7 +130,7 @@ CREATE TABLE artist (
     image_url VARCHAR(512) NOT NULL, 
 
     CONSTRAINT valid_image_url CHECK (
-        image_url REGEXP '^https?://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(/\S*)?$'
+    	image_url REGEXP '^https?://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}.*\.(jpg|png)$'
     ),
     CONSTRAINT valid_instagram CHECK (
         instagram_account REGEXP '^@[A-Za-z0-9._]{1,30}$'
