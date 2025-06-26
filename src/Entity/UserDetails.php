@@ -6,34 +6,46 @@ use App\Repository\UserDetailsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserDetailsRepository::class)]
+#[ORM\Table(name: 'user_details')]
 class UserDetails
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $user_id = null;
+    #[ORM\Id]  // makes the foreign key the primary key
+    #[ORM\OneToOne(targetEntity: UserAccount::class, mappedBy: 'userDetails')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    private ?UserAccount $userAccount = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $first_name = null;
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $last_name = null;
+    private ?string $lastName = null;
 
     #[ORM\Column]
     private ?int $age = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $phone_no = null;
+    #[ORM\Column(length: 20, unique: true, nullable: true)]
+    private ?string $phoneNo = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTime $created_at = null;
+    private ?\DateTime $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTime $updated_at = null;
+    private ?\DateTime $updatedAt = null;
+
+    public function getUserAccount(): ?UserAccount
+    {
+        return $this->userAccount;
+    }
+
+    public function setUserAccount(?UserAccount $userAccount): static
+    {
+        $this->userAccount = $userAccount;
+        return $this;
+    }
 
     public function getUserId(): ?int
     {
-        return $this->user_id;
+        return $this->userAccount?->getId();
     }
 
     public function getFirstName(): ?string

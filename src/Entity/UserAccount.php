@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\UserAccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserAccountRepository::class)]
+#[ORM\Table(name: 'user_account')]
 class UserAccount
 {
     #[ORM\Id]
@@ -21,6 +24,32 @@ class UserAccount
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $password_token = null;
+
+    /**
+     * @var Collection<int, UserRole>
+     */
+    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'userID', orphanRemoval: true)]
+    private Collection $userRoles;
+
+    #[ORM\OneToOne(targetEntity: UserDetails::class, inversedBy: 'userAccount', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserDetails $userDetails = null;
+
+    public function getUserDetails(): ?UserDetails
+    {
+        return $this->userDetails;
+    }
+
+    public function setUserDetails(?UserDetails $userDetails): static
+    {
+        $this->userDetails = $userDetails;
+        return $this;
+    }
+
+    public function __construct()
+    {
+        $this->userRoles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +88,36 @@ class UserAccount
     public function setPasswordToken(?string $password_token): static
     {
         $this->password_token = $password_token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserRole>
+     */
+    public function getUserRoles(): Collection
+    {
+        return $this->userRoles;
+    }
+
+    public function addUserRole(UserRole $userRole): static
+    {
+        if (!$this->userRoles->contains($userRole)) {
+            $this->userRoles->add($userRole);
+            $userRole->setUserID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserRole(UserRole $userRole): static
+    {
+        if ($this->userRoles->removeElement($userRole)) {
+            // set the owning side to null (unless already changed)
+            if ($userRole->getUserID() === $this) {
+                $userRole->setUserID(null);
+            }
+        }
 
         return $this;
     }
