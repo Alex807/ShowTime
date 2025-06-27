@@ -26,6 +26,14 @@ class EditionArtist
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $end_time = null;
 
+    #[ORM\ManyToOne(inversedBy: 'editionArtists')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FestivalEdition $edition = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Artist $artist = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +83,30 @@ class EditionArtist
     public function setEndTime(\DateTime $end_time): static
     {
         $this->end_time = $end_time;
+
+        return $this;
+    }
+
+    public function getEdition(): ?FestivalEdition
+    {
+        return $this->edition;
+    }
+
+    public function setEdition(?FestivalEdition $edition): static
+    {
+        $this->edition = $edition;
+
+        return $this;
+    }
+
+    public function getArtist(): ?Artist
+    {
+        return $this->artist;
+    }
+
+    public function setArtist(?Artist $artist): static
+    {
+        $this->artist = $artist;
 
         return $this;
     }

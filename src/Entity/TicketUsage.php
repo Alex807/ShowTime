@@ -23,6 +23,10 @@ class TicketUsage
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ticketUsage')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PurchasedTicket $purchased_ticket = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class TicketUsage
     public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getPurchasedTicket(): ?PurchasedTicket
+    {
+        return $this->purchased_ticket;
+    }
+
+    public function setPurchasedTicket(?PurchasedTicket $purchased_ticket): static
+    {
+        $this->purchased_ticket = $purchased_ticket;
 
         return $this;
     }

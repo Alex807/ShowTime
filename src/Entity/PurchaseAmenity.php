@@ -16,6 +16,14 @@ class PurchaseAmenity
     #[ORM\Column]
     private ?int $quantity = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Amenity $amenity = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Purchase $purchase = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +37,30 @@ class PurchaseAmenity
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getAmenity(): ?Amenity
+    {
+        return $this->amenity;
+    }
+
+    public function setAmenity(?Amenity $amenity): static
+    {
+        $this->amenity = $amenity;
+
+        return $this;
+    }
+
+    public function getPurchase(): ?Purchase
+    {
+        return $this->purchase;
+    }
+
+    public function setPurchase(?Purchase $purchase): static
+    {
+        $this->purchase = $purchase;
 
         return $this;
     }

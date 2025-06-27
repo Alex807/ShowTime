@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FestivalEditionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,42 @@ class FestivalEdition
 
     #[ORM\Column]
     private ?\DateTime $updated_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'festivalEditions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Festival $festival = null;
+
+    /**
+     * @var Collection<int, EditionReview>
+     */
+    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'edition', orphanRemoval: true)]
+    private Collection $editionReviews;
+
+    /**
+     * @var Collection<int, EditionArtist>
+     */
+    #[ORM\OneToMany(targetEntity: EditionArtist::class, mappedBy: 'edition', orphanRemoval: true)]
+    private Collection $editionArtists;
+
+    /**
+     * @var Collection<int, EditionAmenity>
+     */
+    #[ORM\OneToMany(targetEntity: EditionAmenity::class, mappedBy: 'edition', orphanRemoval: true)]
+    private Collection $editionAmenities;
+
+    /**
+     * @var Collection<int, Purchase>
+     */
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'edition', orphanRemoval: true)]
+    private Collection $purchases;
+
+    public function __construct()
+    {
+        $this->editionReviews = new ArrayCollection();
+        $this->editionArtists = new ArrayCollection();
+        $this->editionAmenities = new ArrayCollection();
+        $this->purchases = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,6 +188,138 @@ class FestivalEdition
     public function setUpdatedAt(\DateTime $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getFestival(): ?Festival
+    {
+        return $this->festival;
+    }
+
+    public function setFestival(?Festival $festival): static
+    {
+        $this->festival = $festival;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EditionReview>
+     */
+    public function getEditionReviews(): Collection
+    {
+        return $this->editionReviews;
+    }
+
+    public function addEditionReview(EditionReview $editionReview): static
+    {
+        if (!$this->editionReviews->contains($editionReview)) {
+            $this->editionReviews->add($editionReview);
+            $editionReview->setEdition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEditionReview(EditionReview $editionReview): static
+    {
+        if ($this->editionReviews->removeElement($editionReview)) {
+            // set the owning side to null (unless already changed)
+            if ($editionReview->getEdition() === $this) {
+                $editionReview->setEdition(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EditionArtist>
+     */
+    public function getEditionArtists(): Collection
+    {
+        return $this->editionArtists;
+    }
+
+    public function addEditionArtist(EditionArtist $editionArtist): static
+    {
+        if (!$this->editionArtists->contains($editionArtist)) {
+            $this->editionArtists->add($editionArtist);
+            $editionArtist->setEdition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEditionArtist(EditionArtist $editionArtist): static
+    {
+        if ($this->editionArtists->removeElement($editionArtist)) {
+            // set the owning side to null (unless already changed)
+            if ($editionArtist->getEdition() === $this) {
+                $editionArtist->setEdition(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EditionAmenity>
+     */
+    public function getEditionAmenities(): Collection
+    {
+        return $this->editionAmenities;
+    }
+
+    public function addEditionAmenity(EditionAmenity $editionAmenity): static
+    {
+        if (!$this->editionAmenities->contains($editionAmenity)) {
+            $this->editionAmenities->add($editionAmenity);
+            $editionAmenity->setEdition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEditionAmenity(EditionAmenity $editionAmenity): static
+    {
+        if ($this->editionAmenities->removeElement($editionAmenity)) {
+            // set the owning side to null (unless already changed)
+            if ($editionAmenity->getEdition() === $this) {
+                $editionAmenity->setEdition(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Purchase>
+     */
+    public function getPurchases(): Collection
+    {
+        return $this->purchases;
+    }
+
+    public function addPurchase(Purchase $purchase): static
+    {
+        if (!$this->purchases->contains($purchase)) {
+            $this->purchases->add($purchase);
+            $purchase->setEdition($this);
+        }
+
+        return $this;
+    }
+
+    public function removePurchase(Purchase $purchase): static
+    {
+        if ($this->purchases->removeElement($purchase)) {
+            // set the owning side to null (unless already changed)
+            if ($purchase->getEdition() === $this) {
+                $purchase->setEdition(null);
+            }
+        }
 
         return $this;
     }

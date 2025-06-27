@@ -23,6 +23,10 @@ class EditionReview
     #[ORM\Column]
     private ?\DateTime $posted_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'editionReviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FestivalEdition $edition = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class EditionReview
     public function setPostedAt(\DateTime $posted_at): static
     {
         $this->posted_at = $posted_at;
+
+        return $this;
+    }
+
+    public function getEdition(): ?FestivalEdition
+    {
+        return $this->edition;
+    }
+
+    public function setEdition(?FestivalEdition $edition): static
+    {
+        $this->edition = $edition;
 
         return $this;
     }

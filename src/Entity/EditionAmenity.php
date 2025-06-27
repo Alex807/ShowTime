@@ -19,6 +19,14 @@ class EditionAmenity
     #[ORM\Column(nullable: true)]
     private ?\DateTime $end_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'editionAmenities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FestivalEdition $edition = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Amenity $amenity = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +52,30 @@ class EditionAmenity
     public function setEndAt(?\DateTime $end_at): static
     {
         $this->end_at = $end_at;
+
+        return $this;
+    }
+
+    public function getEdition(): ?FestivalEdition
+    {
+        return $this->edition;
+    }
+
+    public function setEdition(?FestivalEdition $edition): static
+    {
+        $this->edition = $edition;
+
+        return $this;
+    }
+
+    public function getAmenity(): ?Amenity
+    {
+        return $this->amenity;
+    }
+
+    public function setAmenity(?Amenity $amenity): static
+    {
+        $this->amenity = $amenity;
 
         return $this;
     }

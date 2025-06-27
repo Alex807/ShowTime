@@ -23,6 +23,10 @@ class TicketType
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FestivalEdition $edition = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class TicketType
     public function setPrice(string $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getEdition(): ?FestivalEdition
+    {
+        return $this->edition;
+    }
+
+    public function setEdition(?FestivalEdition $edition): static
+    {
+        $this->edition = $edition;
 
         return $this;
     }

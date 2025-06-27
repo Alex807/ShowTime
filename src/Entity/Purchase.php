@@ -23,6 +23,10 @@ class Purchase
     #[ORM\Column]
     private ?\DateTime $purchase_date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'purchases')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FestivalEdition $edition = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class Purchase
     public function setPurchaseDate(\DateTime $purchase_date): static
     {
         $this->purchase_date = $purchase_date;
+
+        return $this;
+    }
+
+    public function getEdition(): ?FestivalEdition
+    {
+        return $this->edition;
+    }
+
+    public function setEdition(?FestivalEdition $edition): static
+    {
+        $this->edition = $edition;
 
         return $this;
     }

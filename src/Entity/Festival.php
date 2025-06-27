@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FestivalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
@@ -39,6 +41,17 @@ class Festival
 
     #[ORM\Column]
     private ?\DateTime $updated_at = null;
+
+    /**
+     * @var Collection<int, FestivalEdition>
+     */
+    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival', orphanRemoval: true)]
+    private Collection $festivalEditions;
+
+    public function __construct()
+    {
+        $this->festivalEditions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -149,6 +162,36 @@ class Festival
     public function setUpdatedAt(\DateTime $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FestivalEdition>
+     */
+    public function getFestivalEditions(): Collection
+    {
+        return $this->festivalEditions;
+    }
+
+    public function addFestivalEdition(FestivalEdition $festivalEdition): static
+    {
+        if (!$this->festivalEditions->contains($festivalEdition)) {
+            $this->festivalEditions->add($festivalEdition);
+            $festivalEdition->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFestivalEdition(FestivalEdition $festivalEdition): static
+    {
+        if ($this->festivalEditions->removeElement($festivalEdition)) {
+            // set the owning side to null (unless already changed)
+            if ($festivalEdition->getFestival() === $this) {
+                $festivalEdition->setFestival(null);
+            }
+        }
 
         return $this;
     }
