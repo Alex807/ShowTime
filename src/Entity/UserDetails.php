@@ -6,12 +6,15 @@ use App\Repository\UserDetailsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserDetailsRepository::class)]
-#[ORM\Table(name: 'user_details')]
+#[ORM\Table(name: "user_details")]
 class UserDetails
 {
-    #[ORM\Id]  // makes the foreign key the primary key
+    #[ORM\Id] //this is mark for PK
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
     #[ORM\OneToOne(targetEntity: UserAccount::class, mappedBy: 'userDetails')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?UserAccount $userAccount = null;
 
     #[ORM\Column(length: 100)]
@@ -23,7 +26,7 @@ class UserDetails
     #[ORM\Column]
     private ?int $age = null;
 
-    #[ORM\Column(length: 20, unique: true, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $phoneNo = null;
 
     #[ORM\Column(nullable: true)]
@@ -32,42 +35,31 @@ class UserDetails
     #[ORM\Column(nullable: true)]
     private ?\DateTime $updatedAt = null;
 
-    public function getUserAccount(): ?UserAccount
+    public function getId(): ?int
     {
-        return $this->userAccount;
-    }
-
-    public function setUserAccount(?UserAccount $userAccount): static
-    {
-        $this->userAccount = $userAccount;
-        return $this;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userAccount?->getId();
+        return $this->id;
     }
 
     public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstName(string $first_name): static
+    public function setFirstName(string $firstName): static
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
     public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    public function setLastName(string $last_name): static
+    public function setLastName(string $lastName): static
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -86,36 +78,53 @@ class UserDetails
 
     public function getPhoneNo(): ?string
     {
-        return $this->phone_no;
+        return $this->phoneNo;
     }
 
-    public function setPhoneNo(?string $phone_no): static
+    public function setPhoneNo(?string $phoneNo): static
     {
-        $this->phone_no = $phone_no;
+        $this->phoneNo = $phoneNo;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTime
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTime $created_at): static
+    public function setCreatedAt(?\DateTime $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTime
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updated_at): static
+    public function setUpdatedAt(?\DateTime $updatedAt): static
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getUserAccount(): ?UserAccount
+    {
+        return $this->userAccount;
+    }
+
+    public function setUserAccount(?UserAccount $userAccount): static
+    {
+        // set the owning side of the relation if necessary
+        if ($userAccount !== null && $userAccount->getUserDetails() !== $this) {
+            $userAccount->setUserDetails($this);
+        }
+
+        $this->userAccount = $userAccount;
 
         return $this;
     }
