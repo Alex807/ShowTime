@@ -36,6 +36,12 @@ class PurchasedTicket
     #[ORM\OneToMany(targetEntity: TicketUsage::class, mappedBy: 'purchased_ticket', orphanRemoval: true)]
     private Collection $ticketUsage;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $valid_starting = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $expires_at = null;
+
     public function __construct()
     {
         $this->ticketUsage = new ArrayCollection();
@@ -120,6 +126,30 @@ class PurchasedTicket
                 $ticketUsage->setPurchasedTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getValidStarting(): ?\DateTime
+    {
+        return $this->valid_starting;
+    }
+
+    public function setValidStarting(?\DateTime $valid_starting): static
+    {
+        $this->valid_starting = $valid_starting;
+
+        return $this;
+    }
+
+    public function getExpiresAt(): ?\DateTime
+    {
+        return $this->expires_at;
+    }
+
+    public function setExpiresAt(?\DateTime $expires_at): static
+    {
+        $this->expires_at = $expires_at;
 
         return $this;
     }

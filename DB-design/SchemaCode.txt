@@ -6,12 +6,13 @@ Table user_account {
   id integer [primary key]
   email varchar [unique, not null]
   password varchar [not null] 
-  password_token varchar 
+  password_token varchar  
+  user_details integer [not null]
   
 }
 
 Table user_details {  
-  user_id integer [primary key] 
+  id integer [primary key] 
   first_name varchar [not null]
   last_name varchar [not null] 
   age integer [not null, note: 'CHECK (age >= 13 AND age <= 120)']
@@ -57,7 +58,7 @@ Table festival {
   country varchar [not null] 
   city varchar [not null] 
   street_name varchar [not null]
-  street_nr integer [not null]
+  street_no integer [not null]
   festival_contact varchar [not null]
   website varchar 
   logo_url varchar [not null] 
@@ -170,7 +171,7 @@ Table purchase_amenity {
 
 
 // Relationships
-Ref: user_account.id - user_details.user_id [delete: cascade]
+Ref: user_account.user_detailes - user_details.id [delete: cascade]
 Ref: user_account.id < purchase.user_id
 Ref: user_account.id < user_role.user_id [delete: cascade]
 Ref: role.id < user_role.role_id [delete: cascade]

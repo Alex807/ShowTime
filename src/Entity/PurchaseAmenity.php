@@ -25,6 +25,10 @@ class PurchaseAmenity
     #[ORM\JoinColumn(nullable: false)]
     private ?Purchase $purchase = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?EditionAmenity $edition_amenity = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +66,18 @@ class PurchaseAmenity
     public function setPurchase(?Purchase $purchase): static
     {
         $this->purchase = $purchase;
+
+        return $this;
+    }
+
+    public function getEditionAmenity(): ?EditionAmenity
+    {
+        return $this->edition_amenity;
+    }
+
+    public function setEditionAmenity(?EditionAmenity $edition_amenity): static
+    {
+        $this->edition_amenity = $edition_amenity;
 
         return $this;
     }
