@@ -1,103 +1,159 @@
-{# This extends your base template - you might need to adjust the name #}
 {% extends 'base.html.twig' %}
 
-{# This is the main content block #}
 {% block body %}
-    <h1>Festivals List</h1>
     <style>
-        /* Modern styling with gradients and better spacing */
-        body {
-            background: linear-gradient(135deg, #0066ff 0%, #66b3ff 100%);
-            min-height: 100vh;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-        }
+        /* Your existing styles */
 
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            text-align: center;
-            color: #004d99;
+        /* Add these new styles for the header section */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
             margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 100px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        /* Update your h1 style to work with the flex container */
+        h1 {
+            margin: 0;
+            color: #004d99;
             font-size: 2.5em;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th {
-            background-color: #004d99;
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover {
-            background-color: #f8f9fa;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 10px;
-            }
-
-            table {
-                font-size: 14px;
-            }
-
-            th, td {
-                padding: 8px;
-            }
-        }
     </style>
-        <table border = "12">
+
+    <div class="header-container">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
+        <h1>Festivals List</h1>
+    </div>
+
+    <table border="12">
         <thead>
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Price</th> <br>
-            {# Add more columns based on your table fields #}
+            <th>Price</th>
         </tr>
         </thead>
         <tbody>
-        {# This loop goes through each product in the products array #}
         {% for festival in festivals %}
             <tr>
                 <td>{{ festival.id }}</td>
                 <td>{{ festival.name }}</td>
-                <td>{{ festival.city }}</td> <br>
-                {# Add more fields based on your table structure #}
+                <td>{{ festival.city }}</td>
             </tr>
         {% endfor %}
         </tbody>
-        </table>
+    </table>
 {% endblock %}
+
+
+
+{# This extends your base template - you might need to adjust the name #}
+{#{% extends 'base.html.twig' %}#}
+
+{# This is the main content block #}
+{#{% block body %}#}
+{#    <h1>Festivals List</h1>#}
+{#    <style>#}
+{#        /* Modern styling with gradients and better spacing */#}
+{#        body {#}
+{#            background: linear-gradient(135deg, #0066ff 0%, #66b3ff 100%);#}
+{#            min-height: 100vh;#}
+{#            padding: 20px;#}
+{#            font-family: Arial, sans-serif;#}
+{#        }#}
+
+{#        .container {#}
+{#            max-width: 1200px;#}
+{#            margin: 40px auto;#}
+{#            padding: 20px;#}
+{#            background-color: rgba(255, 255, 255, 0.9);#}
+{#            border-radius: 15px;#}
+{#            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);#}
+{#        }#}
+
+{#        h1 {#}
+{#            text-align: center;#}
+{#            color: #004d99;#}
+{#            margin-bottom: 30px;#}
+{#            font-size: 2.5em;#}
+{#            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);#}
+{#        }#}
+
+{#        table {#}
+{#            width: 100%;#}
+{#            border-collapse: collapse;#}
+{#            background-color: white;#}
+{#            border-radius: 8px;#}
+{#            overflow: hidden;#}
+{#        }#}
+
+{#        th {#}
+{#            background-color: #004d99;#}
+{#            color: white;#}
+{#            padding: 15px;#}
+{#            text-align: left;#}
+{#            font-weight: bold;#}
+{#        }#}
+
+{#        td {#}
+{#            padding: 12px 15px;#}
+{#            border-bottom: 1px solid #ddd;#}
+{#        }#}
+
+{#        tr:last-child td {#}
+{#            border-bottom: none;#}
+{#        }#}
+
+{#        tr:hover {#}
+{#            background-color: #f8f9fa;#}
+{#            transition: background-color 0.3s ease;#}
+{#        }#}
+
+{#        /* Responsive design */#}
+{#        @media (max-width: 768px) {#}
+{#            .container {#}
+{#                margin: 20px;#}
+{#                padding: 10px;#}
+{#            }#}
+
+{#            table {#}
+{#                font-size: 14px;#}
+{#            }#}
+
+{#            th, td {#}
+{#                padding: 8px;#}
+{#            }#}
+{#        }#}
+{#    </style>#}
+{#        <table border = "12">#}
+{#        <thead>#}
+{#        <tr>#}
+{#            <th>ID</th>#}
+{#            <th>Name</th>#}
+{#            <th>Price</th> <br>#}
+{#            #}{# Add more columns based on your table fields #}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        #}{# This loop goes through each product in the products array #}
+{#        {% for festival in festivals %}#}
+{#            <tr>#}
+{#                <td>{{ festival.id }}</td>#}
+{#                <td>{{ festival.name }}</td>#}
+{#                <td>{{ festival.city }}</td> <br>#}
+{#                #}{# Add more fields based on your table structure #}
+{#            </tr>#}
+{#        {% endfor %}#}
+{#        </tbody>#}
+{#        </table>#}
+{#{% endblock %}#}
 
 {#{% extends 'base.html.twig' %}#}
 
