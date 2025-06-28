@@ -9,13 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: "user_details")]
 class UserDetails
 {
-    #[ORM\Id] //this is mark for PK
+    #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\OneToOne(targetEntity: UserAccount::class, mappedBy: 'userDetails')]
-    private ?UserAccount $userAccount = null;
 
     #[ORM\Column(length: 100)]
     private ?string $firstName = null;
@@ -108,23 +105,6 @@ class UserDetails
     public function setUpdatedAt(?\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getUserAccount(): ?UserAccount
-    {
-        return $this->userAccount;
-    }
-
-    public function setUserAccount(?UserAccount $userAccount): static
-    {
-        // set the owning side of the relation if necessary
-        if ($userAccount !== null && $userAccount->getUserDetails() !== $this) {
-            $userAccount->setUserDetails($this);
-        }
-
-        $this->userAccount = $userAccount;
 
         return $this;
     }

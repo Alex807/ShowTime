@@ -27,6 +27,10 @@ class Purchase
     #[ORM\JoinColumn(nullable: false)]
     private ?FestivalEdition $edition = null;
 
+    #[ORM\ManyToOne(inversedBy: 'purchases')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserAccount $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +80,18 @@ class Purchase
     public function setEdition(?FestivalEdition $edition): static
     {
         $this->edition = $edition;
+
+        return $this;
+    }
+
+    public function getUser(): ?UserAccount
+    {
+        return $this->user;
+    }
+
+    public function setUser(?UserAccount $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

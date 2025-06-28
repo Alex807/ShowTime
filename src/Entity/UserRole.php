@@ -9,13 +9,51 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: "user_role")]
 class UserRole
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Id]  // make this a part of composite primary key
+    #[ORM\ManyToOne(inversedBy: 'userRoles')]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
+    private ?UserAccount $userAccount = null;
 
-    public function getId(): ?int
+    #[ORM\Id]  // make this a part of composite primary key
+    #[ORM\ManyToOne(inversedBy: 'usersWithThisRole')]
+    #[ORM\JoinColumn(name: 'role_id', nullable: false, onDelete: 'CASCADE')]
+    private ?Role $role = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeInterface $sinceDate = null;
+
+    public function getUserAccount(): ?UserAccount
     {
-        return $this->id;
+        return $this->userAccount;
+    }
+
+    public function setUserAccount(?UserAccount $userAccount): static
+    {
+        $this->userAccount = $userAccount;
+
+        return $this;
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): static
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function getSinceDate(): ?\DateTimeInterface
+    {
+        return $this->sinceDate;
+    }
+
+    public function setSinceDate(?\DateTimeInterface $sinceDate): static
+    {
+        $this->sinceDate = $sinceDate;
+        return $this;
     }
 }
