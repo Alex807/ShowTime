@@ -7,6 +7,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EditionArtistRepository::class)]
+#[ORM\Table(name: "edition_artist")]
+#[ORM\UniqueConstraint(name: "not_overlapped_artist_performances",
+    columns:
+        ["edition_id", "artist_id", "performance_date", "start_time", "end_time"]
+    )]
 class EditionArtist
 {
     #[ORM\Id]
@@ -27,11 +32,11 @@ class EditionArtist
     private ?\DateTime $end_time = null;
 
     #[ORM\ManyToOne(inversedBy: 'editionArtists')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name:"edition_id", nullable: false)]
     private ?FestivalEdition $edition = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name:"artist_id", nullable: false)]
     private ?Artist $artist = null;
 
     public function getId(): ?int

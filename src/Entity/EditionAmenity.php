@@ -6,6 +6,10 @@ use App\Repository\EditionAmenityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EditionAmenityRepository::class)]
+#[ORM\Table(name: "edition_amenity")]
+#[ORM\UniqueConstraint(name: "unique_edition_amenity", columns: ["edition_id", "amenity_id"])]
+//I want "camping" for example to be listed only once in table,
+// resolve the 'more tables' problem with quantity in purchase_amenity
 class EditionAmenity
 {
     #[ORM\Id]

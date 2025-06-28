@@ -47,7 +47,7 @@ class UserAccount
      */
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'user', orphanRemoval: false)]
     private Collection $purchases;
-    
+
     public function __construct()
     {
         $this->userRoles = new ArrayCollection();

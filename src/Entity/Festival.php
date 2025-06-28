@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
+#[ORM\Table(name: "festival")]
 class Festival
 {
     #[ORM\Id]
