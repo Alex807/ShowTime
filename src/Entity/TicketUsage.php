@@ -27,6 +27,10 @@ class TicketUsage
     #[ORM\JoinColumn(nullable: false)]
     private ?PurchasedTicket $purchased_ticket = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserAccount $staff_member = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +80,18 @@ class TicketUsage
     public function setPurchasedTicket(?PurchasedTicket $purchased_ticket): static
     {
         $this->purchased_ticket = $purchased_ticket;
+
+        return $this;
+    }
+
+    public function getStaffMember(): ?UserAccount
+    {
+        return $this->staff_member;
+    }
+
+    public function setStaffMember(?UserAccount $staff_member): static
+    {
+        $this->staff_member = $staff_member;
 
         return $this;
     }
