@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures\ArtistAmenity;
+namespace App\DataFixtures\artistAmenity;
 
 use App\Entity\Amenity;
 use Doctrine\Bundle\FixturesBundle\Fixture;

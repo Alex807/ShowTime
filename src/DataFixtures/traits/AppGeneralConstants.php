@@ -12,4 +12,10 @@ trait AppGeneralConstants
     private const MAX_REVIEWS_PER_EDITION = 3;
     private const MAX_AMENITIES_PER_EDITION = 8;
 
+    private const MIN_ARTISTS_PER_EDITION = 2;
+    private const MAX_ARTISTS_PER_EDITION = 5;
+    private const MIN_PERFORMANCE_DURATION = 45; // minutes
+    private const MAX_PERFORMANCE_DURATION = 120; // minutes
+    private const PERFORMANCE_BUFFER = 15; // minutes between performances
+
 }
