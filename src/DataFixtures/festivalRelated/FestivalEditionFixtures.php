@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\festivalRelated;
 
 use App\DataFixtures\traits\AppGeneralConstants;
 use App\Entity\Festival;

@@ -20,7 +20,7 @@ class UserRole
     private ?Role $role = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeInterface $sinceDate = null;
+    private ?\DateTime $sinceDate = null;
 
     public function getUserAccount(): ?UserAccount
     {
