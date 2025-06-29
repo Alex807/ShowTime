@@ -1,16 +1,17 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\userRelated;
 
+use App\DataFixtures\traits\AppGeneralConstants;
 use App\Entity\UserAccount;
 use App\Entity\UserDetails;
-use App\DataFixtures\traits\TotalExistingUsersTrait;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserAccountFixtures extends Fixture implements DependentFixtureInterface
+class UserAccountFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     private UserPasswordHasherInterface $hasher;
 
@@ -19,7 +20,7 @@ class UserAccountFixtures extends Fixture implements DependentFixtureInterface
         $this->hasher = $hasher;
     }
 
-    use TotalExistingUsersTrait; //constants between fixtures
+    use AppGeneralConstants; //constants between fixtures
     public function load(ObjectManager $manager): void
     {
         // Get all existing user details
@@ -72,6 +73,11 @@ class UserAccountFixtures extends Fixture implements DependentFixtureInterface
         // Remove any remaining special characters and spaces
         return preg_replace('/[^A-Za-z0-9]/', '', $str);
     }
+
+    public static function getGroups(): array
+     {
+         return ['userRelated'];
+     }
 
     public function getDependencies(): array
     {

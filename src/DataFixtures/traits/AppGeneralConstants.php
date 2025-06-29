@@ -3,7 +3,9 @@ namespace App\DataFixtures\traits;
 
 use Doctrine\Persistence\ObjectManager;
 
-trait TotalExistingUsersTrait
+trait AppGeneralConstants
 {
     private const TOTAL_EXISTING_USERS = 50;
+    private const TOTAL_EXISTING_FESTIVALS = 30;
+    private const MAX_FESTIVAL_EDITIONS = 7;
 }
