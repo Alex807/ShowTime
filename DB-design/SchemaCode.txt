@@ -7,8 +7,6 @@ Table user_account {
   email varchar [unique, not null]
   password varchar [not null] 
   password_token varchar  
-  user_details integer [not null]
-  
 }
 
 Table user_details {  
@@ -171,7 +169,7 @@ Table purchase_amenity {
 
 
 // Relationships
-Ref: user_account.user_detailes - user_details.id [delete: cascade]
+Ref: user_account.id - user_details.id [delete: cascade]
 Ref: user_account.id < purchase.user_id
 Ref: user_account.id < user_role.user_id [delete: cascade]
 Ref: role.id < user_role.role_id [delete: cascade]
