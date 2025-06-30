@@ -74,7 +74,7 @@ class PurchasedTicketFixtures extends Fixture implements DependentFixtureInterfa
         $ticketTypeLookup = [];
         foreach ($ticketTypes as $ticketType) {
             $editionId = $ticketType->getEdition()->getId();
-            $ticketTypeLookup[$editionId][] = $ticketType;
+            $ticketTypeLookup[$editionId][] = $ticketType; ///hashmap key -> array of ticket_types
         }
 
         foreach ($purchases as $purchase) {

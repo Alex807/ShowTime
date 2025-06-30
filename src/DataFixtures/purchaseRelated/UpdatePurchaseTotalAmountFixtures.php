@@ -48,7 +48,7 @@ class UpdatePurchaseTotalAmountFixtures extends Fixture implements DependentFixt
     public function getDependencies(): array
     {
         return [
-            PurchasedTicketFixtures::class,
+            TicketUsageFixtures::class,
         ];
     }
 
