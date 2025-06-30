@@ -1,0 +1,241 @@
+<?php
+
+namespace App\DataFixtures\purchaseRelated;
+
+use App\DataFixtures\traits\AppGeneralConstants;
+use App\Entity\TicketType;
+use App\Entity\FestivalEdition;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+
+class TicketTypeFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+{
+    private const TICKET_TYPES_DATA = [
+        [
+            'name' => 'General Admission',
+            'benefits' => 'Access to main festival grounds, all outdoor stages, food courts, and merchandise stands. Standing room only.',
+            'base_price' => [45.00, 85.00]
+        ],
+        [
+            'name' => 'Single Day Pass',
+            'benefits' => 'Full access to festival for one day only. Choose your preferred day during checkout. All stages and activities included.',
+            'base_price' => [35.00, 65.00]
+        ],
+        [
+            'name' => 'Weekend Pass',
+            'benefits' => 'Complete festival experience for all days. Access to all stages, activities, and special events. Best value for multi-day festivals.',
+            'base_price' => [120.00, 220.00]
+        ],
+        [
+            'name' => 'VIP Experience',
+            'benefits' => 'Premium viewing areas, dedicated VIP entrance, complimentary drinks, exclusive restrooms, VIP lounge access, and meet & greet opportunities.',
+            'base_price' => [250.00, 450.00]
+        ],
+        [
+            'name' => 'Platinum VIP',
+            'benefits' => 'Ultimate festival experience with backstage access, artist meet & greets, premium catering, private bar, luxury restrooms, and exclusive merchandise.',
+            'base_price' => [500.00, 900.00]
+        ],
+        [
+            'name' => 'Student Discount',
+            'benefits' => 'Special pricing for students with valid ID. Same access as General Admission with discounted rate. Limited quantity available.',
+            'base_price' => [30.00, 55.00]
+        ],
+        [
+            'name' => 'Early Bird Special',
+            'benefits' => 'Limited time offer for early purchasers. Full festival access at reduced price. Same benefits as Weekend Pass but with significant savings.',
+            'base_price' => [80.00, 150.00]
+        ],
+        [
+            'name' => 'Group Package (4+)',
+            'benefits' => 'Special rate for groups of 4 or more people. Includes group check-in, reserved seating area, and group photo opportunity.',
+            'base_price' => [160.00, 300.00]
+        ],
+        [
+            'name' => 'Family Pass (2 Adults + 2 Kids)',
+            'benefits' => 'Perfect for families with children under 12. Includes kids activities area, family restrooms, and priority entry for family-friendly shows.',
+            'base_price' => [180.00, 320.00]
+        ],
+        [
+            'name' => 'Senior Citizen (65+)',
+            'benefits' => 'Discounted admission for seniors with comfortable seating areas, easy access paths, and dedicated customer service.',
+            'base_price' => [35.00, 65.00]
+        ],
+        [
+            'name' => 'Press/Media Pass',
+            'benefits' => 'Professional media access with photo pit privileges, press conference access, and media center facilities. Credential verification required.',
+            'base_price' => [0.00, 50.00]
+        ],
+        [
+            'name' => 'Artist/Industry Pass',
+            'benefits' => 'Industry professional access with backstage areas, artist lounges, networking events, and industry mixer invitations.',
+            'base_price' => [100.00, 200.00]
+        ],
+        [
+            'name' => 'Camping Add-On',
+            'benefits' => 'Festival ticket plus camping access. Includes designated camping area, shower facilities, security, and shuttle service to main venue.',
+            'base_price' => [200.00, 350.00]
+        ],
+        [
+            'name' => 'Glamping Experience',
+            'benefits' => 'Luxury camping with pre-pitched tents, comfortable beds, private bathrooms, daily housekeeping, and gourmet meal service.',
+            'base_price' => [400.00, 700.00]
+        ],
+        [
+            'name' => 'Day Parking Pass',
+            'benefits' => 'Guaranteed parking spot for single day. Includes shuttle service to main entrance and priority exit lanes.',
+            'base_price' => [15.00, 35.00]
+        ],
+        [
+            'name' => 'Premium Parking',
+            'benefits' => 'VIP parking closest to main entrance with covered spots, security monitoring, and complimentary car wash service.',
+            'base_price' => [50.00, 100.00]
+        ],
+        [
+            'name' => 'Accessibility Pass',
+            'benefits' => 'Special accommodations for guests with disabilities. Includes accessible viewing areas, priority seating, and dedicated assistance.',
+            'base_price' => [40.00, 75.00]
+        ],
+        [
+            'name' => 'Late Night After-Party',
+            'benefits' => 'Exclusive access to after-hours events, late night DJ sets, premium bar service, and extended festival experience until 4 AM.',
+            'base_price' => [75.00, 150.00]
+        ],
+        [
+            'name' => 'Food & Beverage Package',
+            'benefits' => 'Festival admission plus meal vouchers, unlimited soft drinks, and access to premium food vendors. Great value for food lovers.',
+            'base_price' => [120.00, 200.00]
+        ],
+        [
+            'name' => 'Photography Pass',
+            'benefits' => 'Special access for photography enthusiasts with photo pit access, golden hour sessions, and professional photography workshops.',
+            'base_price' => [80.00, 140.00]
+        ]
+    ];
+
+    use AppGeneralConstants;
+    public function load(ObjectManager $manager): void
+    {
+        // Get all existing festival editions
+        $festivalEditions = $manager->getRepository(FestivalEdition::class)->findAll();
+
+        if (empty($festivalEditions)) {
+            return; // Skip if no data available
+        }
+
+        foreach ($festivalEditions as $edition) {
+            // Each edition gets random number of ticket types
+            $numberOfTicketTypes = mt_rand(2, self::MAX_TICKET_TYPES_PER_EDITION);
+
+            // Always include essential ticket types
+            $essentialTypes = ['General Admission', 'Weekend Pass', 'VIP Experience', 'Single Day Pass'];
+            $selectedTypes = [];
+
+            // Add essential types first
+            foreach ($essentialTypes as $essentialType) {
+                $selectedTypes[] = $essentialType;
+            }
+
+            // Add random additional types
+            $availableTypes = array_column(self::TICKET_TYPES_DATA, 'name');
+            $remainingTypes = array_diff($availableTypes, $selectedTypes); //make sure we do not have duplicated ticket types for an edition
+            shuffle($remainingTypes);
+
+            $additionalTypesNeeded = $numberOfTicketTypes - count($selectedTypes); //if we have already enough types just from standard ones
+            for ($i = 0; $i < $additionalTypesNeeded && $i < count($remainingTypes); $i++) {
+                $selectedTypes[] = $remainingTypes[$i]; //add some types if needed
+            }
+
+            // Create ticket types for this edition
+            foreach ($selectedTypes as $typeName) {
+                $ticketTypeData = $this->getTicketTypeData($typeName);
+
+                if ($ticketTypeData == null) { //case when a ticket type has only defined name(never when data is hardcoded)
+                    continue;
+                }
+
+                $ticketType = new TicketType();
+                $ticketType->setEdition($edition);
+                $ticketType->setName($ticketTypeData['name']);
+                $ticketType->setBenefits($ticketTypeData['benefits']);
+
+                // Generate price within the specified range
+                $minPrice = $ticketTypeData['base_price'][0];
+                $maxPrice = $ticketTypeData['base_price'][1];
+                $price = mt_rand($minPrice * 100, $maxPrice * 100) / 100;
+
+                // Apply edition-specific pricing modifiers
+                $price = $this->applyPricingModifiers($price, $typeName);
+
+                $ticketType->setPrice(number_format($price, 2, '.', ''));
+
+                $manager->persist($ticketType);
+            }
+        }
+
+        $manager->flush();
+    }
+
+    private function getTicketTypeData(string $typeName): ?array
+    {
+        foreach (self::TICKET_TYPES_DATA as $typeData) {
+            if ($typeData['name'] === $typeName) {
+                return $typeData;
+            }
+        }
+        return null;
+    }
+
+    private function applyPricingModifiers(float $basePrice, string $ticketTypeName): float
+    {
+        // Apply random market fluctuations (±10%)
+        $marketModifier = mt_rand(-10, 10) / 100;
+        $adjustedPrice = $basePrice * (1 + $marketModifier);
+
+        // Apply type-specific modifiers
+        switch ($ticketTypeName) {
+            case 'Early Bird Special':
+                // Early bird gets additional 5-15% discount
+                $earlyBirdDiscount = mt_rand(5, 15) / 100;
+                $adjustedPrice *= (1 - $earlyBirdDiscount);
+                break;
+
+            case 'Student Discount':
+            case 'Senior Citizen (65+)':
+                // Additional discount for special demographics
+                $specialDiscount = mt_rand(10, 20) / 100;
+                $adjustedPrice *= (1 - $specialDiscount);
+                break;
+
+            case 'Platinum VIP':
+            case 'Glamping Experience':
+                // Premium experiences get slight premium
+                $premiumModifier = mt_rand(5, 15) / 100;
+                $adjustedPrice *= (1 + $premiumModifier);
+                break;
+
+            case 'Group Package (4+)':
+                // Group packages get bulk discount
+                $groupDiscount = mt_rand(15, 25) / 100;
+                $adjustedPrice *= (1 - $groupDiscount);
+                break;
+        }
+
+        // Ensure minimum price
+        return max($adjustedPrice, 5.00);
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            PurchaseAmenityFixtures::class,
+        ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['purchaseRelated'];
+    }
+}

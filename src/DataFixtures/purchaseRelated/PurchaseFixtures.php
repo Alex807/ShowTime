@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\purchaseRelated;
 
+use App\DataFixtures\traits\AppGeneralConstants;
 use App\Entity\Purchase;
 use App\Entity\FestivalEdition;
 use App\Entity\UserAccount;
@@ -11,9 +12,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class PurchaseFixtures extends Fixture implements FixtureGroupInterface
 {
-    private const MIN_PURCHASES_PER_EDITION = 50;
-    private const MAX_PURCHASES_PER_EDITION = 200;
-
     // Purchase status distribution (realistic percentages)
     private const PURCHASE_STATUSES = [
         'completed' => 75,      // 75% completed purchases
@@ -34,6 +32,7 @@ class PurchaseFixtures extends Fixture implements FixtureGroupInterface
         'last_minute' => [80.00, 200.00]
     ];
 
+    use AppGeneralConstants;
     public function load(ObjectManager $manager): void
     {
         // Get all existing festival editions and user accounts
@@ -49,14 +48,13 @@ class PurchaseFixtures extends Fixture implements FixtureGroupInterface
 
         foreach ($festivalEditions as $edition) {
             // Each edition gets random number of purchases
-            $numberOfPurchases = mt_rand(self::MIN_PURCHASES_PER_EDITION, self::MAX_PURCHASES_PER_EDITION);
+            $numberOfPurchases = mt_rand(3, self::MAX_PURCHASES_PER_EDITION);
 
             // Generate festival date for purchase timing logic
-            $festivalDate = new \DateTime();
-            $festivalDate->modify('+' . mt_rand(30, 180) . ' days');
+            $festivalDate = $edition->getStartDate();
 
             for ($i = 0; $i < $numberOfPurchases; $i++) {
-                // Select random user
+                // Select random user (a user can have multiple purchases, not checking if already was picked)
                 $user = $userAccounts[array_rand($userAccounts)];
 
                 // Select random status based on weighted distribution
@@ -66,13 +64,13 @@ class PurchaseFixtures extends Fixture implements FixtureGroupInterface
                 $purchaseDate = $this->generatePurchaseDate($status, $festivalDate);
 
                 // Generate total amount based on purchase type and timing
-                $totalAmount = $this->generateTotalAmount($purchaseDate, $festivalDate);
+                $totalAmount = 0; //we call another fixture to update this fields based on related table(purchase_ticket and purchase_amenity)
 
                 $purchase = new Purchase();
                 $purchase->setEdition($edition);
                 $purchase->setUser($user);
                 $purchase->setStatus($status);
-                $purchase->setTotalAmount(number_format($totalAmount, 2, '.', ''));
+                $purchase->setTotalAmount($totalAmount);
                 $purchase->setPurchaseDate($purchaseDate);
 
                 $manager->persist($purchase);
@@ -88,7 +86,7 @@ class PurchaseFixtures extends Fixture implements FixtureGroupInterface
 
         foreach (self::PURCHASE_STATUSES as $status => $weight) {
             for ($i = 0; $i < $weight; $i++) {
-                $weightedArray[] = $status;
+                $weightedArray[] = $status; //we create an array with 100 elements total to simulate status distribution
             }
         }
 
@@ -146,68 +144,6 @@ class PurchaseFixtures extends Fixture implements FixtureGroupInterface
         $purchaseDate->setTime($hour, $minute, $second);
 
         return $purchaseDate;
-    }
-
-    private function generateTotalAmount(\DateTime $purchaseDate, \DateTime $festivalDate): float
-    {
-        // Calculate days until festival
-        $daysUntilFestival = $purchaseDate->diff($festivalDate)->days;
-
-        // Determine purchase type based on timing and random factors
-        $purchaseType = $this->determinePurchaseType($daysUntilFestival);
-
-        // Get price range for the purchase type
-        $priceRange = self::PRICE_RANGES[$purchaseType];
-        $minPrice = $priceRange[0];
-        $maxPrice = $priceRange[1];
-
-        // Generate random price within range
-        $basePrice = mt_rand($minPrice * 100, $maxPrice * 100) / 100;
-
-        // Apply timing-based modifiers
-        if ($daysUntilFestival > 90) {
-            // Early bird discount (10-20% off)
-            $discount = mt_rand(10, 20) / 100;
-            $basePrice *= (1 - $discount);
-        } elseif ($daysUntilFestival < 7) {
-            // Last minute premium (5-15% extra)
-            $premium = mt_rand(5, 15) / 100;
-            $basePrice *= (1 + $premium);
-        }
-
-        // Random additional fees/discounts (±5%)
-        $modifier = mt_rand(-5, 5) / 100;
-        $finalPrice = $basePrice * (1 + $modifier);
-
-        // Ensure minimum price
-        return max($finalPrice, 25.00);
-    }
-
-    private function determinePurchaseType(int $daysUntilFestival): string
-    {
-        // Early purchases (90+ days) - more likely to be early bird
-        if ($daysUntilFestival > 90) {
-            $types = ['early_bird', 'weekend_pass', 'single_ticket'];
-            return $types[array_rand($types)];
-        }
-
-        // Last minute purchases (< 7 days) - more expensive options
-        if ($daysUntilFestival < 7) {
-            $types = ['last_minute', 'single_ticket', 'vip_package'];
-            return $types[array_rand($types)];
-        }
-
-        // Regular timing - all options available with different probabilities
-        $weightedTypes = [
-            'single_ticket', 'single_ticket', 'single_ticket', // 30%
-            'weekend_pass', 'weekend_pass', // 20%
-            'vip_package', 'vip_package', // 20%
-            'premium_experience', // 10%
-            'group_discount', // 10%
-            'early_bird' // 10%
-        ];
-
-        return $weightedTypes[array_rand($weightedTypes)];
     }
 
     public static function getGroups(): array

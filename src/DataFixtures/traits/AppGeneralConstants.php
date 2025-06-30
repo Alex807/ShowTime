@@ -18,4 +18,16 @@ trait AppGeneralConstants
     private const MAX_PERFORMANCE_DURATION = 120; // minutes
     private const PERFORMANCE_BUFFER = 15; // minutes between performances
 
+    private const MAX_PURCHASES_PER_EDITION = 20;
+
+    private const MAX_TICKET_TYPES_PER_EDITION = 12;
+
+    // Percentage of purchases that include amenities
+    private const AMENITY_PURCHASE_RATE = 35; // 35% of purchases include amenities
+
+    // Average number of different amenities per purchase
+    private const MIN_AMENITIES_PER_PURCHASE = 1;
+    private const MAX_AMENITIES_PER_PURCHASE = 4;
+
+
 }
