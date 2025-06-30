@@ -15,7 +15,7 @@ class UserAccountFixtures extends Fixture implements DependentFixtureInterface, 
 {
     private UserPasswordHasherInterface $hasher;
 
-    public function __construct(UserPasswordHasherInterface $hasher)
+    public function __construct(UserPasswordHasherInterface $hasher) //used to encrypt the password before save it to db
     {
         $this->hasher = $hasher;
     }
@@ -74,15 +74,15 @@ class UserAccountFixtures extends Fixture implements DependentFixtureInterface, 
         return preg_replace('/[^A-Za-z0-9]/', '', $str);
     }
 
-    public static function getGroups(): array
-     {
-         return ['userRelated'];
-     }
-
     public function getDependencies(): array
     {
         return [
             UserDetailsFixtures::class, // This ensures UserDetailsFixtures runs first
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['userRelated'];
     }
 }

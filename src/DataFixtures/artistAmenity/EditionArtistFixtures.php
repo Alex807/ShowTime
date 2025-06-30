@@ -33,7 +33,7 @@ class EditionArtistFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($festivalEditions as $edition) {
             // Each edition gets random number of artists
-            $numberOfArtists = mt_rand(self::MIN_ARTISTS_PER_EDITION, self::MAX_ARTISTS_PER_EDITION);
+            $numberOfArtists = mt_rand(2, self::MAX_ARTISTS_PER_EDITION);
             $usedArtists = []; // Track artists already assigned to this edition
 
             // Generate festival dates
@@ -125,7 +125,7 @@ class EditionArtistFixtures extends Fixture implements DependentFixtureInterface
             $timeSlotCategory = self::TIME_SLOTS[array_rand(self::TIME_SLOTS)];
 
             // Generate random performance duration
-            $duration = mt_rand(self::MIN_PERFORMANCE_DURATION, self::MAX_PERFORMANCE_DURATION);
+            $duration = mt_rand(30, self::MAX_PERFORMANCE_MINUTES);
 
             // Calculate available time window
             $availableMinutes = ($timeSlotCategory['end'] - $timeSlotCategory['start']) * 60;
@@ -135,12 +135,12 @@ class EditionArtistFixtures extends Fixture implements DependentFixtureInterface
             }
 
             // Check if duration fits in time slot
-            if ($duration > $availableMinutes - self::PERFORMANCE_BUFFER) {
+            if ($duration > $availableMinutes - self::PERFORMANCE_MINUTES_BUFFER) {
                 continue;
             }
 
             // Generate random start time within the slot
-            $maxStartMinutes = $availableMinutes - $duration - self::PERFORMANCE_BUFFER;
+            $maxStartMinutes = $availableMinutes - $duration - self::PERFORMANCE_MINUTES_BUFFER;
             $startOffsetMinutes = mt_rand(0, max(0, $maxStartMinutes));
 
             $startHour = $timeSlotCategory['start'];
@@ -194,8 +194,8 @@ class EditionArtistFixtures extends Fixture implements DependentFixtureInterface
             }
 
             // Check for overlap (including buffer time)
-            $bufferStart = $existingStart - self::PERFORMANCE_BUFFER;
-            $bufferEnd = $existingEnd + self::PERFORMANCE_BUFFER;
+            $bufferStart = $existingStart - self::PERFORMANCE_MINUTES_BUFFER;
+            $bufferEnd = $existingEnd + self::PERFORMANCE_MINUTES_BUFFER;
 
             if (($proposedStart >= $bufferStart && $proposedStart < $bufferEnd) ||
                 ($proposedEnd > $bufferStart && $proposedEnd <= $bufferEnd) ||

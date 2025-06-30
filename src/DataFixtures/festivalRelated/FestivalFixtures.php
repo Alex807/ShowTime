@@ -3,78 +3,15 @@
 namespace App\DataFixtures\festivalRelated;
 
 use App\DataFixtures\traits\AppGeneralConstants;
+use App\DataFixtures\traits\hardcodedData\FestivalData;
 use App\Entity\Festival;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class FestivalFixtures extends Fixture
+class FestivalFixtures extends Fixture implements FixtureGroupInterface
 {
-    private const FESTIVAL_NAMES = [
-        'Coachella Valley',
-        'Glastonbury',
-        'Tomorrowland',
-        'Burning Man',
-        'Lollapalooza',
-        'Bonnaroo Music',
-        'Arts Festival',
-        'Electric Daisy ',
-        'Ultra Music Festival',
-        'Woodstock Revival',
-        'Summer Sonic Festival',
-        'Rock am Ring',
-        'Download Festival',
-        'Primavera Sound',
-        'SXSW',
-        'Roskilde Festival',
-        'Sziget Festival',
-        'Untold Festival',
-        'Electric Castle',
-        'Neversea',
-        'Jazz in the Park',
-        'George Enescu Festival',
-        'Sunwaves Festival',
-        'Beach Please Festival',
-        'Awake Festival',
-        'Afterhills Festival'
-    ];
-
-    private const COUNTRIES_CITIES = [
-        'United States' => ['Los Angeles', 'Austin', 'Chicago', 'Miami', 'New York', 'Las Vegas'],
-        'United Kingdom' => ['London', 'Manchester', 'Bristol', 'Edinburgh', 'Birmingham'],
-        'Germany' => ['Berlin', 'Munich', 'Hamburg', 'Cologne', 'Frankfurt'],
-        'Belgium' => ['Brussels', 'Antwerp', 'Ghent', 'Bruges'],
-        'Spain' => ['Barcelona', 'Madrid', 'Valencia', 'Seville'],
-        'France' => ['Paris', 'Lyon', 'Marseille', 'Nice', 'Toulouse'],
-        'Netherlands' => ['Amsterdam', 'Rotterdam', 'Utrecht', 'The Hague'],
-        'Romania' => ['Bucharest', 'Cluj-Napoca', 'Timisoara', 'Iasi', 'Constanta', 'Turceni'],
-        'Hungary' => ['Budapest', 'Debrecen', 'Szeged'],
-        'Denmark' => ['Copenhagen', 'Aarhus', 'Odense'],
-        'Japan' => ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama'],
-        'Australia' => ['Sydney', 'Melbourne', 'Brisbane', 'Perth']
-    ];
-
-    private const STREET_NAMES = [
-        'Main Street', 'Park Avenue', 'Festival Boulevard', 'Music Lane', 'Concert Drive',
-        'Harmony Road', 'Melody Street', 'Rhythm Avenue', 'Beat Boulevard', 'Sound Street',
-        'Arena Way', 'Stage Road', 'Performance Plaza', 'Entertainment Drive', 'Cultural Avenue',
-        'Arts Street', 'Creative Boulevard', 'Venue Road', 'Event Plaza', 'Celebration Street'
-    ];
-
-    private const CONTACT_DOMAINS = [
-        '@festivalinfo.ro', '@musicfest.org', '@eventcontact.net', '@festivalworld.com',
-        '@musicevents.org', '@concertinfo.ro', '@festivalmanagement.net', '@eventorganizers.com'
-    ];
-
-    private const WEBSITE_DOMAINS = [
-        'festival.com', 'musicfest.org', 'eventworld.net', 'concertinfo.com',
-        'festivalguide.org', 'musicevents.net', 'livemusic.com', 'festivallife.org'
-    ];
-
-    private const LOGO_PLACEHOLDER_STYLES = [
-        'abstract', 'nature', 'tech', 'people', 'animals', 'business', 'fashion', 'food'
-    ];
-
-    use AppGeneralConstants; //for using trait for constants for entire app
+    use AppGeneralConstants, FestivalData; //for using trait for constants for entire app
     public function load(ObjectManager $manager): void
     {
         $usedNames = [];
@@ -166,5 +103,10 @@ class FestivalFixtures extends Fixture
         }
 
         return $prefix;
+    }
+
+    public static function getGroups(): array
+    {
+        return ['festivalRelated'];
     }
 }

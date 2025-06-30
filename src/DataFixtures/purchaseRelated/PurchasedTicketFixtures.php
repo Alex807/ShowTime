@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\purchaseRelated;
 
+use App\DataFixtures\traits\hardcodedData\TicketData;
 use App\Entity\PurchasedTicket;
 use App\Entity\Purchase;
 use App\Entity\TicketType;
@@ -12,54 +13,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class PurchasedTicketFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    // Quantity ranges for different ticket types
-    private const QUANTITY_RULES = [ //predefined quantities that maps ticket type (limits/ticket_type)
-        'General Admission' => ['min' => 1, 'max' => 6],
-        'Single Day Pass' => ['min' => 1, 'max' => 4],
-        'Weekend Pass' => ['min' => 1, 'max' => 4],
-        'VIP Experience' => ['min' => 1, 'max' => 3],
-        'Platinum VIP' => ['min' => 1, 'max' => 2],
-        'Student Discount' => ['min' => 1, 'max' => 2],
-        'Early Bird Special' => ['min' => 1, 'max' => 5],
-        'Group Package (4+)' => ['min' => 4, 'max' => 12],
-        'Family Pass (2 Adults + 2 Kids)' => ['min' => 1, 'max' => 2], // Each pass covers 4 people
-        'Senior Citizen (65+)' => ['min' => 1, 'max' => 2],
-        'Press/Media Pass' => ['min' => 1, 'max' => 1],
-        'Artist/Industry Pass' => ['min' => 1, 'max' => 2],
-        'Camping Add-On' => ['min' => 1, 'max' => 4],
-        'Glamping Experience' => ['min' => 1, 'max' => 2],
-        'Day Parking Pass' => ['min' => 1, 'max' => 3],
-        'Premium Parking' => ['min' => 1, 'max' => 2],
-        'Accessibility Pass' => ['min' => 1, 'max' => 2],
-        'Late Night After-Party' => ['min' => 1, 'max' => 4],
-        'Food & Beverage Package' => ['min' => 1, 'max' => 6],
-        'Photography Pass' => ['min' => 1, 'max' => 1]
-    ];
-
-    // Usage rates for different ticket types (percentage of tickets typically used)
-    private const USAGE_RATES = [
-        'General Admission' => ['min' => 70, 'max' => 95], //how many are tickets are used/ticket_type (predefined ranges)
-        'Single Day Pass' => ['min' => 80, 'max' => 100],
-        'Weekend Pass' => ['min' => 65, 'max' => 90],
-        'VIP Experience' => ['min' => 85, 'max' => 100],
-        'Platinum VIP' => ['min' => 90, 'max' => 100],
-        'Student Discount' => ['min' => 75, 'max' => 95],
-        'Early Bird Special' => ['min' => 70, 'max' => 90],
-        'Group Package (4+)' => ['min' => 60, 'max' => 85],
-        'Family Pass (2 Adults + 2 Kids)' => ['min' => 80, 'max' => 100],
-        'Senior Citizen (65+)' => ['min' => 70, 'max' => 90],
-        'Press/Media Pass' => ['min' => 95, 'max' => 100],
-        'Artist/Industry Pass' => ['min' => 90, 'max' => 100],
-        'Camping Add-On' => ['min' => 85, 'max' => 100],
-        'Glamping Experience' => ['min' => 90, 'max' => 100],
-        'Day Parking Pass' => ['min' => 80, 'max' => 100],
-        'Premium Parking' => ['min' => 85, 'max' => 100],
-        'Accessibility Pass' => ['min' => 85, 'max' => 100],
-        'Late Night After-Party' => ['min' => 60, 'max' => 85],
-        'Food & Beverage Package' => ['min' => 75, 'max' => 95],
-        'Photography Pass' => ['min' => 90, 'max' => 100]
-    ];
-
+    use TicketData;
     public function load(ObjectManager $manager): void
     {
         // Get all existing purchases and ticket types
@@ -219,7 +173,7 @@ class PurchasedTicketFixtures extends Fixture implements DependentFixtureInterfa
             case 'Artist/Industry Pass':
                 // Valid for extended period including setup days
                 $validStarting = clone $festivalStartDate;
-                $validStarting->modify('-2 days'); // Access to setup days
+                $validStarting->modify('-2 days'); // Access to set up days
                 $expiresAt = clone $festivalStartDate;
                 $expiresAt->modify('+' . mt_rand(4, 7) . ' days');
                 break;

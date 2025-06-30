@@ -51,7 +51,7 @@ class PopulateDataBase extends Command
         $executor = new ORMExecutor($this->managerRegistry->getManager(), $purger);
 
         foreach ($this->groups as $group) {
-            $io->section("Loading fixture group: $group");
+            $io->section("Loading fixtures group: $group");
 
             // Correct usage of getFixtures with 'group' option
             $fixtures = $this->fixturesLoader->getFixtures(['group' => $group]);

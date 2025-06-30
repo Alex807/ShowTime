@@ -3,55 +3,17 @@
 namespace App\DataFixtures\festivalRelated;
 
 use App\DataFixtures\traits\AppGeneralConstants;
+use App\DataFixtures\traits\hardcodedData\FestivalData;
 use App\Entity\Festival;
 use App\Entity\FestivalEdition;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class FestivalEditionFixtures extends Fixture implements DependentFixtureInterface
+class FestivalEditionFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    private const VENUE_TYPES = [
-        'Arena', 'Stadium', 'Park', 'Beach', 'Amphitheater', 'Convention Center',
-        'Outdoor Stage', 'Concert Hall', 'Festival Grounds', 'Open Air Theater',
-        'Sports Complex', 'Exhibition Center', 'Cultural Center', 'Music Hall',
-        'Fairgrounds', 'Racecourse', 'Castle Grounds', 'Historic Site'
-    ];
-
-    private const VENUE_NAMES = [
-        'Central Park', 'Olympic Stadium', 'Royal Arena', 'Sunset Beach', 'Grand Amphitheater',
-        'Metropolitan Center', 'Riverside Grounds', 'Golden Gate Park', 'Crystal Palace',
-        'Phoenix Stadium', 'Liberty Square', 'Heritage Gardens', 'Marina Bay',
-        'Thunder Valley', 'Moonlight Theater', 'Diamond Arena', 'Emerald Fields',
-        'Silver Lake', 'Copper Canyon', 'Iron Mountain'
-    ];
-
-    private const EDITION_DESCRIPTIONS = [
-        'An unforgettable musical journey featuring world-class artists and immersive experiences.',
-        'Three days of non-stop entertainment with multiple stages and diverse musical genres.',
-        'The ultimate celebration of music, art, and culture in a stunning outdoor setting.',
-        'A premium festival experience combining legendary performers with emerging talent.',
-        'An epic gathering of music lovers from around the world in a breathtaking venue.',
-        'The definitive music festival featuring cutting-edge production and stellar lineups.',
-        'A transformative experience blending music, technology, and artistic expression.',
-        'The most anticipated music event of the year with exclusive performances.',
-        'A multi-sensory festival experience featuring interactive art installations.',
-        'The perfect fusion of music, food, and culture in an iconic location.'
-    ];
-
-    private const POSSIBLE_STATUSES = [
-        'completed', 'upcoming', 'cancelled', 'postponed', 'sold_out'
-    ];
-
-    private const TERMS_CONDITIONS_TEMPLATES = [
-        'All attendees must be 18+ with valid ID. No outside food or beverages allowed. Festival reserves the right to search bags and refuse entry.',
-        'Tickets are non-refundable and non-transferable. Camping facilities available with separate ticket purchase. No glass containers permitted.',
-        'Entry subject to security screening. Professional cameras prohibited without media accreditation. Medical facilities available on-site.',
-        'Weather-dependent event - no refunds for weather-related cancellations. Designated smoking areas only. Lost wristbands cannot be replaced.',
-        'Age restrictions apply for certain areas. No re-entry policy in effect. Emergency evacuation procedures will be announced if necessary.'
-    ];
-
-    use AppGeneralConstants; //for using constants
+    use AppGeneralConstants, FestivalData; //for using constants
 
     public function load(ObjectManager $manager): void
     {
@@ -107,17 +69,8 @@ class FestivalEditionFixtures extends Fixture implements DependentFixtureInterfa
                 $endDate->modify("+{$festivalDuration} days");
                 $edition->setEndDate($endDate);
 
-                // Realistic capacity based on venue type
-                $capacityRanges = [
-                    'Arena' => [5000, 20000],
-                    'Stadium' => [30000, 80000],
-                    'Park' => [10000, 50000],
-                    'Beach' => [5000, 25000],
-                    'Amphitheater' => [3000, 15000]
-                ];
-
                 $defaultRange = [5000, 30000];
-                $range = $capacityRanges[$venueType] ?? $defaultRange;
+                $range = self::VENUE_CAPACITY_RANGES[$venueType] ?? $defaultRange;
                 $capacity = mt_rand($range[0], $range[1]);
                 $edition->setPeopleCapacity($capacity);
 
@@ -144,5 +97,10 @@ class FestivalEditionFixtures extends Fixture implements DependentFixtureInterfa
         return [
             FestivalFixtures::class,
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['festivalRelated'];
     }
 }

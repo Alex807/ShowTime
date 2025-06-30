@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\purchaseRelated;
 
+use App\DataFixtures\traits\hardcodedData\TicketData;
 use App\Entity\TicketUsage;
 use App\Entity\PurchasedTicket;
 use App\Entity\UserAccount;
@@ -13,97 +14,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class TicketUsageFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    // Entry gates for different festival areas
-    private const ENTRY_GATES = [
-        // Main entrance gates
-        'Main Gate A - North Entrance',
-        'Main Gate B - South Entrance',
-        'Main Gate C - East Entrance',
-        'Main Gate D - West Entrance',
-
-        // VIP and premium gates
-        'VIP Gate - Premium Access',
-        'Platinum Gate - Exclusive Entry',
-        'Artist Gate - Backstage Access',
-        'Industry Gate - Professional Entry',
-
-        // Special access gates
-        'Accessibility Gate - Special Needs',
-        'Family Gate - Family Area Access',
-        'Press Gate - Media Access',
-        'Staff Gate - Personnel Entry',
-
-        // Area-specific gates
-        'Camping Gate - Campground Access',
-        'Glamping Gate - Luxury Camping',
-        'Parking Gate A - General Parking',
-        'Parking Gate B - Premium Parking',
-
-        // Time-specific gates
-        'Late Night Gate - After Party Access',
-        'Early Access Gate - Setup Entry',
-        'Emergency Gate - Medical Access'
-    ];
-
-    // Gate assignments based on ticket types
-    private const GATE_ASSIGNMENTS = [
-        'General Admission' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance', 'Main Gate C - East Entrance', 'Main Gate D - West Entrance'],
-        'Single Day Pass' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance', 'Main Gate C - East Entrance'],
-        'Weekend Pass' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance', 'Main Gate C - East Entrance', 'Main Gate D - West Entrance'],
-        'VIP Experience' => ['VIP Gate - Premium Access', 'Main Gate A - North Entrance'],
-        'Platinum VIP' => ['Platinum Gate - Exclusive Entry', 'VIP Gate - Premium Access'],
-        'Student Discount' => ['Main Gate C - East Entrance', 'Main Gate D - West Entrance'],
-        'Early Bird Special' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance'],
-        'Group Package (4+)' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance'],
-        'Family Pass (2 Adults + 2 Kids)' => ['Family Gate - Family Area Access', 'Main Gate A - North Entrance'],
-        'Senior Citizen (65+)' => ['Accessibility Gate - Special Needs', 'Main Gate A - North Entrance'],
-        'Press/Media Pass' => ['Press Gate - Media Access', 'Industry Gate - Professional Entry'],
-        'Artist/Industry Pass' => ['Artist Gate - Backstage Access', 'Industry Gate - Professional Entry'],
-        'Camping Add-On' => ['Camping Gate - Campground Access'],
-        'Glamping Experience' => ['Glamping Gate - Luxury Camping'],
-        'Day Parking Pass' => ['Parking Gate A - General Parking'],
-        'Premium Parking' => ['Parking Gate B - Premium Parking'],
-        'Accessibility Pass' => ['Accessibility Gate - Special Needs'],
-        'Late Night After-Party' => ['Late Night Gate - After Party Access'],
-        'Food & Beverage Package' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance'],
-        'Photography Pass' => ['Press Gate - Media Access', 'Main Gate A - North Entrance']
-    ];
-
-    // Notes that might be added during ticket scanning
-    private const USAGE_NOTES = [
-        // Normal operations (80% of cases)
-        null, null, null, null, null, null, null, null, // 40% no notes
-        'Smooth entry', 'Quick scan', 'No issues', 'Standard entry', // 20% positive notes
-        'Verified ID', 'Group entry processed', 'Family checked in', 'VIP status confirmed', // 20% verification notes
-
-        // Special situations (15% of cases)
-        'Ticket reprinted due to damage',
-        'ID verification required',
-        'Group leader checked in others',
-        'Wheelchair access provided',
-        'Late arrival - after 10 PM',
-        'Early entry for setup',
-        'Medical assistance requested',
-        'Lost ticket - verified by purchase',
-
-        // Minor issues (5% of cases)
-        'Slight delay - system slow',
-        'Barcode required multiple scans',
-        'Customer had questions about venue',
-        'Directed to information booth',
-        'Parking directions provided'
-    ];
-
-    // Staff roles that can check tickets
-    private const AUTHORIZED_STAFF_ROLES = [
-        'Security Staff',
-        'Gate Attendant',
-        'Event Coordinator',
-        'Venue Manager',
-        'Customer Service',
-        'Supervisor'
-    ];
-
+    use TicketData;
     public function load(ObjectManager $manager): void
     {
         // Get all purchased tickets that have been used
@@ -144,8 +55,8 @@ class TicketUsageFixtures extends Fixture implements DependentFixtureInterface, 
 
             // Check if this role is authorized to check tickets
             if (in_array($roleName, self::AUTHORIZED_STAFF_ROLES)) {
-                $userId = $userRole->getUser()->getId();
-                $authorizedUserIds[$userId] = $userRole->getUser(); //retain the actual users that have necessary role
+                $userId = $userRole->getUserAccount()->getId();
+                $authorizedUserIds[$userId] = $userRole->getUserAccount(); //retain the actual users that have necessary role
             }
         }
 
@@ -165,6 +76,7 @@ class TicketUsageFixtures extends Fixture implements DependentFixtureInterface, 
         $usedAt = $this->generateUsageTime($purchasedTicket, $usageIndex);
 
         // Select random authorized staff member
+        shuffle($authorizedStaff); //for more diverse user_accounts picking
         $staffMember = $authorizedStaff[array_rand($authorizedStaff)];
 
         // Generate notes (most entries have no notes)

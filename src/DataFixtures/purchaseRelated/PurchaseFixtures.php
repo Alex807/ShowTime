@@ -3,6 +3,7 @@
 namespace App\DataFixtures\purchaseRelated;
 
 use App\DataFixtures\traits\AppGeneralConstants;
+use App\DataFixtures\traits\hardcodedData\PurchaseData;
 use App\Entity\Purchase;
 use App\Entity\FestivalEdition;
 use App\Entity\UserAccount;
@@ -12,27 +13,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class PurchaseFixtures extends Fixture implements FixtureGroupInterface
 {
-    // Purchase status distribution (realistic percentages)
-    private const PURCHASE_STATUSES = [
-        'completed' => 75,      // 75% completed purchases
-        'pending' => 8,         // 8% pending payments
-        'cancelled' => 10,      // 10% cancelled by user
-        'refunded' => 4,        // 4% refunded
-        'failed' => 3           // 3% failed payments
-    ];
 
-    // Price ranges for different purchase types
-    private const PRICE_RANGES = [
-        'single_ticket' => [50.00, 150.00],
-        'weekend_pass' => [120.00, 350.00],
-        'vip_package' => [300.00, 800.00],
-        'premium_experience' => [500.00, 1500.00],
-        'group_discount' => [200.00, 600.00],
-        'early_bird' => [40.00, 120.00],
-        'last_minute' => [80.00, 200.00]
-    ];
-
-    use AppGeneralConstants;
+    use AppGeneralConstants, PurchaseData;
     public function load(ObjectManager $manager): void
     {
         // Get all existing festival editions and user accounts

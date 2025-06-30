@@ -3,6 +3,7 @@
 namespace App\DataFixtures\artistAmenity;
 
 use App\DataFixtures\traits\AppGeneralConstants;
+use App\DataFixtures\traits\hardcodedData\AmenityData;
 use App\Entity\EditionAmenity;
 use App\Entity\FestivalEdition;
 use App\Entity\Amenity;
@@ -13,43 +14,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class EditionAmenityFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    // Amenities that are typically available throughout the entire festival
-    private const FULL_DURATION_AMENITIES = [
-        'VIP Lounge Access',
-        'Premium Camping Package',
-        'Golf Tournament',
-        'Private Bar Service',
-        'Medical Support Service',
-        'Security Detail',
-        'Festival Shuttle Service',
-        'Exclusive Merchandise Package'
-    ];
-
-    // Amenities that have specific time slots
-    private const SCHEDULED_AMENITIES = [
-        'VIP Backstage Access',
-        'Artist Green Room',
-        'Artist Meet & Greet',
-        'Exclusive Workshop Access',
-        'VIP Photo Shoot',
-        'Gourmet Catering Service',
-        'VIP Dining Experience',
-        'Artist Spa Package'
-    ];
-
-    // Amenities that are typically one-time services
-    private const ONE_TIME_AMENITIES = [
-        'Luxury Transportation',
-        'Helicopter Transfer',
-        'Private Jet Charter',
-        'Artist Hotel Suite',
-        'Professional Sound Equipment',
-        'Stage Lighting Package',
-        'Video Production Service',
-        'Technical Crew Support'
-    ];
-
-    use AppGeneralConstants; //for general constants over the app
+    use AppGeneralConstants, AmenityData; //for general constants over the app
     public function load(ObjectManager $manager): void
     {
         // Get all existing festival editions and amenities
@@ -128,6 +93,7 @@ class EditionAmenityFixtures extends Fixture implements DependentFixtureInterfac
                 $endTime = clone $serviceTime;
                 $endTime->modify('+' . mt_rand(1, 4) . ' hours');
                 $editionAmenity->setEndAt($endTime);
+
             } elseif (in_array($amenityName, ['Professional Sound Equipment', 'Stage Lighting Package', 'Video Production Service'])) {
                 // Technical services span the entire event
                 $editionAmenity->setEndAt($editionEnd);
