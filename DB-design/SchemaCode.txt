@@ -6,12 +6,11 @@ Table user_account {
   id integer [primary key]
   email varchar [unique, not null]
   password varchar [not null] 
-  password_token varchar 
-  
+  password_token varchar  
 }
 
 Table user_details {  
-  user_id integer [primary key] 
+  id integer [primary key] 
   first_name varchar [not null]
   last_name varchar [not null] 
   age integer [not null, note: 'CHECK (age >= 13 AND age <= 120)']
@@ -22,14 +21,15 @@ Table user_details {
 
 Table role {
   id integer [primary key]
-  name enum [not null, note: 'ADMIN, MANAGER, STAFF, VOLUNTEER, REGULAR']
+  name enum [not null, note: 'ADMIN, MANAGER, STAFF, VOLUNTEER, REGULAR'] 
 }
 
 Table user_role {
-  primary key (user_id, role_id)
+  id integer [primary key]   
 
   user_id integer [not null]
   role_id integer [not null]  
+  since_date timestamp [not null]
 }
 
 Table festival_edition { //retinem date ce difere anul pt festival
@@ -56,7 +56,7 @@ Table festival {
   country varchar [not null] 
   city varchar [not null] 
   street_name varchar [not null]
-  street_nr integer [not null]
+  street_no integer [not null]
   festival_contact varchar [not null]
   website varchar 
   logo_url varchar [not null] 
@@ -85,12 +85,12 @@ Table amenity {
 }
 
 Table edition_amenity {
+  id integer [primary key]
+
   edition_id integer [not null]
   amenity_id integer [not null] 
   start_at timestamp //can take place hours or days
   end_at timestamp
-
-  primary key (edition_id, amenity_id) // An amenity can appear only once in an edition
 }
 
 Table artist {
@@ -104,15 +104,14 @@ Table artist {
 }
 
 Table edition_artist {
+  id integer [primary key]
+
   edition_id integer [not null]
   artist_id integer [not null]
   is_headliner boolean [default: false]
   performance_date date [not null]
   start_time time [not null]
   end_time time [not null]
-
-  primary key (edition_id, artist_id, performance_date) 
-//maybe same artist has 2 concerts in same festival edition
 }
 
 Table ticket_type {
@@ -138,7 +137,9 @@ Table purchased_ticket { //to can have in one purchase different types of ticket
   ticket_type_id integer [not null] //to can go to find the price/ticket_type
   quantity integer [not null, default: 1]
   tickets_used integer [not null, default: 0] // track how many have been used
-
+  valid_from date [not null]  // When tickets become valid
+  expires_at date [not null]
+  
   //ensure tickets_used never exceeds quantity
   Note: 'CHECK (tickets_used <= quantity)'
   
@@ -152,7 +153,7 @@ Table ticket_usage {
   purchased_ticket_id integer [not null]
   used_at timestamp [not null]
   entry_gate varchar  [not null]// where was used
-  staff_user_id integer [not null] // which staff member scanned it
+  staff_member_id integer [not null] // which staff member scanned it
   notes text // any mentions
   
 }
@@ -160,43 +161,39 @@ Table ticket_usage {
 Table purchase_amenity { 
   id integer [primary key]
   purchase_id integer [not null]
-  edition_id integer [not null]
   amenity_id integer [not null]
+  edition_amenity_id integer [not null]
   quantity integer [not null, default: 1]
   
-  indexes {
-    (purchase_id, edition_id, amenity_id) [unique]
-  }
 }
 
 
 // Relationships
-Ref: user_account.id - user_details.user_id [delete: cascade]
+Ref: user_account.id - user_details.id [delete: cascade]
+Ref: user_account.id < purchase.user_id
 Ref: user_account.id < user_role.user_id [delete: cascade]
 Ref: role.id < user_role.role_id [delete: cascade]
 Ref: user_account.id < edition_review.user_id [delete: cascade]
+Ref: user_account.id < ticket_usage.staff_member_id // staff who scanned
 
 Ref: festival.id < festival_edition.festival_id 
-Ref: festival_edition.id < edition_review.edition_id [delete: cascade]
-Ref: festival_edition.id < edition_artist.edition_id [delete: cascade]
-Ref: artist.id < edition_artist.artist_id [delete: cascade]
 
 Ref: amenity.id < purchase_amenity.amenity_id
-
-Ref: festival_edition.id < edition_amenity.edition_id [delete: cascade]
 Ref: amenity.id < edition_amenity.amenity_id [delete: cascade]
 
+Ref: festival_edition.id < edition_amenity.edition_id [delete: cascade]
 Ref: festival_edition.id < ticket_type.edition_id
+Ref: festival_edition.id < purchase.edition_id 
+Ref: festival_edition.id < edition_review.edition_id [delete: cascade]
+Ref: festival_edition.id < edition_artist.edition_id [delete: cascade]
 
-Ref: user_account.id < purchase.user_id
-Ref: festival_edition.id < purchase.edition_id
+Ref: artist.id < edition_artist.artist_id [delete: cascade]
 
 Ref: purchase.id < purchased_ticket.purchase_id [delete: cascade]
+Ref: purchase.id < purchase_amenity.purchase_id [delete: cascade]
+
 Ref: ticket_type.id < purchased_ticket.ticket_type_id
 
 Ref: purchased_ticket.id < ticket_usage.purchased_ticket_id [delete: cascade]
-Ref: user_account.id < ticket_usage.staff_user_id // staff who scanned
 
-Ref: purchase.id < purchase_amenity.purchase_id [delete: cascade]
-Ref: edition_amenity.(edition_id, amenity_id) 
-      < purchase_amenity.(edition_id, amenity_id) [delete: cascade]
+Ref: edition_amenity.id < purchase_amenity.edition_amenity_id [delete: cascade]

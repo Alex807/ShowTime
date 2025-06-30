@@ -18,3 +18,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Alias the SymfonyFixturesLoader so it can be autowired (NEEDED FOR MY COMPOSED COMMAND)
+    Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader: '@doctrine.fixtures.loader'
