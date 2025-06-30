@@ -79,6 +79,10 @@ class EditionReviewFixtures extends Fixture implements DependentFixtureInterface
         }
 
         foreach ($festivalEditions as $edition) {
+            if ($edition->getStartDate() > new \DateTime()) {
+                continue; // skip future editions(People don’t review an event before it happens)
+            }
+
             // Each edition gets random number of reviews
             $numberOfReviews = mt_rand(0, self::MAX_REVIEWS_PER_EDITION);
             $usedUsers = []; // Track users who already reviewed this edition

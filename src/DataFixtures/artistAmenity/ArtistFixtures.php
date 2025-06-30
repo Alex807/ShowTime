@@ -13,7 +13,7 @@ class ArtistFixtures extends Fixture implements DependentFixtureInterface, Fixtu
     private const ARTISTS_DATA = [
         // Romanian Artists
         [
-            'real_name' => 'Andrei Tiberiu Maria',
+            'real_name' => 'Andrei Rata',
             'stage_name' => 'Andrew Rayel',
             'genre' => 'Trance',
             'instagram' => '@andrewrayel',

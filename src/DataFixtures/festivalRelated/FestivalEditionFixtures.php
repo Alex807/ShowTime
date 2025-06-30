@@ -64,10 +64,11 @@ class FestivalEditionFixtures extends Fixture implements DependentFixtureInterfa
             $numberOfEditions = mt_rand(1, self::MAX_FESTIVAL_EDITIONS);
 
             // Start from a random year between 2019-2021 to have realistic historical data
-            $startYear = mt_rand(2015, date('Y') - self::MAX_FESTIVAL_EDITIONS);
+            $currentYear = (int)date('Y');
+            $startYear = $currentYear + 1; //we start always from current year
 
             for ($editionIndex = 0; $editionIndex < $numberOfEditions; $editionIndex++) {
-                $year = $startYear + $editionIndex;
+                $year = $startYear - $editionIndex; //we go backwords
 
                 $edition = new FestivalEdition();
                 $edition->setFestival($festival);
