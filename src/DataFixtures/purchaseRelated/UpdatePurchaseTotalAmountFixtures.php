@@ -25,7 +25,7 @@ class UpdatePurchaseTotalAmountFixtures extends Fixture implements DependentFixt
             ]);
 
             foreach ($tickets as $ticket) {
-                $totalAmount += $ticket->getPrice();
+                $totalAmount += $ticket->getTicketType()->getPrice(); //we need to cross aux table to reach price data
             }
 
             // Sum amenity prices for this purchase
@@ -34,7 +34,7 @@ class UpdatePurchaseTotalAmountFixtures extends Fixture implements DependentFixt
             ]);
 
             foreach ($amenities as $amenity) {
-                $totalAmount += $amenity->getPrice();
+                $totalAmount += $amenity->getAmenity()->getPrice(); //same cause as ticket price
             }
 
             // Update the total amount on the purchase
