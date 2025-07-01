@@ -3,7 +3,7 @@
 {% block body %}
     <style>
         body {
-            background-color: #e6f0ff; /* Matches logo color tones */
+            background-color: #73AAECFF;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
@@ -18,7 +18,7 @@
         }
 
         .logo {
-            width: 200px;
+            width: 250px;
             height: auto;
         }
 
@@ -30,7 +30,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            background: #eff6ff;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -55,7 +55,7 @@
             padding: 8px 14px;
             margin-right: 10px;
             color: white;
-            border: none;
+            border: 1px;
             border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
@@ -121,10 +121,11 @@
             </tr>
             <tr class="action-buttons" id="actions-{{ festival.id }}">
                 <td colspan="3">
-                    <a href="{{ path('app_festival_details', {id: festival.id}) }}" class="btn details">Details</a>
-                    <form method="get" action="{{ path('app_delete_festival', {id: festival.id}) }}"
+                    <a href="{{ path('festival_show', {id: festival.id}) }}"
+                       class="btn details"> Details</a>
+                    <form method="post" action="{{ path('festival_delete', {id: festival.id}) }}"
                           style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this festival?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ festival.id) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_festival_' ~ festival.id) }}">
                         <button class="btn delete">Delete</button>
                     </form>
                 </td>
@@ -194,7 +195,7 @@
 {#            padding: 5px 10px;#}
 {#            text-decoration: none;#}
 {#            color: white;#}
-{#            background-color: #007BFF;#}
+{#            background-color: #3084d9;#}
 {#            border: none;#}
 {#            border-radius: 3px;#}
 {#            cursor: pointer;#}
@@ -249,7 +250,7 @@
 {#                <td>{{ festival.id }}</td>#}
 {#                <td>{{ festival.name }}</td>#}
 {#                <td>{{ festival.city }}</td>#}
-{#                <td class="action-buttons">  #}{# in <path> you give the name specified in controller, NOT the URL path #}
+{#                <td class="action-buttons">   in <path> you give the name specified in controller, NOT the URL path #}
 {#                    <a href="{{ path('app_festival_details', {id: festival.id}) }}" class="btn">Details</a>#}
 
 {#                    <form method="get" action="{{ path('app_showfestivals', {id: festival.id}) }}"#}

@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
 
-</body>
-</html>
+{% block body %}
+    <div class="header-container">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
+        <h1>Festival Details</h1>
+    </div>
+
+    <table>
+        <tr><th>ID</th><td>{{ festival.id }}</td></tr>
+        <tr><th>Name</th><td>{{ festival.name }}</td></tr>
+        <tr><th>Country</th><td>{{ festival.country }}</td></tr>
+        <tr><th>City</th><td>{{ festival.city }}</td></tr>
+        <tr><th>Street</th><td>{{ festival.streetName }}</td></tr>
+        <tr><th>Website</th><td>{{ festival.website }}</td></tr>
+        {# Add any other fields your entity has here #}
+    </table>
+
+    <a href="{{ path('festival_index') }}" class="btn">Back to list</a>
+{% endblock %}

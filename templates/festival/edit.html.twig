@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="header-container">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
+        <h1>Edit Festival</h1>
+    </div>
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.city) }}
+    {{ form_row(form.description) }}
+    <button class="btn details">Save</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('list_festivals') }}" class="btn delete">Cancel</a>
+{% endblock %}
