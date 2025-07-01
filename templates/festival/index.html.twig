@@ -134,6 +134,30 @@
         </tbody>
     </table>
 
+    <div class="pagination-container">
+        {% if festivals.pageCount > 1 %}
+            <div class="pagination-buttons">
+                {% if festivals.currentPageNumber > 1 %}
+                    <a class="btn pagination-btn" href="{{ path('festival_index', {'page': festivals.currentPageNumber - 1}) }}">
+                        Previous
+                    </a>
+                {% else %}
+                    <span class="btn pagination-btn disabled">Previous</span>
+                {% endif %}
+
+                <span class="page-number">Page {{ festivals.currentPageNumber }} of {{ festivals.pageCount }}</span>
+
+                {% if festivals.currentPageNumber < festivals.pageCount %}
+                    <a class="btn pagination-btn" href="{{ path('festival_index', {'page': festivals.currentPageNumber + 1}) }}">
+                        Next
+                    </a>
+                {% else %}
+                    <span class="btn pagination-btn disabled">Next</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
     <script>
         document.querySelectorAll('.festival-row').forEach(row => {
             row.addEventListener('click', () => {
@@ -145,6 +169,41 @@
             });
         });
     </script>
+
+    <style> {# code for navigate the pages buttons #}
+        .pagination-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .pagination-btn.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .page-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
 {% endblock %}
 
 
