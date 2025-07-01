@@ -6,10 +6,11 @@ use App\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserAccountRepository::class)]
 #[ORM\Table(name: "user_account")]
-class UserAccount implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
+class UserAccount implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,7 +40,7 @@ class UserAccount implements \Symfony\Component\Security\Core\User\PasswordAuthe
     /**
      * @var Collection<int, EditionReview>
      */
-    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'user')]
     private Collection $editionReviews;
 
     /**

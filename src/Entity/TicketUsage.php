@@ -25,11 +25,11 @@ class TicketUsage
     private ?string $notes = null;
 
     #[ORM\ManyToOne(inversedBy: 'ticketUsage')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?PurchasedTicket $purchased_ticket = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?UserAccount $staff_member = null;
 
     public function getId(): ?int
