@@ -55,7 +55,7 @@ final class FestivalController extends AbstractController
             return $this->redirectToRoute('festival_index');
         }
 
-        $entityManager->remove($festival); //this
+        $entityManager->remove($festival);
         $entityManager->flush();
 
         $this->addFlash('success', 'Festival deleted successfully!');

@@ -45,7 +45,7 @@ class UserAccount implements \Symfony\Component\Security\Core\User\PasswordAuthe
     /**
      * @var Collection<int, Purchase>
      */
-    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'user', orphanRemoval: false)]
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'user')]
     private Collection $purchases;
 
     public function __construct()

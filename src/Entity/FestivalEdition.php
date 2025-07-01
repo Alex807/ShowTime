@@ -57,19 +57,19 @@ class FestivalEdition
     /**
      * @var Collection<int, EditionArtist>
      */
-    #[ORM\OneToMany(targetEntity: EditionArtist::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionArtist::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
     private Collection $editionArtists;
 
     /**
      * @var Collection<int, EditionAmenity>
      */
-    #[ORM\OneToMany(targetEntity: EditionAmenity::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionAmenity::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
     private Collection $editionAmenities;
 
     /**
      * @var Collection<int, Purchase>
      */
-    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'edition',  cascade: ['remove'], orphanRemoval: true)]
     private Collection $purchases;
 
     public function __construct()
