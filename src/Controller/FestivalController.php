@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Festival;
+use App\Repository\FestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,18 +11,41 @@ use Symfony\Component\Routing\Attribute\Route;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfToken; //need them to double ask when you want to delete something
 
-final class ShowfestivalsController extends AbstractController
+#[Route('/festival')] // base route for this controller (entry point in controller)
+final class FestivalController extends AbstractController
 {
-    #[Route('/showfestivals', name: 'app_showfestivals', methods: ['GET'])]
+
+//    #[Route('/festival', name: 'list_festivals', methods: ['GET'])]
+//    public function index(
+//        FestivalRepository $festivalRepository,  //* Obiect prin care am acces la datele din baza de date
+//        PaginatorInterface $paginator,
+//        Request $request
+//
+//    ): Response {
+//        $query = $festivalRepository->createQueryBuilder('f')->getQuery();  //* query-ul pentru selectia datelor
+//
+//        // Paginate the query
+//        $festivals = $paginator->paginate(
+//            $query,
+//            $request->query->getInt('page', 1), // Mereu la apelul metodei, saltul se face la prima pagina
+//            $this->ItemsPerPage
+//        ); //* variabila in care salvez datele din baza de date, dar si paginarea cu maxim 10 inregistrari pe pagina
+//
+//        return $this->render('festival.html.twig', [
+//            'festivals' => $festivals,
+//        ]);
+//    }
+
+    #[Route('/festival', name: 'app_showfestivals', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $festivals = $entityManager->getRepository(Festival::class)->findAll();
        // dd($festivals); //break point (prints what contains the variable)
 
-        return $this->render('showfestivals/index.html.twig', [
-            'controller_name' => 'ShowfestivalsController',
+        return $this->render('festival/index.html.twig', [
+            'controller_name' => 'FestivalController',
             'festivals' => $festivals
         ]);
     }
@@ -78,7 +102,7 @@ final class ShowfestivalsController extends AbstractController
             throw $this->createNotFoundException("Festival not found.");
         }
 
-        return $this->render('showfestivals/festival_details.html.twig', [
+        return $this->render('festival/festival_details.html.twig', [
             'festival' => $festival,
         ]);
     }
