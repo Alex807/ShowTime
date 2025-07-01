@@ -26,14 +26,14 @@ class UserAccount implements \Symfony\Component\Security\Core\User\PasswordAuthe
     private ?string $passwordToken = null;
 
     // #[ORM\JoinColumn MARKS the owning side of the relation(account has details)
-    #[ORM\OneToOne(targetEntity: UserDetails::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: "user_details", referencedColumnName: "id", nullable: false)]
+    #[ORM\OneToOne(targetEntity: UserDetails::class)]
+    #[ORM\JoinColumn(name: "user_details", referencedColumnName: "id", nullable: true, onDelete: 'SET NULL')]
     private ?UserDetails $userDetails = null;
 
     /**
      * @var Collection<int, UserRole>
      */
-    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'userAccount', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'userAccount', cascade: ['remove'], orphanRemoval: true)]
     private Collection $userRoles;
 
     /**

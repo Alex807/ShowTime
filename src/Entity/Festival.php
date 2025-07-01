@@ -46,7 +46,7 @@ class Festival
     /**
      * @var Collection<int, FestivalEdition>
      */
-    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival')]
     private Collection $festivalEditions;
 
     public function __construct()

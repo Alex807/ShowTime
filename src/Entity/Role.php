@@ -23,7 +23,7 @@ class Role
     /**
      * @var Collection<int, UserRole>
      */
-    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'role')]
+    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'role', cascade: ['remove'], orphanRemoval: true)]
     private Collection $usersWithThisRole;
 
     public function __construct()

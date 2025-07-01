@@ -44,14 +44,14 @@ class FestivalEdition
     #[ORM\Column]
     private ?\DateTime $updated_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'festivalEditions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'festivalEditions')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Festival $festival = null;
 
     /**
      * @var Collection<int, EditionReview>
      */
-    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
     private Collection $editionReviews;
 
     /**
