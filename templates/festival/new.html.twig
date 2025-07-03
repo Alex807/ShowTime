@@ -76,12 +76,12 @@
     {% endfor %}
 
     <div class="form-container">
-{#        {{ form_start(form) }}#}
-        {{ form_row(form.name) }}
-        {{ form_row(form.city) }}
-        {{ form_row(form.street_name) }}
-{#        {{ form_end(form) }}#}
+        {{ form_start(form) }}
+{#        {{ form_row(form.name) }}#}
+{#        {{ form_row(form.city) }}#}
+{#        {{ form_row(form.street_name) }}#}
+        {{ form_widget(form) }}
         <button type="submit" class="btn">Create Festival</button>
-
+        {{ form_end(form) }}
     </div>
 {% endblock %}

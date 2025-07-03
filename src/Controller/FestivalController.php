@@ -10,10 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
-
 use Symfony\Component\HttpFoundation\Request;
 
-//#[Route('/festivals')] // base route for this controller (entry point in controller)
+#[Route('/festivals')]  //base route for entire controller
 final class FestivalController extends AbstractController
 {
     private const ITEMS_PER_PAGE = 10;
@@ -38,23 +37,16 @@ final class FestivalController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'festival_show', methods: ['GET'])]
-     public function show(Festival $festival): Response //we display only 1 festival
-    {
-        return $this->render('festival/details.html.twig', [
-            'festival' => $festival,
-        ]);
-    }
-
-    #[Route('festivals/new', name: 'festival_new', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
+    #[Route('/new', name: 'festival_new', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $festival = new Festival();
-
         $form = $this->createForm(FestivalTypeForm::class, $festival);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $festival->setUpdatedAt(new \DateTime()); // always auto-set fields with NOW value
+
             $entityManager->persist($festival);
             $entityManager->flush();
 
@@ -67,18 +59,39 @@ final class FestivalController extends AbstractController
         ]);
     }
 
-//    #[Route('/create', name: 'festival_create', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
-//    public function create(   FestivalRepository $festivalRepository,
-//                              PaginatorInterface $paginator,
-//                              Request $request ): Response
-//    {
-//        dd();
-//    }
-    #[Route('/{id}/delete', name: 'festival_delete', methods: ['POST'])] //name param is used for redirect cases only
-    public function delete(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response //DELETE method need to avoid bcs not all web browsers support it(use POST instead)
+    #[Route('/{id}', name: 'festival_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+     public function show(Festival $festival): Response //we display only 1 festival
     {
-        // dd($festival); //break point (prints what contains the variable)
+        return $this->render('festival/details.html.twig', [
+            'festival' => $festival,
+        ]);
+    }
 
+    #[Route('/{id}/edit', name: 'festival_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function edit(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(FestivalTypeForm::class, $festival);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Festival updated successfully!');
+            return $this->redirectToRoute('festival_edit', [], Response::HTTP_SEE_OTHER); //IMPORTANT for compatible with Turbo
+                // expects 303(redirecting code) if not receive triggers an error
+        }
+
+        return $this->render('festival/edit.html.twig', [
+            'form' => $form->createView(),
+            'festival' => $festival,
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'festival_delete', requirements: ['id' => '\d+'], methods: ['POST'])] //name param is used for redirect cases only
+    public function delete(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response //DELETE method need to avoid bcs not all web browsers support it(use POST instead)
+    { //we use for routes <requirements> to prevent conflicting routes misinterpreted by Symfony
+
+        // dd($festival); //break point (prints what contains the variable)
         if (!$this->isCsrfTokenValid('delete_festival_' . $festival->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token!');
             return $this->redirectToRoute('festival_index');
