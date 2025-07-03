@@ -26,10 +26,6 @@ class UserAccount implements PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $passwordToken = null;
 
-    // #[ORM\JoinColumn MARKS the owning side of the relation(account has details)
-    #[ORM\OneToOne(targetEntity: UserDetails::class)]
-    #[ORM\JoinColumn(name: "user_details", referencedColumnName: "id", nullable: true, onDelete: 'SET NULL')]
-    private ?UserDetails $userDetails = null;
 
     /**
      * @var Collection<int, UserRole>
@@ -93,18 +89,6 @@ class UserAccount implements PasswordAuthenticatedUserInterface
     public function setPasswordToken(?string $passwordToken): static
     {
         $this->passwordToken = $passwordToken;
-
-        return $this;
-    }
-
-    public function getUserDetails(): ?UserDetails
-    {
-        return $this->userDetails;
-    }
-
-    public function setUserDetails(?UserDetails $userDetails): static
-    {
-        $this->userDetails = $userDetails;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Festival;
+use App\Form\FestivalTypeForm;
 use App\Repository\FestivalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +13,7 @@ use Knp\Component\Pager\PaginatorInterface;
 
 use Symfony\Component\HttpFoundation\Request;
 
-#[Route('/festivals')] // base route for this controller (entry point in controller)
+//#[Route('/festivals')] // base route for this controller (entry point in controller)
 final class FestivalController extends AbstractController
 {
     private const ITEMS_PER_PAGE = 10;
@@ -45,6 +46,34 @@ final class FestivalController extends AbstractController
         ]);
     }
 
+    #[Route('festivals/new', name: 'festival_new', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $festival = new Festival();
+
+        $form = $this->createForm(FestivalTypeForm::class, $festival);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($festival);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Festival created successfully!');
+            return $this->redirectToRoute('festival_index');
+        }
+
+        return $this->render('festival/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+//    #[Route('/create', name: 'festival_create', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
+//    public function create(   FestivalRepository $festivalRepository,
+//                              PaginatorInterface $paginator,
+//                              Request $request ): Response
+//    {
+//        dd();
+//    }
     #[Route('/{id}/delete', name: 'festival_delete', methods: ['POST'])] //name param is used for redirect cases only
     public function delete(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response //DELETE method need to avoid bcs not all web browsers support it(use POST instead)
     {

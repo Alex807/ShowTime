@@ -10,7 +10,7 @@ Table user_account {
 }
 
 Table user_details {  
-  id integer [primary key] 
+  user_id integer [primary key, not null]
   first_name varchar [not null]
   last_name varchar [not null] 
   age integer [not null, note: 'CHECK (age >= 13 AND age <= 120)']
@@ -29,12 +29,12 @@ Table user_role {
 
   user_id integer [not null]
   role_id integer [not null]  
-  since_date timestamp [not null]
+  since_date timestamp 
 }
 
 Table festival_edition { //retinem date ce difere anul pt festival
   id integer [primary key]   
-  festival_id integer [not null] 
+  festival_id integer 
   year_happened integer [not null] 
   venue_name varchar [not null]
   description varchar [not null]
@@ -59,14 +59,14 @@ Table festival {
   street_no integer [not null]
   festival_contact varchar [not null]
   website varchar 
-  logo_url varchar [not null] 
+  logo_url varchar 
   updated_at timestamp [not null]
 }
 
 Table edition_review {
   id integer [primary key]
   edition_id integer [not null]
-  user_id integer [not null]
+  user_id integer 
   rating_stars integer [not null, note: 'CHECK (rating_stars >= 1 AND rating_stars <= 5)'] 
   comment text [not null]
   posted_at timestamp [not null] //update with now date
@@ -89,7 +89,7 @@ Table edition_amenity {
 
   edition_id integer [not null]
   amenity_id integer [not null] 
-  start_at timestamp //can take place hours or days
+  start_at timestamp 
   end_at timestamp
 }
 
@@ -124,7 +124,7 @@ Table ticket_type {
 
 Table purchase {
   id integer [primary key]
-  user_id integer [not null]  
+  user_id integer   
   edition_id integer [not null]
   status enum [not null, note: 'pending, confirmed, cancelled']
   total_amount decimal(10, 2) [not null] //ticket + sum(amenities)
@@ -137,7 +137,7 @@ Table purchased_ticket { //to can have in one purchase different types of ticket
   ticket_type_id integer [not null] //to can go to find the price/ticket_type
   quantity integer [not null, default: 1]
   tickets_used integer [not null, default: 0] // track how many have been used
-  valid_from date [not null]  // When tickets become valid
+  valid_starting date [not null]  // When tickets become valid
   expires_at date [not null]
   
   //ensure tickets_used never exceeds quantity
@@ -153,7 +153,7 @@ Table ticket_usage {
   purchased_ticket_id integer [not null]
   used_at timestamp [not null]
   entry_gate varchar  [not null]// where was used
-  staff_member_id integer [not null] // which staff member scanned it
+  staff_member_id integer  // which staff member scanned it
   notes text // any mentions
   
 }
@@ -169,7 +169,7 @@ Table purchase_amenity {
 
 
 // Relationships
-Ref: user_account.id - user_details.id [delete: cascade]
+Ref: user_account.id - user_details.user_id [delete: cascade]
 Ref: user_account.id < purchase.user_id
 Ref: user_account.id < user_role.user_id [delete: cascade]
 Ref: role.id < user_role.role_id [delete: cascade]

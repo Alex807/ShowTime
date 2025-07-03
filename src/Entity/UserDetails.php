@@ -9,10 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: "user_details")]
 class UserDetails
 {
-    #[ORM\Id]
+    #[ORM\Id] //this makes the property PK
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\OneToOne(targetEntity: UserAccount::class)]
+    #[ORM\JoinColumn(referencedColumnName: "id", nullable: false, onDelete: 'CASCADE')] //this makes it to be FK
+    private ?UserAccount $user = null;
 
     #[ORM\Column(length: 100)]
     private ?string $firstName = null;
@@ -32,9 +33,15 @@ class UserDetails
     #[ORM\Column(nullable: true)]
     private ?\DateTime $updatedAt = null;
 
-    public function getId(): ?int
+    public function getUser(): ?UserAccount
     {
-        return $this->id;
+        return $this->user;
+    }
+
+    public function setUser(UserAccount $user): static
+    {
+        $this->user = $user;
+        return $this;
     }
 
     public function getFirstName(): ?string

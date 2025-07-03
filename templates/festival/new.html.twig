@@ -68,22 +68,20 @@
         <h1>Add New Festival</h1>
     </div>
 
-    {# Display success confirmation after saving #}
-    {% if successMessage is defined %}
+    {% for message in app.flashes('success') %}
         <div class="alert-success">
-            {{ successMessage }}
+            {{ message }}
         </div>
-
-        {# Include your own image for confirmation (e.g. checkmark or confetti) #}
         <img src="{{ asset('images/ConfirmIcon.png') }}" alt="Confirmation" class="confirmation-image">
-    {% endif %}
+    {% endfor %}
 
     <div class="form-container">
-        {{ form_start(form) }}
+{#        {{ form_start(form) }}#}
         {{ form_row(form.name) }}
         {{ form_row(form.city) }}
-        {{ form_row(form.description) }}
-        <button class="btn">Create Festival</button>
-        {{ form_end(form) }}
+        {{ form_row(form.street_name) }}
+{#        {{ form_end(form) }}#}
+        <button type="submit" class="btn">Create Festival</button>
+
     </div>
 {% endblock %}
