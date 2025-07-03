@@ -76,6 +76,26 @@
             background-color: #dc3545;
         }
 
+        .create-button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .btn-create {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-create:hover {
+            background-color: #ff7000;
+        }
+
         .alert {
             margin-bottom: 20px;
             padding: 10px;
@@ -95,6 +115,18 @@
         .festival-container {
             margin-bottom: 30px;
         }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
     </style>
 
     <div class="header-container">
@@ -109,6 +141,12 @@
             </div>
         {% endfor %}
     {% endfor %}
+
+    <div class="create-button-container">
+        <a href="{{ path('festival_new') }}" class="btn-create">
+            <i class="fas fa-plus"></i> Create New Festival
+        </a>
+    </div>
 
     <table id="festivalTable">
         <thead>
@@ -167,16 +205,90 @@
         {% endif %}
     </div>
 
-    <script>
-        document.querySelectorAll('.festival-row').forEach(row => {
-            row.addEventListener('click', () => {
-                const id = row.getAttribute('data-id');
-                const actionsRow = document.getElementById('actions-' + id);
-                const isVisible = actionsRow.style.display === 'table-row';
-                document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
-                actionsRow.style.display = isVisible ? 'none' : 'table-row';
+    <script> {# duble-click to go to start-end page #}
+        function initializeFestivalRows() {
+            document.querySelectorAll('.festival-row').forEach(row => {
+                // Remove existing event listeners
+                row.removeEventListener('click', handleRowClick);
+                // Add new event listener
+                row.addEventListener('click', handleRowClick);
             });
-        });
+        }
+
+        function handleRowClick(event) {
+            const row = event.currentTarget;
+            const id = row.getAttribute('data-id');
+            const actionsRow = document.getElementById('actions-' + id);
+            const isVisible = actionsRow.style.display === 'table-row';
+
+            // Hide all action rows first
+            document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
+
+            // Show/hide the clicked row's actions
+            actionsRow.style.display = isVisible ? 'none' : 'table-row';
+        }
+
+        // Initialize pagination double-click functionality
+        function initializePagination() {
+            const clicks = {};
+            const doubleClickThreshold = 300; // Reduced threshold for faster detection
+
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    if (this.classList.contains('disabled')) return;
+
+                    const currentTime = new Date().getTime();
+                    const lastClick = clicks[this.textContent] || 0;
+                    clicks[this.textContent] = currentTime;
+
+                    if (currentTime - lastClick < doubleClickThreshold) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Instant navigation using Turbo.visit with 'replace'
+                        if (this.textContent.includes('Previous')) {
+                            Turbo.visit("{{ path('festival_index', {'page': 1}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        } else if (this.textContent.includes('Next')) {
+                            Turbo.visit("{{ path('festival_index', {'page': festivals.pageCount}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        }
+                    }
+                });
+            })
+        }
+
+        // Handle popup messages
+        function initializePopupMessages() {
+            const popupMessages = document.querySelectorAll('.popup-message');
+            popupMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.animation = 'slideOutRight 0.5s ease forwards';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        }
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializeFestivalRows();
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
     </script>
 
     <style> {# code for navigate the pages buttons #}
@@ -200,6 +312,23 @@
             text-decoration: none;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .pagination-btn:not(.disabled):hover::after {
+            content: "Double-click to jump to end";
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            white-space: nowrap;
+            color: #666;
+            background-color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .pagination-btn.disabled {

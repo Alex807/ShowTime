@@ -121,8 +121,11 @@
     </div>
 
     <turbo-frame id="festival_edit_{{ festival.id }}" target="_top">
-        {# add <target>  in this property to tells Turbo to replace the entire page instead of just the frame#}
-        {{ form_start(form) }}
+        {{ form_start(form, {
+            'attr': {
+                'data-turbo-frame': '_top'
+            }
+        }) }}
 
             {% for field in form %}
                 <div class="form-group">
@@ -144,5 +147,14 @@
 
         {{ form_end(form, {'render_rest': false}) }}
     </turbo-frame> {# need this tag to ensure Turbo for our browser is happening a redirecting #}
+
+    <script>
+        // Handle form submission
+        document.addEventListener('turbo:submit-end', function(event) {
+            if (event.detail.success) {
+                Turbo.visit('{{ path('festival_index') }}', { action: 'replace' });
+            }
+        });
+    </script>
 
 {% endblock %}

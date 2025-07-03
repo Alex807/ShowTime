@@ -24,6 +24,12 @@ final class FestivalController extends AbstractController
         PaginatorInterface $paginator,
         Request $request ): Response
     {
+        // Add cache headers for better performance(only used for pagination buttons jumps)
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
         $query = $festivalRepository->createQueryBuilder('f')->getQuery();
 
         $festivals = $paginator->paginate(
@@ -34,7 +40,7 @@ final class FestivalController extends AbstractController
 
         return $this->render('festival/index.html.twig', [
             'festivals' => $festivals,
-        ]);
+        ], $response);
     }
 
     #[Route('/new', name: 'festival_new', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
@@ -74,16 +80,25 @@ final class FestivalController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $festival->setUpdatedAt(new \DateTime()); // always auto-set fields with NOW value
             $entityManager->flush();
 
             $this->addFlash('success', 'Festival updated successfully!');
-            return $this->redirectToRoute('festival_edit', [], Response::HTTP_SEE_OTHER); //IMPORTANT for compatible with Turbo
-                // expects 303(redirecting code) if not receive triggers an error
+
+
+            // Handle Turbo request differently
+            if ($request->headers->get('Turbo-Frame')) {
+                $response = new Response(null, Response::HTTP_SEE_OTHER);
+                $response->headers->set('Location', $this->generateUrl('festival_index'));
+                return $response;
+            }
+
+            return $this->redirectToRoute('festival_index');
         }
 
         return $this->render('festival/edit.html.twig', [
-            'form' => $form->createView(),
             'festival' => $festival,
+            'form' => $form->createView(),
         ]);
     }
 
