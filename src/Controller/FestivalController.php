@@ -70,6 +70,7 @@ final class FestivalController extends AbstractController
     {
         return $this->render('festival/details.html.twig', [
             'festival' => $festival,
+            'editions' => $festival->getFestivalEditions()
         ]);
     }
 

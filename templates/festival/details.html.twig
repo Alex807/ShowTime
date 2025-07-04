@@ -77,6 +77,12 @@
             {% endif %}
         </p>
         <p><span class="label">Last Updated:</span> {{ festival.updatedAt|date('Y-m-d H:i') }}</p>
+        <div class="festival-actions">
+            <a href="{{ path('festival_edition_list', {'festival': festival.id}) }}" class="btn-editions">
+                View Editions
+            </a>
+            {# Other actions #}
+        </div>
     </div>
 
     <a href="{{ path('festival_index') }}" class="btn details">Back</a>

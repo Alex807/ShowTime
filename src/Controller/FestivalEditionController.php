@@ -13,8 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/festival/edition')]
 class FestivalEditionController extends AbstractController
 {
-    #[Route('/{festivalId}/list', name: 'festival_edition_list', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function list(Festival $festival): Response
+    #[Route('/{festival}/list', name: 'festival_edition_list', requirements: ['festival' => '\d+'], methods: ['GET', 'POST'])]    public function list(Festival $festival): Response
     {
         return $this->render('festival_edition/list.html.twig', [
             'festival' => $festival,
@@ -22,7 +21,7 @@ class FestivalEditionController extends AbstractController
         ]);
     }
 
-    #[Route('/{festivalId}/new', name: 'festival_edition_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route('/{festival}/new', name: 'festival_edition_new', requirements: ['festival' => '\d+'], methods: ['GET', 'POST'])]
     public function new(Request $request, Festival $festival, EntityManagerInterface $entityManager): Response
     {
         $edition = new FestivalEdition();
@@ -36,7 +35,7 @@ class FestivalEditionController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Edition created successfully!');
-            return $this->redirectToRoute('festival_edition_list', ['festivalId' => $festival->getId()]);
+            return $this->redirectToRoute('festival_edition_list', ['festival' => $festival->getId()]);
         }
 
         return $this->render('festival_edition/new.html.twig', [
@@ -55,7 +54,7 @@ class FestivalEditionController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Edition updated successfully!');
-            return $this->redirectToRoute('festival_edition_list', ['festivalId' => $edition->getFestival()->getId()]);
+            return $this->redirectToRoute('festival_edition_list', ['festival' => $edition->getFestival()->getId()]);
         }
 
         return $this->render('festival_edition/edit.html.twig', [
@@ -74,9 +73,9 @@ class FestivalEditionController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Edition deleted successfully!');
-            return $this->redirectToRoute('festival_edition_list', ['festivalId' => $festivalId]);
+            return $this->redirectToRoute('festival_edition_list', ['festival' => $festivalId]);
         }
 
-        return $this->redirectToRoute('festival_edition_list', ['festivalId' => $edition->getFestival()->getId()]);
+        return $this->redirectToRoute('festival_edition_list', ['festival' => $edition->getFestival()->getId()]);
     }
 }
