@@ -18,7 +18,7 @@ final class FestivalController extends AbstractController
     private const ITEMS_PER_PAGE = 10;
     private const STARTING_PAGE_NO = 1;
 
-    #[Route('', name: 'festival_index', methods: ['GET'])] //restful paths = routes respect some naming rules
+    #[Route('/', name: 'festival_index', methods: ['GET'])] //restful paths = routes respect some naming rules
     public function index(
         FestivalRepository $festivalRepository,
         PaginatorInterface $paginator,

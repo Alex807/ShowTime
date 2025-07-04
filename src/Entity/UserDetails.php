@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 class UserDetails
 {
     #[ORM\Id] //this makes the property PK
-    #[ORM\GeneratedValue]
     #[ORM\OneToOne(targetEntity: UserAccount::class)]
     #[ORM\JoinColumn(referencedColumnName: "id", nullable: false, onDelete: 'CASCADE')] //this makes it to be FK
     private ?UserAccount $user = null;
@@ -32,6 +31,12 @@ class UserDetails
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $updatedAt = null;
+
+    public function __construct() //set them in backend, user not need to insert data here
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
 
     public function getUser(): ?UserAccount
     {

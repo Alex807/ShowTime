@@ -127,23 +127,23 @@
             }
         }) }}
 
-            {% for field in form %}
-                <div class="form-group">
-                    <label
-                        {% if field.vars.required %}class="required-label"{% endif %}
-                        for="{{ field.vars.id }}"
-                    >
-                        {{ field.vars.label|default(field.vars.name|capitalize) }}
-                    </label>
-                    {{ form_widget(field) }}
-                    {{ form_errors(field) }}
-                </div>
-            {% endfor %}
-
-            <div style="display: flex; justify-content: space-between; gap: 10px;">
-                <button type="submit" class="btn-submit">Save Changes</button>
-                <a href="{{ path('festival_index') }}" class="btn-cancel">Cancel</a>
+        {% for field in form %}
+            <div class="form-group">
+                <label
+                    {% if field.vars.required %}class="required-label"{% endif %}
+                    for="{{ field.vars.id }}"
+                >
+                    {{ field.vars.label|default(field.vars.name|capitalize) }}
+                </label>
+                {{ form_widget(field) }}
+                {{ form_errors(field) }}
             </div>
+        {% endfor %}
+
+        <div style="display: flex; justify-content: space-between; gap: 10px;">
+            <button type="submit" class="btn-submit">Save Changes</button>
+            <a href="{{ path('festival_index') }}" class="btn-cancel">Cancel</a>
+        </div>
 
         {{ form_end(form, {'render_rest': false}) }}
     </turbo-frame> {# need this tag to ensure Turbo for our browser is happening a redirecting #}
