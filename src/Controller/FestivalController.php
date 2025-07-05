@@ -68,7 +68,7 @@ final class FestivalController extends AbstractController
     #[Route('/{id}', name: 'festival_show', requirements: ['id' => '\d+'], methods: ['GET'])]
      public function show(Festival $festival): Response //we display only 1 festival
     {
-        return $this->render('festival/details.html.twig', [
+        return $this->render('festival_edition/list.html.twig', [ //faci direct redirect la pagina editionController
             'festival' => $festival,
             'editions' => $festival->getFestivalEditions()
         ]);
