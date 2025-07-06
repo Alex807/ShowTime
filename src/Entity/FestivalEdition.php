@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\FestivalEditionRepository;
+use App\Validator\SqlInjectionSafe;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalEditionRepository::class)]
 #[ORM\Table(name: "festival_edition")]
@@ -18,15 +20,31 @@ class FestivalEdition
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $year_happened = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+        message: "Venue name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $venue_name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 500)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+        message: "Description contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $description = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Choice(
+        choices: ['completed', 'upcoming', 'cancelled', 'postponed', 'sold_out'],
+        message: 'Please choose a valid status: completed, upcoming, cancelled, postponed, sold_out.'
+    )]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -36,9 +54,16 @@ class FestivalEdition
     private ?\DateTime $end_date = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $people_capacity = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 2000)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+        message: "Terms & conditions contain invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $terms_conditions = null;
 
     #[ORM\Column]

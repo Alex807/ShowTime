@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\SqlInjectionSafe;
+use Symfony\Component\Validator\Constraints\Range;
 
 class FestivalEditionTypeForm extends AbstractType
 {
@@ -20,24 +23,49 @@ class FestivalEditionTypeForm extends AbstractType
             ->add('year_happened', IntegerType::class, [
                 'label' => 'Year',
                 'required' => true,
+                'constraints' => [
+                    new Assert\Positive(['message' => 'Year must be a positive integer']),
+                ],
             ])
             ->add('venue_name', TextType::class, [
                 'label' => 'Venue Name',
                 'required' => true,
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+                        'message' => 'Venue name contains invalid characters.',
+                    ]),
+                    new SqlInjectionSafe(),
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'required' => true,
+                'constraints' => [
+                    new Assert\Length(['max' => 500, 'maxMessage' => 'Description cannot exceed {{ limit }} characters']),
+                    new Assert\Regex([
+                        'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+                        'message' => 'Description contains invalid characters.',
+                    ]),
+                    new SqlInjectionSafe(),
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Status',
                 'required' => true,
                 'choices' => [
-                    'Planned' => 'planned',
-                    'Ongoing' => 'ongoing',
                     'Completed' => 'completed',
-                    'Cancelled' => 'cancelled'
-                ]
+                    'Upcoming' => 'upcoming',
+                    'Cancelled' => 'cancelled',
+                    'Postponed' => 'postponed',
+                    'Sold Out' => 'sold_out',
+                ],
+                'constraints' => [
+                    new Assert\Choice([
+                        'choices' => ['completed', 'upcoming', 'cancelled', 'postponed', 'sold_out'],
+                        'message' => 'Please choose a valid status: completed, upcoming, cancelled, postponed, sold_out.',
+                    ]),
+                ],
             ])
             ->add('start_date', DateType::class, [
                 'label' => 'Start Date',
@@ -52,12 +80,24 @@ class FestivalEditionTypeForm extends AbstractType
             ->add('people_capacity', IntegerType::class, [
                 'label' => 'People Capacity',
                 'required' => true,
+                'constraints' => [
+                    new Assert\Positive(['message' => 'Capacity must be a positive integer']),
+                ],
+                new Range(['min' => 10000, 'max' => PHP_INT_MAX, 'notInRangeMessage' => 'Capacity must be at least {{ min }} people.']),
+
             ])
             ->add('terms_conditions', TextareaType::class, [
                 'label' => 'Terms and Conditions',
                 'required' => true,
-            ])
-        ;
+                'constraints' => [
+                    new Assert\Length(['max' => 2000, 'maxMessage' => 'Description cannot exceed {{ limit }} characters']),
+                    new Assert\Regex([
+                        'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+                        'message' => 'Description contains invalid characters.',
+                    ]),
+                    new SqlInjectionSafe(),
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

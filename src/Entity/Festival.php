@@ -20,7 +20,6 @@ class Festival
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
     #[Assert\Regex(
         pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
         message: "Name contains invalid characters."
