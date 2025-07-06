@@ -20,35 +20,51 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager
     ): Response {
+        $session = $request->getSession();
+        $session->start();
         $user = new UserAccount();
         $form = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Hash the password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    // Hash the password
+                    $user->setPassword(
+                        $userPasswordHasher->hashPassword(
+                            $user,
+                            $form->get('plainPassword')->getData()
+                        )
+                    );
 
-            // Create UserDetails entity
-            $userDetails = new UserDetails();
-            $userDetails->setFirstName($form->get('firstName')->getData());
-            $userDetails->setLastName($form->get('lastName')->getData());
-            $userDetails->setAge($form->get('age')->getData());
-            $userDetails->setPhoneNo($form->get('phoneNo')->getData());
+                    // Create UserDetails entity
+                    $userDetails = new UserDetails();
+                    $userDetails->setFirstName($form->get('firstName')->getData());
+                    $userDetails->setLastName($form->get('lastName')->getData());
+                    $userDetails->setAge($form->get('age')->getData());
+                    $userDetails->setPhoneNo($form->get('phoneNo')->getData());
 
-            // Link the entities
-            $userDetails->setUser($user);
+                    // Link the entities
+                    $userDetails->setUser($user);
 
-            // Persist both entities
-            $entityManager->persist($user);
-            $entityManager->persist($userDetails);
-            $entityManager->flush();
+                    // Persist both entities
+                    $entityManager->persist($user);
+                    $entityManager->persist($userDetails);
+                    $entityManager->flush();
 
-            return $this->redirectToRoute('app_home_page'); // path WHERE you want to redirect
+                    return $this->redirectToRoute('app_home_page');
+                } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+                    $this->addFlash('error', 'The email address is already used.');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'An unexpected error occurred. Please try again.');
+                }
+            } else {
+                // Handle form validation errors
+                $errors = $form->getErrors(true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
         }
 
         return $this->render('registration/register.html.twig', [

@@ -62,7 +62,7 @@ class RegistrationForm extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter your age']),
-                    new Range(['min' => 13, 'max' => 120, 'notInRangeMessage' => 'Age must be between {{ min }} and {{ max }}']),
+                    new Range(['min' => 13, 'max' => 120, 'notInRangeMessage' => 'Age must be at least {{ min }} years.']),
                 ],
             ])
             ->add('phoneNo', TelType::class, [
