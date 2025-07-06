@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UserDetailsRepository;
+use App\Validator\SqlInjectionSafe;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: UserDetailsRepository::class)]
 #[ORM\Table(name: "user_details")]
@@ -15,15 +18,36 @@ class UserDetails
     private ?UserAccount $user = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "FirstName is required.")]
+    #[Assert\Length(max: 255)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "FirstName contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "LastName is required.")]
+    #[Assert\Length(max: 255)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "LastName contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $lastName = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $age = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    #[Assert\Regex(
+        pattern: '\d+',
+        message: "Phone can contains only digits."
+    )]
+    #[SqlInjectionSafe]
     private ?string $phoneNo = null;
 
     #[ORM\Column(nullable: true)]
