@@ -2,58 +2,193 @@
 
 {% block title %}Register{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for readability over video */
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            color: #333;
+            z-index: 1;
+            position: relative;
+        }
+
+        .register-card h1 {
+            font-size: 2.2rem; /* Reduced size */
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #ff7f50;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            font-size: 1rem; /* Reduced size */
+            font-weight: 600;
+            color: #008080;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #ff4040;
+        }
+
+        .form-control {
+            font-size: 0.95rem; /* Reduced size */
+            padding: 10px 12px;
+            border: 2px solid #dcdcdc;
+            border-radius: 6px;
+            background-color: #fafafa;
+            color: #333;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ff7f50;
+            outline: none;
+            box-shadow: 0 0 6px rgba(255, 127, 80, 0.3);
+        }
+
+        .no-arrows::-webkit-outer-spin-button,
+        .no-arrows::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .no-arrows {
+            -moz-appearance: textfield;
+        }
+
+        .form-check-label {
+            font-size: 0.95rem; /* Reduced size */
+            color: #333;
+            margin-left: 0.5rem;
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, #ff7f50, #008080);
+            border: none;
+            padding: 10px 20px; /* Reduced padding */
+            font-size: 1.1rem; /* Reduced size */
+            border-radius: 20px;
+            color: white;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #008080, #ff7f50);
+        }
+
+        @media (max-width: 768px) {
+            .register-card {
+                padding: 15px;
+            }
+            .register-card h1 {
+                font-size: 1.8rem;
+            }
+            .form-group label {
+                font-size: 0.9rem;
+            }
+            .form-control {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1>Register</h1>
+    <div class="register-container">
+        <video autoplay muted loop class="video-background">
+            <source src="{{ asset('videos/background-register.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="register-card">
+            <h1>Register</h1>
 
-                {{ form_start(registrationForm) }}
-                <div class="mb-3">
-                    {{ form_label(registrationForm.email) }}
-                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(registrationForm.email) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(registrationForm.plainPassword) }}
-                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(registrationForm.plainPassword) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(registrationForm.firstName) }}
-                    {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(registrationForm.firstName) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(registrationForm.lastName) }}
-                    {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(registrationForm.lastName) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(registrationForm.age) }}
-                    {{ form_widget(registrationForm.age, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(registrationForm.age) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(registrationForm.phoneNo) }}
-                    {{ form_widget(registrationForm.phoneNo, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(registrationForm.phoneNo) }}
-                </div>
-
-                <div class="mb-3 form-check">
-                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                    {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                    {{ form_errors(registrationForm.agreeTerms) }}
-                </div>
-
-                <button type="submit" class="btn btn-primary">Register</button>
-                {{ form_end(registrationForm) }}
+            {{ form_start(registrationForm) }}
+            <div class="form-group">
+                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'required-field'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(registrationForm.email) }}
             </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword, null, {'label_attr': {'class': 'required-field'}}) }}
+                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.firstName, null, {'label_attr': {'class': 'required-field'}}) }}
+                {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(registrationForm.firstName) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.lastName, null, {'label_attr': {'class': 'required-field'}}) }}
+                {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                {{ form_errors(registrationForm.lastName) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.age, null, {'label_attr': {'class': 'required-field'}}) }}
+                {{ form_widget(registrationForm.age, {'attr': {'class': 'form-control no-arrows', 'required': 'required'}}) }}
+                {{ form_errors(registrationForm.age) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.phoneNo) }}
+                {{ form_widget(registrationForm.phoneNo, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.phoneNo) }}
+            </div>
+
+            <div class="form-group form-check">
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input', 'required': 'required'}}) }}
+                {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn btn-custom">Join the Festival Journey</button>
+            {{ form_end(registrationForm) }}
         </div>
     </div>
+
+    {% include 'common_twig_code/footer.html.twig' %}
 {% endblock %}
