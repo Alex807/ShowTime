@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\UserAccount;
+use App\Validator\SqlInjectionSafe;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -28,9 +29,10 @@ class RegistrationForm extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter an email']),
                     new Email(['message' => 'Please enter a valid email address']),
+                    new SqlInjectionSafe(),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
+            ->add('Password', PasswordType::class, [
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
@@ -40,6 +42,7 @@ class RegistrationForm extends AbstractType
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
                         'max' => 4096,
                     ]),
+                    new SqlInjectionSafe(),
                 ],
             ])
 
@@ -49,6 +52,7 @@ class RegistrationForm extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter your first name']),
                     new Length(['max' => 100]),
+                    new SqlInjectionSafe(),
                 ],
             ])
             ->add('lastName', TextType::class, [
@@ -56,6 +60,7 @@ class RegistrationForm extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter your last name']),
                     new Length(['max' => 100]),
+                    new SqlInjectionSafe(),
                 ],
             ])
             ->add('age', IntegerType::class, [
@@ -70,6 +75,7 @@ class RegistrationForm extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Length(['max' => 20]),
+                    new SqlInjectionSafe(),
                 ],
             ])
 

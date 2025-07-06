@@ -18,7 +18,7 @@ class UserDetails
     private ?UserAccount $user = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank(message: "FirstName is required.")]
+    #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
     #[Assert\Regex(
         pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
@@ -28,7 +28,7 @@ class UserDetails
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank(message: "LastName is required.")]
+    #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
     #[Assert\Regex(
         pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
