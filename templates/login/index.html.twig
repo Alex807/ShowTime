@@ -1,28 +1,111 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello LoginController!{% endblock %}
+{% block title %}Login{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .overlay {
+            position: relative;
+            min-height: 100vh;
+            background: rgba(0, 128, 128, 0.7); /* Teal overlay */
+            color: #ffffff;
+        }
+        .content-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            min-height: 100vh;
+            padding: 50px;
+        }
+        .login-form {
+            background: rgba(255, 127, 80, 0.9); /* Coral background */
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .login-form h2 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-form .form-group label {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .login-form .form-control {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+        }
+        .login-form .btn-primary {
+            background-color: #ff6347; /* Tomato red */
+            border-color: #ff6347;
+            width: 100%;
+        }
+        .login-form .btn-primary:hover {
+            background-color: #ff4500; /* OrangeRed */
+            border-color: #ff4500;
+        }
+        .login-link {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        .login-link:hover {
+            color: #ff4500;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <video autoplay muted loop class="video-background">
+        <source src="{{ asset('videos/background-video.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-        {% if error %}
-            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+    <div class="overlay">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="content-right">
+                    <div class="login-form">
+                        <h2>Login</h2>
 
-        <form action="{{ path('app_login') }}" method="post">
-            <label for="username">Email:</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}" required>
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="_password" required>
+                        <form method="post" action="{{ path('app_login') }}" data-turbo="false">
+                            <div class="form-group mb-3">
+                                <label for="username">Email</label>
+                                <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="_password" required>
+                            </div>
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
 
-            {# If you want to control the URL the user is redirected to on success #}
-        <input type="hidden" name="festivals_index" value="/account">
+                        <p class="mt-3 text-center">
+                            Don't have an account? <a href="{{ path('app_register') }}" class="login-link">Sign up here</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <button type="submit">login</button>
-        </form>
+    {% include 'common_twig_code/footer.html.twig' %}
 
 {% endblock %}
