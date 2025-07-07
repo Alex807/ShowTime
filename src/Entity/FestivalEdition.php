@@ -33,11 +33,6 @@ class FestivalEdition
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\Length(max: 500)]
-    #[Assert\Regex(
-        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
-        message: "Description contains invalid characters."
-    )]
-    #[SqlInjectionSafe]
     private ?string $description = null;
 
     #[ORM\Column(length: 30)]
@@ -59,11 +54,6 @@ class FestivalEdition
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\Length(max: 2000)]
-    #[Assert\Regex(
-        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
-        message: "Terms & conditions contain invalid characters."
-    )]
-    #[SqlInjectionSafe]
     private ?string $terms_conditions = null;
 
     #[ORM\Column]

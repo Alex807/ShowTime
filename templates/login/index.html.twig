@@ -149,14 +149,14 @@
         <div class="login-card">
             <h1>SoundScape Hub</h1>
 
-            {% for message in app.flashes('error') %}
+            {% for message in app.flashes('error') %} {# consume the flash messages from other pages #}
                 <div class="alert">{{ message }}</div>
             {% endfor %}
 
             <form method="post" action="{{ path('app_login') }}" data-turbo="false">
                 <div class="form-group">
                     <label for="username" class="required-field">Email</label>
-                    <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required>
+                    <input type="email" class="form-control" id="username" name="_username" value="{{ last_username }}" required>
                     {% if error %}
                         <span class="error-message">{% if error.messageKey == 'Username could not be found.' %}Email not found in database. Please check your email or sign up.{% endif %}</span>
                     {% endif %}

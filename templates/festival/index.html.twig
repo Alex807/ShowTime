@@ -136,13 +136,12 @@
         <h1>Festivals List</h1>
     </div>
 
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message }}
-            </div>
-        {% endfor %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
     {% endfor %}
+
 
     <div class="create-button-container">
         <a href="{{ path('festival_new') }}" class="btn-create">

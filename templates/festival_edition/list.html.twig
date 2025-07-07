@@ -219,6 +219,13 @@
                 </a>
             </div>
 
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
             {% if editions|length > 0 %}
                 <div class="editions-grid">
                     {% for edition in editions %}

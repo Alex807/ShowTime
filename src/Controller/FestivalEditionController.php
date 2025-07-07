@@ -47,17 +47,26 @@ class FestivalEditionController extends AbstractController
     #[Route('/{id}/edit', name: 'festival_edition_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, FestivalEdition $edition, EntityManagerInterface $entityManager): Response
     {
+
         $form = $this->createForm(FestivalEditionTypeForm::class, $edition);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Edition updated successfully!');
-            return $this->redirectToRoute('festival_edition_list', ['festival' => $edition->getFestival()->getId()]);
+                $this->addFlash('success', 'Edition updated successfully!');
+                return $this->redirectToRoute('festival_edition_list', ['festival' => $edition->getFestival()->getId()]);
+
+            } else {
+                // Handle constraints from FORM
+                $errors = $form->getErrors(true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
         }
-
-        return $this->render('festival_edition/edit.html.twig', [
+        return $this->render('festival_edition/edit.html.twig', [ //create the missing twig files for edition
             'edition' => $edition,
             'festival' => $edition->getFestival(),
             'form' => $form->createView()

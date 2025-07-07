@@ -35,7 +35,6 @@ class FestivalEditionTypeForm extends AbstractType
                         'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
                         'message' => 'Venue name contains invalid characters.',
                     ]),
-                    new SqlInjectionSafe(),
                 ],
             ])
             ->add('description', TextareaType::class, [
@@ -43,11 +42,6 @@ class FestivalEditionTypeForm extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\Length(['max' => 500, 'maxMessage' => 'Description cannot exceed {{ limit }} characters']),
-                    new Assert\Regex([
-                        'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
-                        'message' => 'Description contains invalid characters.',
-                    ]),
-                    new SqlInjectionSafe(),
                 ],
             ])
             ->add('status', ChoiceType::class, [
@@ -81,9 +75,8 @@ class FestivalEditionTypeForm extends AbstractType
                 'label' => 'People Capacity',
                 'required' => true,
                 'constraints' => [
-                    new Assert\Positive(['message' => 'Capacity must be a positive integer']),
+                    new Range(['min' => 10000, 'max' => PHP_INT_MAX, 'notInRangeMessage' => 'Capacity must be at least {{ min }} people.']),
                 ],
-                new Range(['min' => 10000, 'max' => PHP_INT_MAX, 'notInRangeMessage' => 'Capacity must be at least {{ min }} people.']),
 
             ])
             ->add('terms_conditions', TextareaType::class, [
@@ -91,11 +84,6 @@ class FestivalEditionTypeForm extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\Length(['max' => 2000, 'maxMessage' => 'Description cannot exceed {{ limit }} characters']),
-                    new Assert\Regex([
-                        'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
-                        'message' => 'Description contains invalid characters.',
-                    ]),
-                    new SqlInjectionSafe(),
                 ],
             ]);
     }
