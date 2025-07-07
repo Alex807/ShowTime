@@ -11,7 +11,7 @@
 //    #[Route('/tickets', name: 'app_ticket_type')]
 //    public function index(): Response
 //    {
-//        return $this->render('ticket_type/index.html.twig', [
+//        return $this->render('ticket_type/profile.html.twig', [
 //            'controller_name' => 'TicketTypeController',
 //        ]);
 //    }

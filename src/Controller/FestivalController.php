@@ -38,7 +38,7 @@ final class FestivalController extends AbstractController
             self::ITEMS_PER_PAGE
         );
 
-        return $this->render('festival/index.html.twig', [
+        return $this->render('festival/profile.html.twig', [
             'festivals' => $festivals,
         ], $response);
     }

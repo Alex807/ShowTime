@@ -19,7 +19,7 @@
         {% block hero_section %}{% endblock %}
         {% block body %}{% endblock %}
 
-        <script> {# essential to reload all scripts from twig files when redirect back to index.html.twig file #}
+        <script> {# essential to reload all scripts from twig files when redirect back to profile.html.twig file #}
             document.addEventListener("turbo:load", function() {
                 // Reinitialize any JavaScript that needs to run on page load
                 if (typeof initializeFestivalRows === 'function') {

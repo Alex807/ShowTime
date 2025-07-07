@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SoundScape Hub - Profile{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% set user = app.user %}
+        {% set userDetails = user.userDetails %}
+        {% set roles = user.userRoles|map(role => role.role.name)|join(', ') %}
+
+        <!-- Role-based Icon -->
+        <div class="position-absolute top-0 start-0 p-3">
+            <img src="{{ (roles contains 'ROLE_ADMIN') ? '/images/admin-icon.png' : '/images/user-icon.png' }}" alt="{{ roles contains 'ROLE_ADMIN' ? 'Admin' : 'User' }} Icon" class="img-fluid" style="width: 50px; height: 50px;">
+        </div>
+
+        <!-- Profile Card -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">User Profile</h2>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">{{ userDetails.firstName }} {{ userDetails.lastName }}</h4>
+                <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                <p class="card-text"><strong>Age:</strong> {{ userDetails.age }}</p>
+                <p class="card-text"><strong>Phone:</strong> {{ userDetails.phoneNo ?? 'Not provided' }}</p>
+                <p class="card-text"><strong>Roles:</strong> {{ roles }}</p>
+                <p class="card-text"><strong>Created At:</strong> {{ userDetails.createdAt|date('Y-m-d H:i:s') }}</p>
+                <p class="card-text"><strong>Updated At:</strong> {{ userDetails.updatedAt|date('Y-m-d H:i:s') }}</p>
+
+                <!-- Role-Specific Interface -->
+                {% if 'ROLE_ADMIN' in roles %}
+                    <div class="mt-4">
+                        <h5 class="text-primary">Admin Interface</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Admin Actions:</strong> Manage users, review editions</li>
+                            {% for review in user.editionReviews %}
+                                <li class="list-group-item">Review ID: {{ review.id }}, Date: {{ review.createdAt|date('Y-m-d') }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="mt-4">
+                        <h5 class="text-success">User Interface</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>User Actions:</strong> View purchases, submit reviews</li>
+                            {% for purchase in user.purchases %}
+                                <li class="list-group-item">Purchase ID: {{ purchase.id }}, Date: {{ purchase.createdAt|date('Y-m-d') }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

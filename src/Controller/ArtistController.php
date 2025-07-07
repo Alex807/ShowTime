@@ -31,7 +31,7 @@ final class ArtistController extends AbstractController
             self::ITEMS_PER_PAGE
         );
 
-        return $this->render('artist/index.html.twig', [
+        return $this->render('artist/profile.html.twig', [
             'artists' => $artists,
         ]);
     }

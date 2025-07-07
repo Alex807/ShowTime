@@ -6,11 +6,13 @@ use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\SqlInjectionSafe;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ORM\Table(name: "festival")]
+#[UniqueEntity(fields: ['name'], message: 'This festival already exists.')]
 class Festival
 {
     #[ORM\Id]

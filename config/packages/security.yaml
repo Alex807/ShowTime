@@ -19,7 +19,7 @@ security:
                 # "app_login" is the name of the route created previously
                 login_path: app_login
                 check_path: app_login
-                default_target_path: /soundscape
+                default_target_path: /user/profile
                 enable_csrf: true
             logout:
                 path: app_logout
@@ -32,26 +32,22 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+        ROLE_USER: PUBLIC_ACCESS
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # Allow everyone to access the home page
+        # Allow everyone to access the home page + public routes
+        - { path: ^/public, roles: PUBLIC_ACCESS }
         - { path: ^/soundscape, roles: PUBLIC_ACCESS }
 
-        # Allow everyone to access login and signup pages
-        - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/register, roles: PUBLIC_ACCESS }
+        # App interface changed based on role for this roles
+        - { path: ^/user, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
-        # Allow everyone to access logout (needed for the logout process)
-        - { path: ^/logout, roles: PUBLIC_ACCESS }
 
-        # Require authentication for ALL other routes(minim role is USER)
-        - { path: ^/, roles: ROLE_USER }
-
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-#    role_hierarchy:
-#        ROLE_ADMIN: ROLE_USER
 
 when@test:
     security:

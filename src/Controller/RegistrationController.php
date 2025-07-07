@@ -19,7 +19,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[Route('/public/register', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
@@ -71,7 +71,7 @@ class RegistrationController extends AbstractController
                 $loginEvent = new InteractiveLoginEvent($request, $token); //to make auto-login after registration
                 $eventDispatcher->dispatch($loginEvent, SecurityEvents::INTERACTIVE_LOGIN);
 
-                return $this->redirectToRoute('app_home_page');
+                return $this->redirectToRoute('user_profile');
             } else {
                 // Handle constraints from FORM
                 $errors = $form->getErrors(true);

@@ -31,16 +31,13 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
     #[SqlInjectionSafe]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $role = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     #[SqlInjectionSafe]
     private ?string $passwordToken = null;
 
-
-    /**
-     * @var Collection<int, UserRole>
-     */
-    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'userAccount', cascade: ['remove'], orphanRemoval: true)]
-    private Collection $userRoles;
 
     /**
      * @var Collection<int, EditionReview>
@@ -56,7 +53,6 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->userRoles = new ArrayCollection();
         $this->editionReviews = new ArrayCollection();
         $this->purchases = new ArrayCollection();
     }
@@ -102,34 +98,10 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserRole>
-     */
-    public function getUserRoles(): Collection
+    public function getRoles(): array
     {
-        return $this->userRoles;
-    }
-
-    public function addUserRole(UserRole $userRole): static
-    {
-        if (!$this->userRoles->contains($userRole)) {
-            $this->userRoles->add($userRole);
-            $userRole->setUserAccount($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserRole(UserRole $userRole): static
-    {
-        if ($this->userRoles->removeElement($userRole)) {
-            // set the owning side to null (unless already changed)
-            if ($userRole->getUserAccount() === $this) {
-                $userRole->setUserAccount(null);
-            }
-        }
-
-        return $this;
+        $role = $this->role ?? 'ROLE_USER';
+        return [$role];
     }
 
     /**
@@ -190,15 +162,6 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
-
-    public function getRoles(): array
-    {
-        $roles = $this->getUserRoles()->toArray();
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
     }
 
     public function getUserIdentifier(): string

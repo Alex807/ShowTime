@@ -19,19 +19,6 @@ Table user_details {
   updated_at timestamp
 }
 
-Table role {
-  id integer [primary key]
-  name enum [not null, note: 'ADMIN, MANAGER, STAFF, VOLUNTEER, REGULAR'] 
-}
-
-Table user_role {
-  id integer [primary key]   
-
-  user_id integer [not null]
-  role_id integer [not null]  
-  since_date timestamp 
-}
-
 Table festival_edition { //retinem date ce difere anul pt festival
   id integer [primary key]   
   festival_id integer 
@@ -171,8 +158,6 @@ Table purchase_amenity {
 // Relationships
 Ref: user_account.id - user_details.user_id [delete: cascade]
 Ref: user_account.id < purchase.user_id
-Ref: user_account.id < user_role.user_id [delete: cascade]
-Ref: role.id < user_role.role_id [delete: cascade]
 Ref: user_account.id < edition_review.user_id [delete: cascade]
 Ref: user_account.id < ticket_usage.staff_member_id // staff who scanned
 
