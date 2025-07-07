@@ -130,7 +130,9 @@
     </style>
 
     <div class="header-container" data-turbo-permanent="false">
-        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="custom_logo">
+        <a href="{{ path('app_home_page') }}">
+            <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="custom_logo">
+        </a>
         <h1>Festivals List</h1>
     </div>
 
@@ -279,11 +281,6 @@
         function initialize() {
             // Use requestAnimationFrame for better performance
             requestAnimationFrame(() => {
-                // Clean up homepage-specific elements
-                const heroSection = document.querySelector('.hero-section');
-                if (heroSection) {
-                    heroSection.remove();
-                }
                 initializeFestivalRows();
                 initializePagination();
                 initializePopupMessages();
