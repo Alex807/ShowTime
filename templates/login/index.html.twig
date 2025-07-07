@@ -5,107 +5,178 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
         .video-background {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1;
+            z-index: 0;
         }
-        .overlay {
-            position: relative;
-            min-height: 100vh;
-            background: rgba(0, 128, 128, 0.7); /* Teal overlay */
-            color: #ffffff;
-        }
-        .content-right {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            min-height: 100vh;
-            padding: 50px;
-        }
-        .login-form {
-            background: rgba(255, 127, 80, 0.9); /* Coral background */
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 400px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        .login-form h2 {
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .login-form .form-group label {
-            color: #ffffff;
-            font-weight: bold;
-        }
-        .login-form .form-control {
-            background: rgba(255, 255, 255, 0.8);
-            border: none;
-            border-radius: 5px;
-        }
-        .login-form .btn-primary {
-            background-color: #ff6347; /* Tomato red */
-            border-color: #ff6347;
+
+        .login-card {
+            position: absolute;
+            top: 18%; /* Moved down from 5% to 15% */
+            left: 5%;
+            background: rgba(255, 255, 255, 0.7); /* Slightly transparent white */
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
             width: 100%;
+            color: #333;
+            z-index: 1;
+            min-height: 200px; /* Increased height from default */
         }
-        .login-form .btn-primary:hover {
-            background-color: #ff4500; /* OrangeRed */
-            border-color: #ff4500;
+
+        .login-card h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #3b66b5; /* Fleshier peach color for title */
         }
-        .login-link {
-            color: #ffffff;
-            text-decoration: underline;
+
+        .form-group {
+            margin-bottom: 1.5rem;
         }
-        .login-link:hover {
-            color: #ff4500;
+
+        .form-group label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1472d1; /* Fleshier peach color for field names */
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #ff4040;
+        }
+
+        .form-control {
+            font-size: 0.95rem;
+            padding: 10px 12px;
+            border: 2px solid #dcdcdc;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ff9999; /* Fleshier peach color for focus */
+            outline: none;
+            box-shadow: 0 0 6px rgba(255, 153, 153, 0.3);
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, #2C6EA3FF, #EDA466FF); /* Fleshier peach gradient for button */
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            color: white;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #EDA466FF, #2C6EA3FF);
+        }
+
+        .error-message {
+            color: #ff4040;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            text-align: left;
+            display: block;
+        }
+
+        .alert {
+            background-color: #ffebee;
+            color: #ff4040;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                top: 2%;
+                left: 2%;
+                padding: 15px;
+                max-width: 350px;
+            }
+            .login-card h1 {
+                font-size: 1.8rem;
+            }
+            .form-group label {
+                font-size: 0.9rem;
+            }
+            .form-control {
+                font-size: 0.85rem;
+            }
+            .error-message {
+                font-size: 0.85rem;
+            }
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <video autoplay muted loop class="video-background">
-        <source src="{{ asset('videos/background-video.mp4') }}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div class="login-container">
+        <video autoplay muted loop class="video-background">
+            <source src="{{ asset('videos/background-login.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="login-card">
+            <h1>SoundScape Hub</h1>
 
-    <div class="overlay">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="content-right">
-                    <div class="login-form">
-                        <h2>Login</h2>
+            {% for message in app.flashes('error') %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
 
-                        {% for message in app.flashes('error') %}
-                            <div class="alert alert-danger">{{ message }}</div>
-                        {% endfor %}
-
-                        <form method="post" action="{{ path('app_login') }}" data-turbo="false">
-                            <div class="form-group mb-3">
-                                <label for="username">Email</label>
-                                <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="_password" required>
-                            </div>
-                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </form>
-
-                        <p class="mt-3 text-center">
-                            Don't have an account? <a href="{{ path('app_register') }}" class="login-link">Sign up here</a>.
-                        </p>
-                    </div>
+            <form method="post" action="{{ path('app_login') }}" data-turbo="false">
+                <div class="form-group">
+                    <label for="username" class="required-field">Email</label>
+                    <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required>
+                    {% if error %}
+                        <span class="error-message">{% if error.messageKey == 'Username could not be found.' %}Email not found in database. Please check your email or sign up.{% endif %}</span>
+                    {% endif %}
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="password" class="required-field">Password</label>
+                    <input type="password" class="form-control" id="password" name="_password" required>
+                    {% if error %}
+                        <span class="error-message">{% if error.messageKey == 'Invalid credentials.' %}Password incorrect. Please try again.{% endif %}</span>
+                    {% endif %}
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <button type="submit" class="btn btn-custom">Unlock the Experience</button>
+            </form>
+
+            <p class="mt-3 text-center">
+                New to our platform? <a href="{{ path('app_register') }}" style="color: #6a5acd; text-decoration: underline;">Sign-up</a>.
+            </p>
         </div>
     </div>
 
     {% include 'common_twig_code/footer.html.twig' %}
-
 {% endblock %}

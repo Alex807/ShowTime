@@ -26,23 +26,24 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
+        /* Video Background */
         .hero-section {
             height: 100vh;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(45deg, #ff6b35, #f7931e, #c5299b, #1a1a1a);
-            background-size: 400% 400%;
-            animation: gradientShift 8s ease infinite;
             overflow: hidden;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
         }
 
         /* Floating particles */
@@ -79,24 +80,48 @@
             50% { transform: translateY(-10vh) rotate(180deg); }
         }
 
-        /* Hero Content */
+        /* Logo */
+        .logo {
+            width: 230px;
+            height: 230px;
+            animation: logoFloatSpin 4s ease-in-out infinite;
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            z-index: 10;
+        }
+
+        @keyframes logoFloatSpin {
+            0%, 20% { transform: translateY(0px) rotateY(0deg); } /* Float start, no rotation */
+            50% { transform: translateY(-10px) rotateY(0deg); } /* Float up, no rotation */
+            46% { transform: translateY(-10px) rotateY(-360deg); } /* Fast Y-axis spin while up */
+            60%, 80% { transform: translateY(0px) rotateY(-360deg); } /* Pause at end of spin */
+        }
+
+        /* Menu Button and Content */
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 11;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
         .hero-content {
             text-align: center;
             z-index: 10;
             position: relative;
             color: white;
+            display: none;
         }
 
-        .logo {
-            width: 300px;
-            height: 300px;
-            animation: logoFloat 3s ease-in-out infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        .hero-content.active {
+            display: block;
         }
 
         .hero-title {
@@ -138,14 +163,14 @@
         }
 
         .btn-login {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(45deg, #ff6b35, #ff9f43, #c5299b);
             color: white;
         }
 
         .btn-signup {
-            background: transparent;
+            background: linear-gradient(45deg, #c5299b, #ff9f43, #667eea);
             color: white;
-            border: 2px solid white;
+            border: none;
         }
 
         .btn-festival:hover {
@@ -154,12 +179,38 @@
         }
 
         .btn-login:hover {
-            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            background: linear-gradient(45deg, #ff9f43, #c5299b, #764ba2);
         }
 
         .btn-signup:hover {
-            background: white;
-            color: var(--dark-color);
+            background: linear-gradient(45deg, #764ba2, #ff9f43, #ff6b35);
+        }
+
+        .btn-mute {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            z-index: 11;
+            background: linear-gradient(45deg, #ff6b35, #ff9f43, #c5299b);
+            color: white;
+            display: none;
+        }
+
+        .btn-mute.active {
+            display: block;
+        }
+
+        .btn-mute:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 253, 253, 0.3);
+            background: linear-gradient(45deg, #ff9f43, #c5299b, #764ba2);
         }
 
         /* Carousel Section */
@@ -236,8 +287,8 @@
             }
 
             .logo {
-                width: 150px;
-                height: 150px;
+                width: 100px;
+                height: 100px;
             }
 
             .cta-buttons {
@@ -251,6 +302,11 @@
 {% block body %}
     <!-- Hero Section -->
     <section class="hero-section">
+        <video class="video-background" autoplay loop muted playsinline>
+            <source src="{{ asset('videos/homepage.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
         <div class="particles">
             <div class="particle"></div>
             <div class="particle"></div>
@@ -263,15 +319,22 @@
             <div class="particle"></div>
         </div>
 
-        <div class="hero-content">
-            <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
 
+        <button class="menu-button" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <button id="muteToggle" class="btn btn-mute">
+            <i class="fas fa-volume-up me-2"></i>Mute
+        </button>
+
+        <div class="hero-content" id="heroContent">
             <h1 class="hero-title">SOUNDSCAPE HUB</h1>
-            <p class="hero-subtitle">Your Gateway to Unforgettable Festival Management Experiences</p>
+            <p class="hero-subtitle">Your Ticket to Unforgettable Festival Management Experiences</p>
 
             {% if app.user %}
                 <div class="cta-buttons">
-                    <p class="text-white mb-3">Welcome back, {{ app.user.userIdentifier }}!</p>
+                    <h3 class="text-white mb-3">Welcome back, {{ app.user.userIdentifier }}!</h3>
                     <a href="{{ path('festival_index') }}" class="btn btn-festival btn-login">
                         <i class="fas fa-calendar-alt me-2"></i>Browse Festivals
                     </a>
@@ -345,7 +408,7 @@
     <section class="features-section">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-4 mb-3">Why Choose Festival Hub?</h2>
+                <h2 class="display-4 mb-3">Why Choose SoundScape Hub?</h2>
                 <p class="lead">Your complete festival experience platform</p>
             </div>
 
@@ -453,5 +516,77 @@
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(el);
         });
+
+        // Menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const heroContent = document.getElementById('heroContent');
+            const muteToggle = document.getElementById('muteToggle');
+
+            menuToggle.addEventListener('click', function() {
+                heroContent.classList.toggle('active');
+                muteToggle.classList.toggle('active');
+            });
+        });
+
+        // Persist video playback with sound and handle mute/unmute
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.video-background');
+            const muteToggle = document.getElementById('muteToggle');
+            const playbackState = sessionStorage.getItem('videoPlayback') || 'play';
+            const muteState = sessionStorage.getItem('videoMuted') === 'true';
+
+            video.muted = muteState;
+            if (playbackState === 'play') {
+                video.play().catch(function(error) {
+                    console.log('Autoplay with sound was prevented:', error);
+                    // Fallback: enable sound on first user interaction
+                    document.addEventListener('click', function enableAudio() {
+                        video.muted = muteState;
+                        video.play();
+                        sessionStorage.setItem('videoPlayback', 'play');
+                        document.removeEventListener('click', enableAudio);
+                    }, { once: true });
+                });
+            }
+
+            // Update mute button state
+            if (muteToggle) {
+                muteToggle.innerHTML = video.muted
+                    ? '<i class="fas fa-volume-mute me-2"></i>Unmute'
+                    : '<i class="fas fa-volume-up me-2"></i>Mute';
+
+                muteToggle.addEventListener('click', function() {
+                    video.muted = !video.muted;
+                    sessionStorage.setItem('videoMuted', video.muted);
+                    muteToggle.innerHTML = video.muted
+                        ? '<i class="fas fa-volume-mute me-2"></i>Unmute'
+                        : '<i class="fas fa-volume-up me-2"></i>Mute';
+                });
+            }
+
+            // Store playback state on navigation
+            window.addEventListener('beforeunload', function() {
+                if (!video.paused) {
+                    sessionStorage.setItem('videoPlayback', 'play');
+                }
+                sessionStorage.setItem('videoMuted', video.muted);
+            });
+        });
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializeFestivalRows();
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
     </script>
 {% endblock %}

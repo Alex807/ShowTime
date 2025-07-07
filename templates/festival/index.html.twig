@@ -17,9 +17,9 @@
             margin-bottom: 30px;
         }
 
-        .logo {
-            width: 250px;
-            height: auto;
+        .custom_logo {
+            width: 250px !important;
+            height: auto !important;
         }
 
         h1 {
@@ -129,8 +129,8 @@
 
     </style>
 
-    <div class="header-container">
-        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
+    <div class="header-container" data-turbo-permanent="false">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="custom_logo">
         <h1>Festivals List</h1>
     </div>
 
@@ -279,6 +279,11 @@
         function initialize() {
             // Use requestAnimationFrame for better performance
             requestAnimationFrame(() => {
+                // Clean up homepage-specific elements
+                const heroSection = document.querySelector('.hero-section');
+                if (heroSection) {
+                    heroSection.remove();
+                }
                 initializeFestivalRows();
                 initializePagination();
                 initializePopupMessages();
