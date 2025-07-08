@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
 #[ORM\Table(name: "artist")]
+#[ORM\UniqueConstraint(name: "unique_artist", columns: ["real_name", "stage_name"])]
 class Artist
 {
     #[ORM\Id]
@@ -52,7 +53,7 @@ class Artist
     #[SqlInjectionSafe]
     private ?string $instagram_account = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Url]
     #[SqlInjectionSafe]
     private ?string $image_url = null;

@@ -104,10 +104,10 @@ final class FestivalController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'festival_delete', requirements: ['id' => '\d+'], methods: ['POST'])] //name param is used for redirect cases only
-    public function delete(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response //DELETE method need to avoid bcs not all web browsers support it(use POST instead)
+    public function delete(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response //DELETE method need to avoid bcs
+                                        // not all web browsers support it(use POST instead)
     { //we use for routes <requirements> to prevent conflicting routes misinterpreted by Symfony
 
-        // dd($festival); //break point (prints what contains the variable)
         if (!$this->isCsrfTokenValid('delete_festival_' . $festival->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token!');
             return $this->redirectToRoute('festival_index');

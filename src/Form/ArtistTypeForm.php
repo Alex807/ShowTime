@@ -15,7 +15,7 @@ class ArtistTypeForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('real_name', TextType::class, [
+            ->add('realName', TextType::class, [
                 'label' => 'Real Name',
                 'required' => true,
                 'constraints' => [
@@ -27,7 +27,7 @@ class ArtistTypeForm extends AbstractType
                     new SqlInjectionSafe(),
                 ],
             ])
-            ->add('stage_name', TextType::class, [
+            ->add('stageName', TextType::class, [
                 'label' => 'Stage Name',
                 'required' => true,
                 'constraints' => [
@@ -39,7 +39,7 @@ class ArtistTypeForm extends AbstractType
                     new SqlInjectionSafe(),
                 ],
             ])
-            ->add('music_genre', TextType::class, [
+            ->add('musicGenre', TextType::class, [
                 'label' => 'Music Genre',
                 'required' => true,
                 'constraints' => [
@@ -51,7 +51,7 @@ class ArtistTypeForm extends AbstractType
                     new SqlInjectionSafe(),
                 ],
             ])
-            ->add('instagram_account', TextType::class, [
+            ->add('instagramAccount', TextType::class, [
                 'label' => 'Instagram Account',
                 'required' => true,
                 'constraints' => [
@@ -67,15 +67,15 @@ class ArtistTypeForm extends AbstractType
                     new SqlInjectionSafe(),
                 ],
             ])
-            ->add('image_url', TextType::class, [
+            ->add('imageUrl', TextType::class, [
                 'label' => 'Image',
-                'required' => true,
+                'required' => false,
                 'constraints' => [
                     new Assert\Url(['message' => 'Please enter a valid URL to artist image ']),
                     new SqlInjectionSafe(),
                 ],
             ])
-            ->add('manager_email', TextType::class, [
+            ->add('managerEmail', TextType::class, [
                 'label' => 'Manager Email',
                 'required' => false,
                 'constraints' => [
