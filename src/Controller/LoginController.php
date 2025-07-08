@@ -18,10 +18,6 @@ final class LoginController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // Initialize flash messages
-        if ($error) {
-            $this->addFlash('error', 'Email/password are not valid !');
-        }
 
         return $this->render('login/index.html.twig', [
             'controller_name' => 'LoginController',

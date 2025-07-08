@@ -17,7 +17,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email.')]
 class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id]
+    private const LOWEST_ROLE_IN_HIERARCHY = ['ROLE_USER'];
+    private const ROLE_WHO_PROMOTES = 'ROLE_ADMIN';
+
+    #[ORM\Id] //this makes the property PK
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
@@ -101,16 +104,29 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER after registration
-        $roles[] = 'ROLE_USER';
-
+        if (empty($roles)) {
+            $this->setRoles(self::LOWEST_ROLE_IN_HIERARCHY);
+        }
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
+        $aux = $this->roles;
+        $this->roles = array_unique(array_merge($aux, $roles));
         return $this;
+    }
+
+    public function promoteUser(UserAccount $currentUser, string $role): void
+    {
+        if (!in_array(self::ROLE_WHO_PROMOTES, $currentUser->getRoles())) {
+            throw new \LogicException('Only ' . self::ROLE_WHO_PROMOTES . ' can promote a user.');
+        }
+
+        $roles = $this->getRoles();
+        $roles[] = $role;
+
+        $this->setRoles($roles);
     }
 
     /**
