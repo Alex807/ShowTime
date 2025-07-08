@@ -73,7 +73,7 @@ class RegistrationController extends AbstractController
                 $loginEvent = new InteractiveLoginEvent($request, $token); //to make auto-login after registration
                 $eventDispatcher->dispatch($loginEvent, SecurityEvents::INTERACTIVE_LOGIN);
 
-                return $this->redirectToRoute('user_profile');
+                return $this->redirectToRoute('profile');
             } else {
                 // Handle constraints from FORM
                 $errors = $form->getErrors(true);

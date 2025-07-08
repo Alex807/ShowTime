@@ -56,6 +56,7 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->setRoles(self::LOWEST_ROLE_IN_HIERARCHY);
         $this->editionReviews = new ArrayCollection();
         $this->purchases = new ArrayCollection();
     }
@@ -104,27 +105,24 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        if (empty($roles)) {
-            $this->setRoles(self::LOWEST_ROLE_IN_HIERARCHY);
-        }
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+        public function setRoles(array $roles): self
     {
         $aux = $this->roles;
         $this->roles = array_unique(array_merge($aux, $roles));
         return $this;
     }
 
-    public function promoteUser(UserAccount $currentUser, string $role): void
+    public function promoteUser(UserAccount $currentUser): void
     {
         if (!in_array(self::ROLE_WHO_PROMOTES, $currentUser->getRoles())) {
             throw new \LogicException('Only ' . self::ROLE_WHO_PROMOTES . ' can promote a user.');
         }
 
         $roles = $this->getRoles();
-        $roles[] = $role;
+        $roles[] = 'ROLE_ADMIN';
 
         $this->setRoles($roles);
     }

@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SoundScape Hub - Profile{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="background-color: #f0f4f8; padding: 20px; border-radius: 10px;">
+        {% set roles = user.getRoles() %}
+        {% set isAdmin = 'ROLE_ADMIN' in roles %}
+
+        <!-- Header with Framed Role Icon -->
+        <div class="row mb-4">
+            <div class="col-12 col-md-3">
+                <div class="border border-dark rounded p-2 bg-light" style="border-width: 4px; width: 200px; height: 320px;">
+                    <img src="{{ isAdmin ? '/images/admin.jpg' : '/images/user.jpg' }}"
+                         alt="{{ isAdmin ? 'Admin' : 'User' }} Icon"
+                         class="img-fluid w-100 h-100" style="object-fit: contain;">
+                </div>
+            </div>
+
+            <!-- Main Profile Card -->
+            <div class="col-12 col-md-9">
+                <div class="card shadow-lg" style="border-color: #1e3a8a;">
+                    <div class="card-header bg-primary text-white" style="background-color: #1e3a8a;">
+                        <h2 class="mb-0">User Profile</h2>
+                    </div>
+                    <div class="card-body" style="background-color: #ffffff;">
+                        <h4 class="card-title">
+                            {{ userDetails.firstName }} {{ userDetails.lastName }}
+                            <span class="badge" style="background-color: #f97316; color: #ffffff;">{{ isAdmin ? 'Admin' : 'User' }}</span>
+                        </h4>
+
+                        <!-- User Account Details -->
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <h5>User Account Overview</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+                                    <li class="list-group-item"><strong>Created Reviews:</strong> {{ user.editionReviews|length }}</li>
+                                    <li class="list-group-item"><strong>Purchases:</strong> {{ user.purchases|length }}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- User Details -->
+                        <div class="mt-3">
+                            <h5>User Information</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>First Name:</strong> {{ userDetails.firstName }}</li>
+                                <li class="list-group-item"><strong>Last Name:</strong> {{ userDetails.lastName }}</li>
+                                <li class="list-group-item"><strong>Age:</strong> {{ userDetails.age }}</li>
+                                <li class="list-group-item"><strong>Phone:</strong> {{ userDetails.phoneNo ?? '' }}</li>
+                                <li class="list-group-item"><strong>Created At:</strong> {{ userDetails.createdAt|date('Y-m-d H:i:s') }}</li>
+                                <li class="list-group-item"><strong>Updated At:</strong> {{ userDetails.updatedAt|date('Y-m-d H:i:s') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Panel -->
+        <div class="row mt-4">
+            <div class="col-12 col-md-3">
+                <!-- Role-Specific Actions -->
+                <div class="card h-100 bg-light" style="border-color: #10b981;">
+                    <div class="card-header bg-success text-white" style="background-color: #10b981;">
+                        <h5 class="mb-0">Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ path('app_home_page') }}" class="btn btn-outline-dark w-100 mb-2" style="border-color: #1e3a8a; color: #1e3a8a;">HomePage</a>
+                        {% if not isAdmin %}
+                            <a href="{{ path('festival_index') }}" class="btn btn-outline-primary w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Show Festivals</a>
+                            <a href="{{ path('artist_index') }}" class="btn btn-outline-success w-100 mb-2" style="border-color: #34d399; color: #34d399;">Show Artists</a>
+{#                            <a href="{{ path('amenity_index') }}" class="btn btn-outline-warning w-100 mb-2" style="border-color: #f59e0b; color: #f59e0b;">Show Amenities</a>#}
+{#                            <a href="{{ path('purchase_show') }}" class="btn btn-outline-info w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Show My Purchases</a>#}
+{#                            <a href="{{ path('purchase_new') }}" class="btn btn-outline-info w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Make Purchase</a>#}
+{#                            <a href="{{ path('review_show') }}" class="btn btn-outline-secondary w-100 mb-2" style="border-color: #6b7280; color: #6b7280;">Show My Reviews</a>#}
+                        {% else %}
+                            <button class="btn btn-outline-primary w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;" data-bs-toggle="collapse" data-bs-target="#festivalActions" aria-expanded="false" aria-controls="festivalActions">Festival</button>
+                            <div class="collapse" id="festivalActions">
+                                <a href="{{ path('festival_index') }}" class="btn btn-outline-primary w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">List</a>
+                                <a href="{{ path('festival_edit', {'id': festival.id}) }}" class="btn btn-outline-primary w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Edit</a>
+                                <a href="{{ path('festival_update', {'id': festival.id}) }}" class="btn btn-outline-primary w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Update</a>
+                                <a href="{{ path('festival_delete', {'id': festival.id}) }}" class="btn btn-outline-primary w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Delete</a>
+                            </div>
+                            <button class="btn btn-outline-success w-100 mb-2" style="border-color: #34d399; color: #34d399;" data-bs-toggle="collapse" data-bs-target="#artistActions" aria-expanded="false" aria-controls="artistActions">Artist</button>
+                            <div class="collapse" id="artistActions">
+                                <a href="{{ path('artist_index') }}" class="btn btn-outline-success w-100 mb-2" style="border-color: #34d399; color: #34d399;">List</a>
+                                <a href="{{ path('artist_edit', {'id': artist.id}) }}" class="btn btn-outline-success w-100 mb-2" style="border-color: #34d399; color: #34d399;">Edit</a>
+                                <a href="{{ path('artist_update', {'id': artist.id}) }}" class="btn btn-outline-success w-100 mb-2" style="border-color: #34d399; color: #34d399;">Update</a>
+                                <a href="{{ path('artist_delete', {'id': artist.id}) }}" class="btn btn-outline-success w-100 mb-2" style="border-color: #34d399; color: #34d399;">Delete</a>
+                            </div>
+                            <button class="btn btn-outline-warning w-100 mb-2" style="border-color: #f59e0b; color: #f59e0b;" data-bs-toggle="collapse" data-bs-target="#amenityActions" aria-expanded="false" aria-controls="amenityActions">Amenity</button>
+                            <div class="collapse" id="amenityActions">
+                                <a href="{{ path('amenity_index') }}" class="btn btn-outline-warning w-100 mb-2" style="border-color: #f59e0b; color: #f59e0b;">List</a>
+                                <a href="{{ path('amenity_edit', {'id': amenity.id}) }}" class="btn btn-outline-warning w-100 mb-2" style="border-color: #f59e0b; color: #f59e0b;">Edit</a>
+                                <a href="{{ path('amenity_update', {'id': amenity.id}) }}" class="btn btn-outline-warning w-100 mb-2" style="border-color: #f59e0b; color: #f59e0b;">Update</a>
+                                <a href="{{ path('amenity_delete', {'id': amenity.id}) }}" class="btn btn-outline-warning w-100 mb-2" style="border-color: #f59e0b; color: #f59e0b;">Delete</a>
+                            </div>
+                            <a href="{{ path('purchase_index') }}" class="btn btn-outline-info w-100 mb-2" style="border-color: #3b82f6; color: #3b82f6;">Purchase</a>
+                            <a href="{{ path('review_index') }}" class="btn btn-outline-secondary w-100 mb-2" style="border-color: #6b7280; color: #6b7280;">Review</a>
+                            <a href="{{ path('app_promote_user', {'id': user.id}) }}" class="btn btn-outline-danger w-100 mb-2" style="border-color: #ef4444; color: #ef4444;">Promote User</a>
+                            <a href="{{ path('app_demote_user', {'id': user.id}) }}" class="btn btn-outline-danger w-100 mb-2" style="border-color: #ef4444; color: #ef4444;">Demote User</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

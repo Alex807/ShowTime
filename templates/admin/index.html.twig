@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Manage Users{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Manage Users</h1>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                {% set userDetails = user.userDetails %}
+                {% set role = user.getRoles()[0] ?? 'ROLE_USER' %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ userDetails.firstName }} {{ userDetails.lastName }}</td>
+                    <td>{{ role }}</td>
+                    <td>
+                        {% if role != 'ROLE_ADMIN' %}
+                            <a href="{{ path('app_promote_user', {'id': user.id}) }}" class="btn btn-primary btn-sm">Promote to Admin</a>
+                        {% else %}
+                            <span class="badge bg-success">Admin</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

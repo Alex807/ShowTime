@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')] // Accessible by ROLE_USER and ROLE_ADMIN due to role hierarchy
-final class UserProfileController extends AbstractController
+final class ProfileController extends AbstractController
 {
-    #[Route('/profile', name: 'user_profile', methods: ['GET'])]
+    #[Route('/profile', name: 'profile', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
@@ -24,7 +24,7 @@ final class UserProfileController extends AbstractController
         $userDetails = $entityManager->getRepository(UserDetails::class)
                                       ->findOneBy(['user' => $user]);
 
-        return $this->render('user_profile/profile.html.twig', [
+        return $this->render('profile/profile.html.twig', [
             'user' => $user,
             'userDetails' => $userDetails,
         ]);

@@ -28,7 +28,6 @@ class UserAccountFixtures extends Fixture implements FixtureGroupInterface
 
             $userAccount->setEmail("user{$i}@temp.com"); //set a temporary email that would be updated in UserDetailsFixtures(to contain matching names)
             $userAccount->setPassword($this->hasher->hashPassword($userAccount, 'password' . $i));
-            $userAccount->setRoles($userAccount->getRoles()); //this makes each account to have lowest in hierarchy
             $manager->persist($userAccount);
         }
 
