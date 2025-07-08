@@ -88,8 +88,8 @@ final class ArtistController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-
                 $entityManager->flush();
+
                 $this->addFlash('success', 'Artist updated successfully!');
                 $request->getSession()->getFlashBag()->clear();
 

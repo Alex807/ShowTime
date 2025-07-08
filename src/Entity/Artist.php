@@ -5,11 +5,12 @@ namespace App\Entity;
 use App\Repository\ArtistRepository;
 use App\Validator\SqlInjectionSafe;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
 #[ORM\Table(name: "artist")]
-#[ORM\UniqueConstraint(name: "unique_artist", columns: ["real_name", "stage_name"])]
+#[UniqueEntity(fields: ['real_name', 'stage_name'], message: 'This artist already exists.')]
 class Artist
 {
     #[ORM\Id]

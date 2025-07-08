@@ -5,11 +5,13 @@ namespace App\Entity;
 use App\Repository\AmenityRepository;
 use App\Validator\SqlInjectionSafe;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AmenityRepository::class)]
 #[ORM\Table(name: "amenity")]
+#[UniqueEntity(fields: ['name'], message: 'There is already an amenity with this name.')]
 class Amenity
 {
     #[ORM\Id]
@@ -28,11 +30,6 @@ class Amenity
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 2000)]
-    #[Assert\Regex(
-        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
-        message: "Description contains invalid characters."
-    )]
-    #[SqlInjectionSafe]
     private ?string $description = null;
 
     #[ORM\Column]

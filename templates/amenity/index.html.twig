@@ -1,0 +1,502 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Available Amenities{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            padding: 40px 0;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-header h1 {
+            color: #4A148C;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .add-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .amenity-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .amenity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .amenity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .amenity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .amenity-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            flex: 1;
+        }
+
+        .amenity-id {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .amenity-info {
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+
+        .info-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 0.9rem;
+        }
+
+        .capacity-icon {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .price-icon {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .amenity-description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .description-text {
+            color: #495057;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .amenity-card:hover .card-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-view {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-edit {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            margin-top: 30px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .empty-text {
+            color: #95a5a6;
+            margin-bottom: 30px;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .pagination-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 0 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .pagination-btn.disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .page-info {
+            color: #4A148C;
+            font-weight: 600;
+            margin: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .amenities-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .amenity-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .card-actions {
+                opacity: 1;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container main-container">
+        <div class="page-header">
+            <h1><i class="fas fa-star"></i> Available Amenities</h1>
+            <p class="subtitle">Discover and manage all available amenities for your festival experience</p>
+            <a href="{{ path('amenity_new') }}" class="add-btn">
+                <i class="fas fa-plus"></i>
+                Add New Amenity
+            </a>
+        </div>
+
+        {% if amenities|length > 0 %}
+            <div class="amenities-grid">
+                {% for amenity in amenities %}
+                    <div class="amenity-card" data-amenity-id="{{ amenity.id }}">
+                        <div class="amenity-header">
+                            <h3 class="amenity-name">{{ amenity.name }}</h3>
+                        </div>
+
+                        <div class="amenity-info">
+                            <div class="info-row">
+                                <div class="info-icon capacity-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Capacity</div>
+                                    <div class="info-value">{{ amenity.peopleCapacity }} people</div>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-icon price-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Price</div>
+                                    <div class="info-value">${{ amenity.price|number_format(2) }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if amenity.description %}
+                            <div class="amenity-description">
+                                <p class="description-text">
+                                    {{ amenity.description|length > 120 ? amenity.description|slice(0, 120) ~ '...' : amenity.description }}
+                                </p>
+                            </div>
+                        {% endif %}
+
+                        <div class="card-actions">
+                            <a href="{{ path('amenity_show', {id: amenity.id}) }}" class="action-btn btn-view">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{{ path('amenity_edit', {id: amenity.id}) }}" class="action-btn btn-edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form method="post" action="{{ path('amenity_delete', {id: amenity.id}) }}"
+                                  style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to delete this amenity?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_amenity_' ~ amenity.id) }}">
+                                <button type="submit" class="action-btn btn-delete">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if amenities.pageCount > 1 %}
+                <div class="pagination-container">
+                    {% if amenities.currentPageNumber > 1 %}
+                        <a class="pagination-btn" href="{{ path('amenity_index', {'page': amenities.currentPageNumber - 1}) }}">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn disabled">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </span>
+                    {% endif %}
+
+                    <span class="page-info">
+                        <i class="fas fa-file-alt"></i>
+                        Page {{ amenities.currentPageNumber }} of {{ amenities.pageCount }}
+                    </span>
+
+                    {% if amenities.currentPageNumber < amenities.pageCount %}
+                        <a class="pagination-btn" href="{{ path('amenity_index', {'page': amenities.currentPageNumber + 1}) }}">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn disabled">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="empty-title">No Amenities Found</h3>
+                <p class="empty-text">Start by adding your first amenity to enhance the festival experience!</p>
+                <a href="{{ path('amenity_new') }}" class="add-btn">
+                    <i class="fas fa-plus"></i>
+                    Create First Amenity
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script> {# duble-click to go to start-end page #}
+        function initializePagination() {
+            const clicks = {};
+            const doubleClickThreshold = 300; // Reduced threshold for faster detection
+
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    if (this.classList.contains('disabled')) return;
+
+                    const currentTime = new Date().getTime();
+                    const lastClick = clicks[this.textContent] || 0;
+                    clicks[this.textContent] = currentTime;
+
+                    if (currentTime - lastClick < doubleClickThreshold) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Instant navigation using Turbo.visit with 'replace'
+                        if (this.textContent.includes('Previous')) {
+                            Turbo.visit("{{ path('amenity_index', {'page': 1}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        } else if (this.textContent.includes('Next')) {
+                            Turbo.visit("{{ path('amenity_index', {'page': amenities.pageCount}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        }
+                    }
+                });
+            })
+        }
+
+        // Handle popup messages
+        function initializePopupMessages() {
+            const popupMessages = document.querySelectorAll('.popup-message');
+            popupMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.animation = 'slideOutRight 0.5s ease forwards';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        }
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
+    </script>
+{% endblock %}

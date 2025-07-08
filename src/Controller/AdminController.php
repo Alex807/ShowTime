@@ -29,6 +29,8 @@ final class AdminController extends AbstractController
         return $this->redirectToRoute('profile', ['id' => $user->getId()]);
     }
 
+    //demoteUSER(duce user inapoi de la ADMIN la user->cn apeleaza sa fie FOUNDER)
+
     #[Route('/admin/users', name: 'app_admin_users')]
     #[IsGranted('ROLE_ADMIN')]
     public function listUsers(EntityManagerInterface $entityManager): Response

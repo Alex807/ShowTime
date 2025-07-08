@@ -36,11 +36,6 @@ class AmenityTypeForm extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Assert\Length(['max' => 2000, 'maxMessage' => 'Description cannot exceed {{ limit }} characters']),
-                    new Assert\Regex([
-                        'pattern' => "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
-                        'message' => 'Description contains invalid characters.',
-                    ]),
-                    new SqlInjectionSafe(),
                 ],
             ])
             ->add('people_capacity', IntegerType::class, [
@@ -49,7 +44,7 @@ class AmenityTypeForm extends AbstractType
                 'constraints' => [
                     new Assert\Positive(['message' => 'People capacity must be a positive integer']),
                     new Range(['min' => 2, 'max' => 50, 'notInRangeMessage' => 'Capacity must be between {{ min }} - {{ max }} people.']),
-                    ],
+                ],
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Price',
