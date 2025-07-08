@@ -26,7 +26,9 @@ final class ArtistController extends AbstractController
         PaginatorInterface $paginator,
         Request $request
     ): Response {
-        $query = $artistRepository->createQueryBuilder('a')->getQuery();
+        $query = $artistRepository->createQueryBuilder('a')
+            ->orderBy('a.stage_name', 'ASC')
+            ->getQuery();
 
         $artists = $paginator->paginate(
             $query,
@@ -89,6 +91,7 @@ final class ArtistController extends AbstractController
 
                 $entityManager->flush();
                 $this->addFlash('success', 'Artist updated successfully!');
+                $request->getSession()->getFlashBag()->clear();
 
                 // handle Turbo requests separately
                 if ($request->headers->get('Turbo-Frame')) {
@@ -107,8 +110,7 @@ final class ArtistController extends AbstractController
         }
 
         return $this->render('artist/edit.html.twig', [
-            'artist' => $artist,
-            'form' => $form->createView(),
+            'artistForm' => $form->createView(),
         ]);
     }
 

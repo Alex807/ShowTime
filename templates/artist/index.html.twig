@@ -201,4 +201,68 @@
             {% endif %}
         {% endif %}
     </div>
+
+    <script> {# duble-click to go to start-end page #}
+        function initializePagination() {
+            const clicks = {};
+            const doubleClickThreshold = 300; // Reduced threshold for faster detection
+
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    if (this.classList.contains('disabled')) return;
+
+                    const currentTime = new Date().getTime();
+                    const lastClick = clicks[this.textContent] || 0;
+                    clicks[this.textContent] = currentTime;
+
+                    if (currentTime - lastClick < doubleClickThreshold) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Instant navigation using Turbo.visit with 'replace'
+                        if (this.textContent.includes('Previous')) {
+                            Turbo.visit("{{ path('artist_index', {'page': 1}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        } else if (this.textContent.includes('Next')) {
+                            Turbo.visit("{{ path('artist_index', {'page': artists.pageCount}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        }
+                    }
+                });
+            })
+        }
+
+        // Handle popup messages
+        function initializePopupMessages() {
+            const popupMessages = document.querySelectorAll('.popup-message');
+            popupMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.animation = 'slideOutRight 0.5s ease forwards';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        }
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
+    </script>
 {% endblock %}
+
+

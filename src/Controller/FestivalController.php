@@ -85,7 +85,7 @@ final class FestivalController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Festival updated successfully!');
-
+            $request->getSession()->getFlashBag()->clear(); //this line prevent the propagation of flash msj to redirected page after success
 
             // Handle Turbo request differently
             if ($request->headers->get('Turbo-Frame')) {
