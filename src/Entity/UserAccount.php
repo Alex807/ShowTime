@@ -31,8 +31,8 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
     #[SqlInjectionSafe]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $role = null;
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
     #[SqlInjectionSafe]
@@ -100,8 +100,17 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $role = $this->role ?? 'ROLE_USER';
-        return [$role];
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER after registration
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
     }
 
     /**

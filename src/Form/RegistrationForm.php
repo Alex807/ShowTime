@@ -33,7 +33,7 @@ class RegistrationForm extends AbstractType
                 ],
             ])
             ->add('Password', PasswordType::class, [
-                'mapped' => false,
+                'mapped' => false,  // This field isn't directly mapped to the entity
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter a password']),
@@ -48,7 +48,7 @@ class RegistrationForm extends AbstractType
 
             // UserDetails fields
             ->add('firstName', TextType::class, [
-                'mapped' => false,
+                'mapped' => false,  // This field isn't directly mapped to the entity
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter your first name']),
                     new Length(['max' => 100]),
@@ -56,7 +56,7 @@ class RegistrationForm extends AbstractType
                 ],
             ])
             ->add('lastName', TextType::class, [
-                'mapped' => false,
+                'mapped' => false,  // This field isn't directly mapped to the entity
                 'constraints' => [
                     new NotBlank(['message' => 'Please enter your last name']),
                     new Length(['max' => 100]),
