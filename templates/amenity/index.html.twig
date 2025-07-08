@@ -405,7 +405,6 @@
                     {% endif %}
 
                     <span class="page-info">
-                        <i class="fas fa-file-alt"></i>
                         Page {{ amenities.currentPageNumber }} of {{ amenities.pageCount }}
                     </span>
 
@@ -438,12 +437,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script> {# duble-click to go to start-end page #}
+    <script>
         function initializePagination() {
             const clicks = {};
-            const doubleClickThreshold = 300; // Reduced threshold for faster detection
+            const doubleClickThreshold = 300; // Increased to 300ms for better double-click detection
+            const singleClickDelay = 250; // Delay for single-click to allow double-click detection
 
             document.querySelectorAll('.pagination-btn').forEach(btn => {
+                let clickTimeout = null;
+
                 btn.addEventListener('click', function (e) {
                     if (this.classList.contains('disabled')) return;
 
@@ -452,10 +454,12 @@
                     clicks[this.textContent] = currentTime;
 
                     if (currentTime - lastClick < doubleClickThreshold) {
+                        // Double-click detected
                         e.preventDefault();
                         e.stopPropagation();
+                        clearTimeout(clickTimeout); // Cancel any pending single-click
 
-                        // Instant navigation using Turbo.visit with 'replace'
+                        // Navigate to first or last page
                         if (this.textContent.includes('Previous')) {
                             Turbo.visit("{{ path('amenity_index', {'page': 1}) }}", {
                                 action: 'replace',
@@ -467,9 +471,19 @@
                                 scroll: 'top'
                             });
                         }
+                    } else {
+                        // Single-click: delay navigation to allow double-click detection
+                        e.preventDefault();
+                        clearTimeout(clickTimeout); // Clear any previous timeout
+                        clickTimeout = setTimeout(() => {
+                            Turbo.visit(this.href, {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        }, singleClickDelay);
                     }
                 });
-            })
+            });
         }
 
         // Handle popup messages
@@ -487,7 +501,6 @@
 
         // Initialize everything when the DOM loads
         function initialize() {
-            // Use requestAnimationFrame for better performance
             requestAnimationFrame(() => {
                 initializePagination();
                 initializePopupMessages();

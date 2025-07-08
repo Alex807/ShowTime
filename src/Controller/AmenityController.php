@@ -93,12 +93,6 @@ final class AmenityController extends AbstractController
                 $this->addFlash('success', 'Amenity updated successfully!');
                 $request->getSession()->getFlashBag()->clear();
 
-//                if ($request->headers->get('Turbo-Frame')) {
-//                    $response = new Response(null, Response::HTTP_SEE_OTHER);
-//                    $response->headers->set('Location', $this->generateUrl('amenity_index'));
-//                    return $response;
-//                }
-
                 return $this->redirectToRoute('amenity_index');
             } else {
                 $errors = $form->getErrors(true);

@@ -38,7 +38,7 @@ class AmenityTypeForm extends AbstractType
                     new Assert\Length(['max' => 2000, 'maxMessage' => 'Description cannot exceed {{ limit }} characters']),
                 ],
             ])
-            ->add('people_capacity', IntegerType::class, [
+            ->add('peopleCapacity', IntegerType::class, [
                 'label' => 'People Capacity',
                 'required' => true,
                 'constraints' => [
@@ -49,6 +49,7 @@ class AmenityTypeForm extends AbstractType
             ->add('price', NumberType::class, [
                 'label' => 'Price',
                 'required' => true,
+                'scale' => 2,
                 'constraints' => [
                     new Assert\Positive(['message' => 'Price must be a positive number']),
                 ],

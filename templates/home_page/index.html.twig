@@ -335,8 +335,8 @@
             {% if app.user %}
                 <div class="cta-buttons">
                     <h3 class="text-white mb-3">Welcome back, {{ app.user.userIdentifier }}!</h3>
-                    <a href="{{ path('festival_index') }}" class="btn btn-festival btn-login">
-                        <i class="fas fa-calendar-alt me-2"></i>Browse Festivals
+                    <a href="{{ path('profile') }}" class="btn btn-festival btn-login">
+                        <i class="fas fa-calendar-alt me-2"></i>Profile
                     </a>
                     <a href="{{ path('app_logout') }}" class="btn btn-festival btn-signup">
                         <i class="fas fa-sign-out-alt me-2"></i>Logout
