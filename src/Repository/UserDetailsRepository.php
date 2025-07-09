@@ -16,6 +16,24 @@ class UserDetailsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserDetails::class);
     }
 
+    /**
+     * Search users by name, email, or phone number
+     */
+    public function searchUsers(string $query, int $limit = 10): array
+    {
+        $qb = $this->createQueryBuilder('ud')
+            ->leftJoin('ud.user', 'u')
+            ->where('ud.firstName LIKE :query')
+            ->orWhere('ud.lastName LIKE :query')
+            ->orWhere('u.email LIKE :query')
+            ->orWhere('ud.phoneNo LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->setMaxResults($limit)
+            ->orderBy('ud.firstName', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return UserDetails[] Returns an array of UserDetails objects
     //     */
