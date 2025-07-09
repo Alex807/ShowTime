@@ -30,6 +30,7 @@ class Festival
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
         message: "Name contains invalid characters."
@@ -38,6 +39,7 @@ class Festival
     private ?string $country = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
         message: "City contains invalid characters."
@@ -46,9 +48,10 @@ class Festival
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
-        message: "Street_Name contains invalid characters."
+        message: "Street Name contains invalid characters."
     )]
     #[SqlInjectionSafe]
     private ?string $street_name = null;
@@ -58,6 +61,7 @@ class Festival
     private ?int $street_no = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Assert\Email(message: "Invalid email address.")]
     #[SqlInjectionSafe]
     private ?string $festival_email = null;

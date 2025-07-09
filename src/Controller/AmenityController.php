@@ -131,6 +131,8 @@ final class AmenityController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Amenity deleted successfully!');
+        $request->getSession()->getFlashBag()->clear();
+
         return $this->redirectToRoute('amenity_index');
     }
 }

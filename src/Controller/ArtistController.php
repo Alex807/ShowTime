@@ -138,6 +138,8 @@ final class ArtistController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Artist deleted successfully!');
+        $request->getSession()->getFlashBag()->clear();
+
         return $this->redirectToRoute('artist_index');
     }
 }

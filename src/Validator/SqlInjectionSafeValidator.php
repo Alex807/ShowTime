@@ -31,10 +31,5 @@ final class SqlInjectionSafeValidator extends ConstraintValidator
             }
         }
 
-        if (preg_match('/[\'"\s][\w\s]*[;\-\']/', $value)) {
-            $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value)
-                ->addViolation();
-        }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\FestivalEditionRepository;
 use App\Validator\SqlInjectionSafe;
+use App\Validator\ValidPeriodBetweenDates;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -13,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalEditionRepository::class)]
 #[ORM\Table(name: "festival_edition")]
-#[UniqueEntity(fields: ['year_happened'], message: 'This year already has an festival edition.')]
+#[UniqueEntity(fields: ['venue_name', 'start_date', 'end_date'], message: 'Two festival editions have conflicting dates for same stage.')]
 class FestivalEdition
 {
     #[ORM\Id]

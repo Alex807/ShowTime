@@ -11,14 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/festivals')]  //base route for entire controller
+#[Route('/festivals')]
+#[IsGranted('ROLE_USER')]
 final class FestivalController extends AbstractController
 {
     private const ITEMS_PER_PAGE = 10;
     private const STARTING_PAGE_NO = 1;
 
-    #[Route('/', name: 'festival_index', methods: ['GET'])] //restful paths = routes respect some naming rules
+    #[Route('/', name: 'festival_index', methods: ['GET'])]
     public function index(
         FestivalRepository $festivalRepository,
         PaginatorInterface $paginator,
@@ -30,7 +32,9 @@ final class FestivalController extends AbstractController
         $response->setMaxAge(3600);
         $response->headers->addCacheControlDirective('must-revalidate', true);
 
-        $query = $festivalRepository->createQueryBuilder('f')->getQuery();
+        $query = $festivalRepository->createQueryBuilder('f')
+            ->orderBy('f.name', 'ASC')
+            ->getQuery();
 
         $festivals = $paginator->paginate(
             $query,
@@ -38,26 +42,39 @@ final class FestivalController extends AbstractController
             self::ITEMS_PER_PAGE
         );
 
-        return $this->render('festival/profile.html.twig', [
+        return $this->render('festival/index.html.twig', [
             'festivals' => $festivals,
         ], $response);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'festival_new', methods: ['GET', 'POST'])] //we need GET for collecting input data from user and POST to actual update
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $session = $request->getSession();
+        $session->start();
+
         $festival = new Festival();
         $form = $this->createForm(FestivalTypeForm::class, $festival);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $festival->setUpdatedAt(new \DateTime()); // always auto-set fields with NOW value
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $festival->setUpdatedAt(new \DateTime()); // always auto-set fields with NOW value
 
-            $entityManager->persist($festival);
-            $entityManager->flush();
+                $entityManager->persist($festival);
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Festival created successfully!');
-            return $this->redirectToRoute('festival_index');
+                $this->addFlash('success', 'Festival created successfully!');
+                $request->getSession()->getFlashBag()->clear(); ////this line prevent the propagation of flash msj to redirected page after success
+
+                return $this->redirectToRoute('festival_index');
+            } else {
+                $errors = $form->getErrors(true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
         }
 
         return $this->render('festival/new.html.twig', [
@@ -66,7 +83,7 @@ final class FestivalController extends AbstractController
     }
 
     #[Route('/{id}', name: 'festival_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-     public function show(Festival $festival): Response //we display only 1 festival
+     public function show(Festival $festival): Response
     {
         return $this->render('festival_edition/list.html.twig', [ //direct redirecting to the festival_edition
             'festival' => $festival,
@@ -74,27 +91,32 @@ final class FestivalController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/edit', name: 'festival_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $session = $request->getSession();
+        $session->start();
+
         $form = $this->createForm(FestivalTypeForm::class, $festival);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $festival->setUpdatedAt(new \DateTime()); // always auto-set fields with NOW value
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $festival->setUpdatedAt(new \DateTime()); // always auto-set fields with NOW value
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Festival updated successfully!');
-            $request->getSession()->getFlashBag()->clear(); //this line prevent the propagation of flash msj to redirected page after success
+                $this->addFlash('success', 'Festival updated successfully!');
+                $request->getSession()->getFlashBag()->clear(); //this line prevent the propagation of flash msj to redirected page after success
 
-            // Handle Turbo request differently
-            if ($request->headers->get('Turbo-Frame')) {
-                $response = new Response(null, Response::HTTP_SEE_OTHER);
-                $response->headers->set('Location', $this->generateUrl('festival_index'));
-                return $response;
+                return $this->redirectToRoute('festival_index');
+
+            } else {
+                $errors = $form->getErrors(true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
             }
-
-            return $this->redirectToRoute('festival_index');
         }
 
         return $this->render('festival/edit.html.twig', [
@@ -103,6 +125,7 @@ final class FestivalController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/delete', name: 'festival_delete', requirements: ['id' => '\d+'], methods: ['POST'])] //name param is used for redirect cases only
     public function delete(Festival $festival, Request $request, EntityManagerInterface $entityManager): Response //DELETE method need to avoid bcs
                                         // not all web browsers support it(use POST instead)
@@ -117,6 +140,8 @@ final class FestivalController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', 'Festival deleted successfully!');
+        $request->getSession()->getFlashBag()->clear();
+
         return $this->redirectToRoute('festival_index');
     }
 }

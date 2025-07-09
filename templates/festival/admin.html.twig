@@ -142,6 +142,13 @@
         </div>
     {% endfor %}
 
+
+    <div class="create-button-container">
+        <a href="{{ path('festival_new') }}" class="btn-create">
+            <i class="fas fa-plus"></i> Create New Festival
+        </a>
+    </div>
+
     <table id="festivalTable">
         <thead>
         <tr>
@@ -161,6 +168,14 @@
                 <td colspan="3">
                     <a href="{{ path('festival_show', {id: festival.id}) }}"
                        class="btn details"> Details</a>
+
+                    <a href="{{ path('festival_edit', {id: festival.id}) }}" class="btn edit">Edit</a>
+
+                    <form method="post" action="{{ path('festival_delete', {id: festival.id}) }}"
+                          style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this festival?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_festival_' ~ festival.id) }}">
+                        <button class="btn delete">Delete</button>
+                    </form>
                 </td>
             </tr>
         {% endfor %}

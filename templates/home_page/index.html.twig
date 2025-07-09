@@ -26,6 +26,210 @@
             overflow-x: hidden;
         }
 
+        /* Navigation Bar */
+        .navbar-custom {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            transform: translateZ(0);
+        }
+
+        .navbar-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+            rgba(255, 107, 53, 0.05) 0%,
+            rgba(197, 41, 155, 0.05) 50%,
+            rgba(102, 126, 234, 0.05) 100%);
+            z-index: -1;
+        }
+
+        .navbar-custom .container {
+            position: relative;
+        }
+
+        .navbar-custom .navbar-nav {
+            gap: 8px;
+        }
+
+        .navbar-custom .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 12px 20px !important;
+            margin: 0;
+            border-radius: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .navbar-custom .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .navbar-custom .navbar-nav .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .navbar-custom .navbar-nav .nav-link:hover {
+            color: white !important;
+            background: linear-gradient(135deg,
+            rgba(255, 107, 53, 0.2) 0%,
+            rgba(197, 41, 155, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
+        }
+
+        .navbar-custom .btn-nav {
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0 4px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .navbar-custom .btn-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .navbar-custom .btn-nav:hover::before {
+            left: 100%;
+        }
+
+        .navbar-custom .btn-nav-login {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff9f43 100%);
+            color: white;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .navbar-custom .btn-nav-login:hover {
+            background: linear-gradient(135deg, #ff9f43 0%, #ff6b35 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .navbar-custom .btn-nav-signup {
+            background: linear-gradient(135deg, #c5299b 0%, #667eea 100%);
+            color: white;
+            border: 1px solid rgba(197, 41, 155, 0.3);
+        }
+
+        .navbar-custom .btn-nav-signup:hover {
+            background: linear-gradient(135deg, #667eea 0%, #c5299b 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(197, 41, 155, 0.4);
+        }
+
+        .navbar-custom .btn-nav-logout {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .navbar-custom .btn-nav-logout:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+        }
+
+        .navbar-custom .btn-nav-mute {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            border: 1px solid rgba(52, 73, 94, 0.3);
+        }
+
+        .navbar-custom .btn-nav-mute:hover {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(52, 73, 94, 0.4);
+        }
+
+        /* Responsive navbar adjustments */
+        @media (max-width: 768px) {
+            .navbar-custom .navbar-nav {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .navbar-custom .btn-nav {
+                margin: 2px 0;
+                font-size: 0.8rem;
+                padding: 10px 20px;
+            }
+        }
+
+        /* Buy Tickets Button */
+        .buy-tickets-btn {
+            position: absolute; /* Changed from fixed */
+            left: 30px; /* Moved slightly more right */
+            top: 70%; /* Moved down from 50% */
+            background: linear-gradient(45deg, #ff6b35, #c5299b);
+            color: white;
+            padding: 20px 35px; /* Made bigger */
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.3rem; /* Made bigger */
+            text-decoration: none;
+            z-index: 999;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+            transform: translateZ(0);
+        }
+
+        .buy-tickets-btn:hover {
+            transform: scale(1.08) translateZ(0); /* Removed translateY */
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.7);
+            color: white;
+            text-decoration: none;
+        }
+
+        .buy-tickets-btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Adjust hero section for navbar */
+        .hero-section {
+            padding-top: 80px; /* Add space for fixed navbar */
+        }
+
         /* Video Background */
         .hero-section {
             height: 100vh;
@@ -82,11 +286,11 @@
 
         /* Logo */
         .logo {
-            width: 230px;
-            height: 230px;
+            width: 250px;
+            height: 250px;
             animation: logoFloatSpin 4s ease-in-out infinite;
             position: absolute;
-            top: 25px;
+            top: 85px;
             left: 25px;
             z-index: 10;
         }
@@ -116,11 +320,6 @@
             text-align: center;
             z-index: 10;
             position: relative;
-            color: white;
-            display: none;
-        }
-
-        .hero-content.active {
             display: block;
         }
 
@@ -302,6 +501,49 @@
 {% block body %}
     <!-- Hero Section -->
     <section class="hero-section">
+
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <div class="container">
+                <div class="navbar-nav ms-auto">
+                    {% if app.user %}
+                        <!-- Logged in navigation -->
+                        <a class="nav-link" href="{{ path('festival_index') }}">
+                            <i class="fas fa-calendar-alt me-1"></i>Festivals
+                        </a>
+                        <a class="nav-link" href="{{ path('artist_index') }}">
+                            <i class="fas fa-microphone-alt me-1"></i>Artists
+                        </a>
+                        <a class="nav-link" href="{{ path('profile') }}">
+                            <i class="fas fa-user me-1"></i>Profile
+                        </a>
+                        <button id="muteToggleNav" class="btn btn-nav btn-nav-mute">
+                            <i class="fas fa-volume-up me-1"></i>Mute
+                        </button>
+                        <a href="{{ path('app_logout') }}" class="btn btn-nav btn-nav-logout">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    {% else %}
+                        <!-- Logged out navigation -->
+                        <a href="{{ path('app_login') }}" class="btn btn-nav btn-nav-login">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                        <a href="{{ path('app_register') }}" class="btn btn-nav btn-nav-signup">
+                            <i class="fas fa-user-plus me-1"></i>Sign Up
+                        </a>
+                        <button id="muteToggleNav" class="btn btn-nav btn-nav-mute">
+                            <i class="fas fa-volume-up me-1"></i>Mute
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Buy Tickets Button -->
+        <a href="{{ path('app_home_page') }}" class="buy-tickets-btn">
+            <i class="fas fa-ticket-alt"></i>Buy Tickets
+        </a>
+
         <video class="video-background" autoplay loop muted playsinline>
             <source src="{{ asset('videos/homepage.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
@@ -321,12 +563,6 @@
 
         <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
 
-        <button class="menu-button" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        <button id="muteToggle" class="btn btn-mute">
-            <i class="fas fa-volume-up me-2"></i>Mute
-        </button>
 
         <div class="hero-content" id="heroContent">
             <h1 class="hero-title">SOUNDSCAPE HUB</h1>
@@ -337,9 +573,6 @@
                     <h3 class="text-white mb-3">Welcome back, {{ app.user.userIdentifier }}!</h3>
                     <a href="{{ path('profile') }}" class="btn btn-festival btn-login">
                         <i class="fas fa-calendar-alt me-2"></i>Profile
-                    </a>
-                    <a href="{{ path('app_logout') }}" class="btn btn-festival btn-signup">
-                        <i class="fas fa-sign-out-alt me-2"></i>Logout
                     </a>
                 </div>
             {% else %}
@@ -485,6 +718,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function initialize() {
+            fixNavbarPosition(); //fix navbar refresh page problem
             // === SMOOTH SCROLL ===
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -517,20 +751,23 @@
                 observer.observe(el);
             });
 
-            // === MENU TOGGLE ===
-            const menuToggle = document.getElementById('menuToggle');
-            const heroContent = document.getElementById('heroContent');
-            const muteToggle = document.getElementById('muteToggle');
+            // === FIX NAVBAR POSITIONING ON TURBO NAVIGATION ===
+            function fixNavbarPosition() {
+                const navbar = document.querySelector('.navbar-custom');
+                const buyButton = document.querySelector('.buy-tickets-btn');
 
-            if (menuToggle && heroContent && muteToggle) {
-                menuToggle.onclick = () => {
-                    heroContent.classList.toggle('active');
-                    muteToggle.classList.toggle('active');
-                };
+                if (navbar) {
+                    navbar.style.position = 'fixed';
+                    navbar.style.top = '0';
+                    navbar.style.left = '0';
+                    navbar.style.right = '0';
+                    navbar.style.width = '100%';
+                }
             }
 
             // === VIDEO + MUTE TOGGLE ===
             const video = document.querySelector('.video-background');
+            const muteToggle = document.getElementById('muteToggleNav'); // Changed ID
             if (video && muteToggle) {
                 const playbackState = sessionStorage.getItem('videoPlayback') || 'play';
                 const muteState = sessionStorage.getItem('videoMuted') === 'true';
@@ -548,15 +785,15 @@
                 }
 
                 muteToggle.innerHTML = video.muted
-                    ? '<i class="fas fa-volume-mute me-2"></i>Unmute'
-                    : '<i class="fas fa-volume-up me-2"></i>Mute';
+                    ? '<i class="fas fa-volume-mute me-1"></i>Unmute'
+                    : '<i class="fas fa-volume-up me-1"></i>Mute';
 
                 muteToggle.onclick = () => {
                     video.muted = !video.muted;
                     sessionStorage.setItem('videoMuted', video.muted);
                     muteToggle.innerHTML = video.muted
-                        ? '<i class="fas fa-volume-mute me-2"></i>Unmute'
-                        : '<i class="fas fa-volume-up me-2"></i>Mute';
+                        ? '<i class="fas fa-volume-mute me-1"></i>Unmute'
+                        : '<i class="fas fa-volume-up me-1"></i>Mute';
                 };
 
                 window.addEventListener('beforeunload', () => {
@@ -577,4 +814,586 @@
         document.addEventListener('turbo:load', initialize);
     </script>
 {% endblock %}
+
+
+
+{#{% extends 'base.html.twig' %}#}
+
+{#{% block title %}Festival Hub - Your Gateway to Amazing Festivals{% endblock %}#}
+
+{#{% block stylesheets %}#}
+{#    {{ parent() }}#}
+{#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">#}
+{#    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">#}
+{#    <style>#}
+{#        :root {#}
+{#            --primary-color: #ff6b35;#}
+{#            --secondary-color: #f7931e;#}
+{#            --accent-color: #c5299b;#}
+{#            --dark-color: #1a1a1a;#}
+{#            --light-color: #ffffff;#}
+{#        }#}
+
+{#        * {#}
+{#            margin: 0;#}
+{#            padding: 0;#}
+{#            box-sizing: border-box;#}
+{#        }#}
+
+{#        body {#}
+{#            font-family: 'Arial', sans-serif;#}
+{#            overflow-x: hidden;#}
+{#        }#}
+
+{#        /* Video Background */#}
+{#        .hero-section {#}
+{#            height: 100vh;#}
+{#            position: relative;#}
+{#            display: flex;#}
+{#            align-items: center;#}
+{#            justify-content: center;#}
+{#            overflow: hidden;#}
+{#        }#}
+
+{#        .video-background {#}
+{#            position: absolute;#}
+{#            top: 0;#}
+{#            left: 0;#}
+{#            width: 100%;#}
+{#            height: 100%;#}
+{#            object-fit: cover;#}
+{#            z-index: 0;#}
+{#        }#}
+
+{#        /* Floating particles */#}
+{#        .particles {#}
+{#            position: absolute;#}
+{#            top: 0;#}
+{#            left: 0;#}
+{#            width: 100%;#}
+{#            height: 100%;#}
+{#            overflow: hidden;#}
+{#            z-index: 1;#}
+{#        }#}
+
+{#        .particle {#}
+{#            position: absolute;#}
+{#            background: rgba(255, 255, 255, 0.1);#}
+{#            border-radius: 50%;#}
+{#            animation: float 6s ease-in-out infinite;#}
+{#        }#}
+
+{#        .particle:nth-child(1) { width: 10px; height: 10px; left: 10%; animation-delay: 0s; }#}
+{#        .particle:nth-child(2) { width: 15px; height: 15px; left: 20%; animation-delay: 1s; }#}
+{#        .particle:nth-child(3) { width: 8px; height: 8px; left: 30%; animation-delay: 2s; }#}
+{#        .particle:nth-child(4) { width: 12px; height: 12px; left: 40%; animation-delay: 3s; }#}
+{#        .particle:nth-child(5) { width: 20px; height: 20px; left: 50%; animation-delay: 4s; }#}
+{#        .particle:nth-child(6) { width: 6px; height: 6px; left: 60%; animation-delay: 5s; }#}
+{#        .particle:nth-child(7) { width: 14px; height: 14px; left: 70%; animation-delay: 1.5s; }#}
+{#        .particle:nth-child(8) { width: 18px; height: 18px; left: 80%; animation-delay: 2.5s; }#}
+{#        .particle:nth-child(9) { width: 9px; height: 9px; left: 90%; animation-delay: 3.5s; }#}
+
+{#        @keyframes float {#}
+{#            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }#}
+{#            10%, 90% { opacity: 1; }#}
+{#            50% { transform: translateY(-10vh) rotate(180deg); }#}
+{#        }#}
+
+{#        /* Logo */#}
+{#        .logo {#}
+{#            width: 230px;#}
+{#            height: 230px;#}
+{#            animation: logoFloatSpin 4s ease-in-out infinite;#}
+{#            position: absolute;#}
+{#            top: 25px;#}
+{#            left: 25px;#}
+{#            z-index: 10;#}
+{#        }#}
+
+{#        @keyframes logoFloatSpin {#}
+{#            0%, 20% { transform: translateY(0px) rotateY(0deg); } /* Float start, no rotation */#}
+{#            50% { transform: translateY(-10px) rotateY(0deg); } /* Float up, no rotation */#}
+{#            46% { transform: translateY(-10px) rotateY(-360deg); } /* Fast Y-axis spin while up */#}
+{#            60%, 80% { transform: translateY(0px) rotateY(-360deg); } /* Pause at end of spin */#}
+{#        }#}
+
+{#        /* Menu Button and Content */#}
+{#        .menu-button {#}
+{#            position: absolute;#}
+{#            top: 20px;#}
+{#            right: 20px;#}
+{#            z-index: 11;#}
+{#            background: transparent;#}
+{#            border: none;#}
+{#            color: white;#}
+{#            font-size: 1.5rem;#}
+{#            cursor: pointer;#}
+{#            padding: 10px;#}
+{#        }#}
+
+{#        .hero-content {#}
+{#            text-align: center;#}
+{#            z-index: 10;#}
+{#            position: relative;#}
+{#            color: white;#}
+{#            display: none;#}
+{#        }#}
+
+{#        .hero-content.active {#}
+{#            display: block;#}
+{#        }#}
+
+{#        .hero-title {#}
+{#            font-size: 4rem;#}
+{#            font-weight: bold;#}
+{#            margin-bottom: 1rem;#}
+{#            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);#}
+{#            animation: titleGlow 2s ease-in-out infinite alternate;#}
+{#        }#}
+
+{#        @keyframes titleGlow {#}
+{#            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }#}
+{#            to { text-shadow: 2px 2px 20px rgba(255,107,53,0.8); }#}
+{#        }#}
+
+{#        .hero-subtitle {#}
+{#            font-size: 1.5rem;#}
+{#            margin-bottom: 2rem;#}
+{#            opacity: 0.9;#}
+{#        }#}
+
+{#        .cta-buttons {#}
+{#            display: flex;#}
+{#            gap: 1rem;#}
+{#            justify-content: center;#}
+{#            flex-wrap: wrap;#}
+{#        }#}
+
+{#        .btn-festival {#}
+{#            padding: 15px 30px;#}
+{#            font-size: 1.2rem;#}
+{#            font-weight: bold;#}
+{#            border: none;#}
+{#            border-radius: 50px;#}
+{#            text-decoration: none;#}
+{#            transition: all 0.3s ease;#}
+{#            position: relative;#}
+{#            overflow: hidden;#}
+{#        }#}
+
+{#        .btn-login {#}
+{#            background: linear-gradient(45deg, #ff6b35, #ff9f43, #c5299b);#}
+{#            color: white;#}
+{#        }#}
+
+{#        .btn-signup {#}
+{#            background: linear-gradient(45deg, #c5299b, #ff9f43, #667eea);#}
+{#            color: white;#}
+{#            border: none;#}
+{#        }#}
+
+{#        .btn-festival:hover {#}
+{#            transform: translateY(-3px);#}
+{#            box-shadow: 0 10px 25px rgba(0,0,0,0.3);#}
+{#        }#}
+
+{#        .btn-login:hover {#}
+{#            background: linear-gradient(45deg, #ff9f43, #c5299b, #764ba2);#}
+{#        }#}
+
+{#        .btn-signup:hover {#}
+{#            background: linear-gradient(45deg, #764ba2, #ff9f43, #ff6b35);#}
+{#        }#}
+
+{#        .btn-mute {#}
+{#            padding: 8px 16px;#}
+{#            font-size: 0.9rem;#}
+{#            font-weight: bold;#}
+{#            border: none;#}
+{#            border-radius: 25px;#}
+{#            text-decoration: none;#}
+{#            transition: all 0.3s ease;#}
+{#            position: absolute;#}
+{#            top: 70px;#}
+{#            right: 20px;#}
+{#            z-index: 11;#}
+{#            background: linear-gradient(45deg, #ff6b35, #ff9f43, #c5299b);#}
+{#            color: white;#}
+{#            display: none;#}
+{#        }#}
+
+{#        .btn-mute.active {#}
+{#            display: block;#}
+{#        }#}
+
+{#        .btn-mute:hover {#}
+{#            transform: translateY(-3px);#}
+{#            box-shadow: 0 5px 15px rgba(255, 253, 253, 0.3);#}
+{#            background: linear-gradient(45deg, #ff9f43, #c5299b, #764ba2);#}
+{#        }#}
+
+{#        /* Carousel Section */#}
+{#        .carousel-section {#}
+{#            padding: 100px 0;#}
+{#            background: var(--dark-color);#}
+{#        }#}
+
+{#        .carousel-item img, .carousel-item video {#}
+{#            height: 500px;#}
+{#            object-fit: cover;#}
+{#            border-radius: 15px;#}
+{#        }#}
+
+{#        .carousel-caption {#}
+{#            background: rgba(0,0,0,0.7);#}
+{#            border-radius: 10px;#}
+{#            padding: 20px;#}
+{#        }#}
+
+{#        /* Features Section */#}
+{#        .features-section {#}
+{#            padding: 100px 0;#}
+{#            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);#}
+{#            color: white;#}
+{#        }#}
+
+{#        .feature-card {#}
+{#            background: rgba(255,255,255,0.1);#}
+{#            backdrop-filter: blur(10px);#}
+{#            border-radius: 15px;#}
+{#            padding: 30px;#}
+{#            text-align: center;#}
+{#            transition: transform 0.3s ease;#}
+{#            border: 1px solid rgba(255,255,255,0.2);#}
+{#        }#}
+
+{#        .feature-card:hover {#}
+{#            transform: translateY(-10px);#}
+{#        }#}
+
+{#        .feature-icon {#}
+{#            font-size: 3rem;#}
+{#            margin-bottom: 20px;#}
+{#            color: var(--secondary-color);#}
+{#        }#}
+
+{#        /* Stats Section */#}
+{#        .stats-section {#}
+{#            padding: 100px 0;#}
+{#            background: var(--light-color);#}
+{#        }#}
+
+{#        .stat-item {#}
+{#            text-align: center;#}
+{#            padding: 30px;#}
+{#        }#}
+
+{#        .stat-number {#}
+{#            font-size: 3rem;#}
+{#            font-weight: bold;#}
+{#            color: var(--primary-color);#}
+{#            margin-bottom: 10px;#}
+{#        }#}
+
+{#        /* Responsive */#}
+{#        @media (max-width: 768px) {#}
+{#            .hero-title {#}
+{#                font-size: 2.5rem;#}
+{#            }#}
+
+{#            .hero-subtitle {#}
+{#                font-size: 1.2rem;#}
+{#            }#}
+
+{#            .logo {#}
+{#                width: 100px;#}
+{#                height: 100px;#}
+{#            }#}
+
+{#            .cta-buttons {#}
+{#                flex-direction: column;#}
+{#                align-items: center;#}
+{#            }#}
+{#        }#}
+{#    </style>#}
+{#{% endblock %}#}
+
+{#{% block body %}#}
+{#    <!-- Hero Section -->#}
+{#    <section class="hero-section">#}
+{#        <video class="video-background" autoplay loop muted playsinline>#}
+{#            <source src="{{ asset('videos/homepage.mp4') }}" type="video/mp4">#}
+{#            Your browser does not support the video tag.#}
+{#        </video>#}
+
+{#        <div class="particles">#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#            <div class="particle"></div>#}
+{#        </div>#}
+
+{#        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">#}
+
+{#        <button class="menu-button" id="menuToggle">#}
+{#            <i class="fas fa-bars"></i>#}
+{#        </button>#}
+{#        <button id="muteToggle" class="btn btn-mute">#}
+{#            <i class="fas fa-volume-up me-2"></i>Mute#}
+{#        </button>#}
+
+{#        <div class="hero-content" id="heroContent">#}
+{#            <h1 class="hero-title">SOUNDSCAPE HUB</h1>#}
+{#            <p class="hero-subtitle">Your Ticket to Unforgettable Festival Management Experiences</p>#}
+
+{#            {% if app.user %}#}
+{#                <div class="cta-buttons">#}
+{#                    <h3 class="text-white mb-3">Welcome back, {{ app.user.userIdentifier }}!</h3>#}
+{#                    <a href="{{ path('profile') }}" class="btn btn-festival btn-login">#}
+{#                        <i class="fas fa-calendar-alt me-2"></i>Profile#}
+{#                    </a>#}
+{#                    <a href="{{ path('app_logout') }}" class="btn btn-festival btn-signup">#}
+{#                        <i class="fas fa-sign-out-alt me-2"></i>Logout#}
+{#                    </a>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                <div class="cta-buttons">#}
+{#                    <a href="{{ path('app_login') }}" class="btn btn-festival btn-login">#}
+{#                        <i class="fas fa-sign-in-alt me-2"></i>Login#}
+{#                    </a>#}
+{#                    <a href="{{ path('app_register') }}" class="btn btn-festival btn-signup">#}
+{#                        <i class="fas fa-user-plus me-2"></i>Sign Up#}
+{#                    </a>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </section>#}
+
+{#    <!-- Carousel Section -->#}
+{#    <section class="carousel-section">#}
+{#        <div class="container">#}
+{#            <div class="text-center mb-5">#}
+{#                <h2 class="text-white display-4 mb-3">Experience the Magic</h2>#}
+{#                <p class="text-white-50 lead">Discover amazing festivals from around the world</p>#}
+{#            </div>#}
+
+{#            <div id="festivalCarousel" class="carousel slide" data-bs-ride="carousel">#}
+{#                <div class="carousel-indicators">#}
+{#                    <button type="button" data-bs-target="#festivalCarousel" data-bs-slide-to="0" class="active"></button>#}
+{#                    <button type="button" data-bs-target="#festivalCarousel" data-bs-slide-to="1"></button>#}
+{#                    <button type="button" data-bs-target="#festivalCarousel" data-bs-slide-to="2"></button>#}
+{#                </div>#}
+
+{#                <div class="carousel-inner">#}
+{#                    <div class="carousel-item active">#}
+{#                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="d-block w-100" alt="Festival Crowd">#}
+{#                        <div class="carousel-caption">#}
+{#                            <h3>Electric Atmosphere</h3>#}
+{#                            <p>Feel the energy of thousands of music lovers united by rhythm</p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="carousel-item">#}
+{#                        <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="d-block w-100" alt="Festival Stage">#}
+{#                        <div class="carousel-caption">#}
+{#                            <h3>World-Class Performances</h3>#}
+{#                            <p>Experience unforgettable shows from top artists worldwide</p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="carousel-item">#}
+{#                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="d-block w-100" alt="Festival Fun">#}
+{#                        <div class="carousel-caption">#}
+{#                            <h3>Memories That Last Forever</h3>#}
+{#                            <p>Create lifelong friendships and unforgettable moments</p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+
+{#                <button class="carousel-control-prev" type="button" data-bs-target="#festivalCarousel" data-bs-slide="prev">#}
+{#                    <span class="carousel-control-prev-icon"></span>#}
+{#                </button>#}
+{#                <button class="carousel-control-next" type="button" data-bs-target="#festivalCarousel" data-bs-slide="next">#}
+{#                    <span class="carousel-control-next-icon"></span>#}
+{#                </button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+
+{#    <!-- Features Section -->#}
+{#    <section class="features-section">#}
+{#        <div class="container">#}
+{#            <div class="text-center mb-5">#}
+{#                <h2 class="display-4 mb-3">Why Choose SoundScape Hub?</h2>#}
+{#                <p class="lead">Your complete festival experience platform</p>#}
+{#            </div>#}
+
+{#            <div class="row g-4">#}
+{#                <div class="col-md-4">#}
+{#                    <div class="feature-card h-100">#}
+{#                        <div class="feature-icon">#}
+{#                            <i class="fas fa-search"></i>#}
+{#                        </div>#}
+{#                        <h4>Discover Festivals</h4>#}
+{#                        <p>Find the perfect festival that matches your music taste and location preferences</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-4">#}
+{#                    <div class="feature-card h-100">#}
+{#                        <div class="feature-icon">#}
+{#                            <i class="fas fa-ticket-alt"></i>#}
+{#                        </div>#}
+{#                        <h4>Easy Booking</h4>#}
+{#                        <p>Secure your tickets with our streamlined booking process and payment options</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-4">#}
+{#                    <div class="feature-card h-100">#}
+{#                        <div class="feature-icon">#}
+{#                            <i class="fas fa-users"></i>#}
+{#                        </div>#}
+{#                        <h4>Community</h4>#}
+{#                        <p>Connect with fellow festival-goers and share your experiences</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+
+{#    <!-- Stats Section -->#}
+{#    <section class="stats-section">#}
+{#        <div class="container">#}
+{#            <div class="row text-center">#}
+{#                <div class="col-md-3">#}
+{#                    <div class="stat-item">#}
+{#                        <div class="stat-number">500+</div>#}
+{#                        <h5>Festivals Listed</h5>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-3">#}
+{#                    <div class="stat-item">#}
+{#                        <div class="stat-number">50K+</div>#}
+{#                        <h5>Happy Customers</h5>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-3">#}
+{#                    <div class="stat-item">#}
+{#                        <div class="stat-number">25+</div>#}
+{#                        <h5>Countries</h5>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-md-3">#}
+{#                    <div class="stat-item">#}
+{#                        <div class="stat-number">99%</div>#}
+{#                        <h5>Satisfaction Rate</h5>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+
+{#    {% include 'common_twig_code/footer.html.twig' %}#}
+
+{#{% endblock %}#}
+
+{#{% block javascripts %}#}
+{#    {{ parent() }}#}
+{#    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>#}
+{#    <script>#}
+{#        function initialize() {#}
+{#            // === SMOOTH SCROLL ===#}
+{#            document.querySelectorAll('a[href^="#"]').forEach(anchor => {#}
+{#                anchor.addEventListener('click', function (e) {#}
+{#                    e.preventDefault();#}
+{#                    const target = document.querySelector(this.getAttribute('href'));#}
+{#                    if (target) {#}
+{#                        target.scrollIntoView({ behavior: 'smooth' });#}
+{#                    }#}
+{#                });#}
+{#            });#}
+
+{#            // === ANIMATIONS ON SCROLL ===#}
+{#            const observerOptions = {#}
+{#                threshold: 0.1,#}
+{#                rootMargin: '0px 0px -50px 0px'#}
+{#            };#}
+{#            const observer = new IntersectionObserver(entries => {#}
+{#                entries.forEach(entry => {#}
+{#                    if (entry.isIntersecting) {#}
+{#                        entry.target.style.opacity = '1';#}
+{#                        entry.target.style.transform = 'translateY(0)';#}
+{#                    }#}
+{#                });#}
+{#            }, observerOptions);#}
+
+{#            document.querySelectorAll('.feature-card, .stat-item').forEach(el => {#}
+{#                el.style.opacity = '0';#}
+{#                el.style.transform = 'translateY(30px)';#}
+{#                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';#}
+{#                observer.observe(el);#}
+{#            });#}
+
+{#            // === MENU TOGGLE ===#}
+{#            const menuToggle = document.getElementById('menuToggle');#}
+{#            const heroContent = document.getElementById('heroContent');#}
+{#            const muteToggle = document.getElementById('muteToggle');#}
+
+{#            if (menuToggle && heroContent && muteToggle) {#}
+{#                menuToggle.onclick = () => {#}
+{#                    heroContent.classList.toggle('active');#}
+{#                    muteToggle.classList.toggle('active');#}
+{#                };#}
+{#            }#}
+
+{#            // === VIDEO + MUTE TOGGLE ===#}
+{#            const video = document.querySelector('.video-background');#}
+{#            if (video && muteToggle) {#}
+{#                const playbackState = sessionStorage.getItem('videoPlayback') || 'play';#}
+{#                const muteState = sessionStorage.getItem('videoMuted') === 'true';#}
+{#                video.muted = muteState;#}
+
+{#                if (playbackState === 'play') {#}
+{#                    video.play().catch(error => {#}
+{#                        document.addEventListener('click', function enableAudio() {#}
+{#                            video.muted = muteState;#}
+{#                            video.play();#}
+{#                            sessionStorage.setItem('videoPlayback', 'play');#}
+{#                            document.removeEventListener('click', enableAudio);#}
+{#                        }, { once: true });#}
+{#                    });#}
+{#                }#}
+
+{#                muteToggle.innerHTML = video.muted#}
+{#                    ? '<i class="fas fa-volume-mute me-2"></i>Unmute'#}
+{#                    : '<i class="fas fa-volume-up me-2"></i>Mute';#}
+
+{#                muteToggle.onclick = () => {#}
+{#                    video.muted = !video.muted;#}
+{#                    sessionStorage.setItem('videoMuted', video.muted);#}
+{#                    muteToggle.innerHTML = video.muted#}
+{#                        ? '<i class="fas fa-volume-mute me-2"></i>Unmute'#}
+{#                        : '<i class="fas fa-volume-up me-2"></i>Mute';#}
+{#                };#}
+
+{#                window.addEventListener('beforeunload', () => {#}
+{#                    if (!video.paused) {#}
+{#                        sessionStorage.setItem('videoPlayback', 'play');#}
+{#                    }#}
+{#                    sessionStorage.setItem('videoMuted', video.muted);#}
+{#                });#}
+{#            }#}
+
+{#            // === PAGE-SPECIFIC FUNCTIONS ===#}
+{#            if (typeof initializeFestivalRows === 'function') initializeFestivalRows();#}
+{#            if (typeof initializePagination === 'function') initializePagination();#}
+{#            if (typeof initializePopupMessages === 'function') initializePopupMessages();#}
+{#        }#}
+
+{#        // Run after Turbo navigation#}
+{#        document.addEventListener('turbo:load', initialize);#}
+{#    </script>#}
+{#{% endblock %}#}
 

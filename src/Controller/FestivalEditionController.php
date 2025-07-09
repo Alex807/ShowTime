@@ -6,6 +6,7 @@ use App\Entity\FestivalEdition;
 use App\Form\FestivalEditionTypeForm;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,11 +54,16 @@ class FestivalEditionController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $entityManager->flush();
+                // Custom simple validation: start date must be before end date
+                if ($edition->getStartDate() > $edition->getEndDate()) {
+                    $form->get('end_date')->addError(new FormError('End date must be after start date.'));
 
-                $this->addFlash('success', 'Edition updated successfully!');
-                return $this->redirectToRoute('festival_edition_list', ['festival' => $edition->getFestival()->getId()]);
+                } else {
+                    $entityManager->flush();
 
+                    $this->addFlash('success', 'Edition updated successfully!');
+                    return $this->redirectToRoute('festival_edition_list', ['festival' => $edition->getFestival()->getId()]);
+                }
             } else {
                 // Handle constraints from FORM
                 $errors = $form->getErrors(true);
