@@ -1,0 +1,322 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add New Amenity{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Remove arrows from number inputs */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .amenity-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 20px 0;
+        }
+
+        .amenity-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            width: 100%;
+            color: #333;
+            position: relative;
+        }
+
+        .amenity-card .card-header {
+            background: linear-gradient(45deg, #d5bd25, #ed475f);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: -30px -30px 30px -30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .amenity-card h1 {
+            font-size: 2rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .logo-img {
+            height: 60px;
+            margin-left: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        .optional-field::after {
+            content: " (optional)";
+            color: #6c757d;
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            font-size: 0.95rem;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #495057;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.25);
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(45deg, #20c997, #28a745);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid #6c757d;
+            padding: 10px 28px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-custom:hover {
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Error message styling */
+        .error-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #f5c6cb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-col-full {
+            width: 100%;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .amenity-card {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .amenity-card .card-header {
+                margin: -20px -20px 20px -20px;
+                padding: 15px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-img {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-col {
+                min-width: auto;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn-custom, .btn-outline-custom {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="amenity-container">
+        <div class="amenity-card">
+            <div class="card-header">
+                <h1><i class="fas fa-plus-circle"></i>  New Amenity</h1>
+                <img src="{{ asset('images/appLogo.png') }}" alt="Logo" class="logo-img">
+            </div>
+
+            {{ form_start(amenityForm) }}
+
+            <!-- Display only duplicate artist errors -->
+            {% if amenityForm.vars.errors|length > 0 %}
+                <div class="error-container">
+                    {% for error in amenityForm.vars.errors %}
+                        {% if 'already exists' in error.message %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ error.message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        {{ form_label(amenityForm.name, 'Amenity Name', {'label_attr': {'class': 'required-field'}}) }}
+                        {{ form_widget(amenityForm.name, {'attr': {'class': 'form-control', 'required': 'required', 'placeholder': 'Enter amenity name'}}) }}
+                        {% for error in amenityForm.name.vars.errors %}
+                            <span class="error-message">{{ error.message }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-col">
+                    <div class="form-group">
+                        {{ form_label(amenityForm.peopleCapacity, 'People Capacity', {'label_attr': {'class': 'required-field'}}) }}
+                        {{ form_widget(amenityForm.peopleCapacity, {'attr': {'class': 'form-control', 'required': 'required', 'type': 'number', 'min': '1', 'placeholder': 'Enter capacity'}}) }}
+                        {% for error in amenityForm.peopleCapacity.vars.errors %}
+                            <span class="error-message">{{ error.message }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        {{ form_label(amenityForm.price, 'Price ($)', {'label_attr': {'class': 'required-field'}}) }}
+                        {{ form_widget(amenityForm.price, {'attr': {'class': 'form-control', 'required': 'required', 'type': 'number', 'step': '0.01', 'min': '0', 'placeholder': '0.00'}}) }}
+                        {% for error in amenityForm.price.vars.errors %}
+                            <span class="error-message">{{ error.message }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col-full">
+                    <div class="form-group">
+                        {{ form_label(amenityForm.description, 'Description', {'label_attr': {'class': 'optional-field'}}) }}
+                        {{ form_widget(amenityForm.description, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Enter amenity description (optional)'}}) }}
+                        {% for error in amenityForm.description.vars.errors %}
+                            <span class="error-message">{{ error.message }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <a href="{{ path('amenity_index') }}" class="btn-outline-custom">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+                <button type="submit" class="btn-custom" data-turbo="false">
+                    <i class="fas fa-save"></i> Save Amenity
+                </button>
+            </div>
+
+            {{ form_end(amenityForm) }}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

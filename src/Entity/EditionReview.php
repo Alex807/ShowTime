@@ -25,11 +25,11 @@ class EditionReview
     private ?\DateTime $posted_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'editionReviews')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FestivalEdition $edition = null;
 
     #[ORM\ManyToOne(inversedBy: 'editionReviews')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?UserAccount $user = null;
 
     public function getId(): ?int

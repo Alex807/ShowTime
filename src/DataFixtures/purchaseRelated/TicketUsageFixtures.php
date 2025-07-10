@@ -6,7 +6,6 @@ use App\DataFixtures\traits\hardcodedData\TicketData;
 use App\Entity\TicketUsage;
 use App\Entity\PurchasedTicket;
 use App\Entity\UserAccount;
-use App\Entity\UserRole;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -45,22 +44,10 @@ class TicketUsageFixtures extends Fixture implements DependentFixtureInterface, 
     }
 
     private function getAuthorizedStaffMembers(ObjectManager $manager): array
-    {
-        // Get all user roles
-        $userRoles = $manager->getRepository(UserRole::class)->findAll();
-        $authorizedUserIds = [];
+    { //later you can define here what roles are allowed to scan tickets at the gates
+        $users = $manager->getRepository(UserAccount::class)->findAll();
 
-        foreach ($userRoles as $userRole) {
-            $roleName = $userRole->getRole()->getName();
-
-            // Check if this role is authorized to check tickets
-            if (in_array($roleName, self::AUTHORIZED_STAFF_ROLES)) {
-                $userId = $userRole->getUserAccount()->getId();
-                $authorizedUserIds[$userId] = $userRole->getUserAccount(); //retain the actual users that have necessary role
-            }
-        }
-
-        return array_values($authorizedUserIds); //send just the user type objects
+        return $users; //send just the user type objects
     }
 
     private function createTicketUsage(ObjectManager $manager, PurchasedTicket $purchasedTicket, array $authorizedStaff, int $usageIndex): void

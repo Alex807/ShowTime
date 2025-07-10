@@ -1,0 +1,331 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        body {
+            background-color: #73AAECFF;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .custom_logo {
+            width: 250px !important;
+            height: auto !important;
+        }
+
+        h1 {
+            color: #004d99;
+            font-size: 2.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #eff6ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: #d0e7ff;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            margin-right: 10px;
+            color: white;
+            border: 1px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn.details {
+            background-color: #007BFF;
+        }
+
+        .btn.edit {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+
+        .btn.delete {
+            background-color: #dc3545;
+        }
+
+        .create-button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .btn-create {
+            background-color: #ff8c00;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-create:hover {
+            background-color: #ff7000;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .festival-container {
+            margin-bottom: 30px;
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+    </style>
+
+    <div class="header-container" data-turbo-permanent="false">
+        <a href="{{ path('app_home_page') }}">
+            <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="custom_logo">
+        </a>
+        <h1>Festivals List</h1>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <table id="festivalTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>City</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for festival in festivals %}
+            <tr class="festival-row" data-id="{{ festival.id }}">
+                <td>{{ festival.id }}</td>
+                <td>{{ festival.name }}</td>
+                <td>{{ festival.city }}</td>
+            </tr>
+            <tr class="action-buttons" id="actions-{{ festival.id }}">
+                <td colspan="3">
+                    <a href="{{ path('festival_show', {id: festival.id}) }}"
+                       class="btn details"> Details</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        {% if festivals.pageCount > 1 %}
+            <div class="pagination-buttons">
+                {% if festivals.currentPageNumber > 1 %}
+                    <a class="btn pagination-btn" href="{{ path('festival_index', {'page': festivals.currentPageNumber - 1}) }}">
+                        Previous
+                    </a>
+                {% else %}
+                    <span class="btn pagination-btn disabled">Previous</span>
+                {% endif %}
+
+                <span class="page-number">Page {{ festivals.currentPageNumber }} of {{ festivals.pageCount }}</span>
+
+                {% if festivals.currentPageNumber < festivals.pageCount %}
+                    <a class="btn pagination-btn" href="{{ path('festival_index', {'page': festivals.currentPageNumber + 1}) }}">
+                        Next
+                    </a>
+                {% else %}
+                    <span class="btn pagination-btn disabled">Next</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script> {# duble-click to go to start-end page #}
+        function initializeFestivalRows() {
+            document.querySelectorAll('.festival-row').forEach(row => {
+                // Remove existing event listeners
+                row.removeEventListener('click', handleRowClick);
+                // Add new event listener
+                row.addEventListener('click', handleRowClick);
+            });
+        }
+
+        function handleRowClick(event) {
+            const row = event.currentTarget;
+            const id = row.getAttribute('data-id');
+            const actionsRow = document.getElementById('actions-' + id);
+            const isVisible = actionsRow.style.display === 'table-row';
+
+            // Hide all action rows first
+            document.querySelectorAll('.action-buttons').forEach(el => el.style.display = 'none');
+
+            // Show/hide the clicked row's actions
+            actionsRow.style.display = isVisible ? 'none' : 'table-row';
+        }
+
+        // Initialize pagination double-click functionality
+        function initializePagination() {
+            const clicks = {};
+            const doubleClickThreshold = 300; // Reduced threshold for faster detection
+
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    if (this.classList.contains('disabled')) return;
+
+                    const currentTime = new Date().getTime();
+                    const lastClick = clicks[this.textContent] || 0;
+                    clicks[this.textContent] = currentTime;
+
+                    if (currentTime - lastClick < doubleClickThreshold) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Instant navigation using Turbo.visit with 'replace'
+                        if (this.textContent.includes('Previous')) {
+                            Turbo.visit("{{ path('festival_index', {'page': 1}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        } else if (this.textContent.includes('Next')) {
+                            Turbo.visit("{{ path('festival_index', {'page': festivals.pageCount}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        }
+                    }
+                });
+            })
+        }
+
+        // Handle popup messages
+        function initializePopupMessages() {
+            const popupMessages = document.querySelectorAll('.popup-message');
+            popupMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.animation = 'slideOutRight 0.5s ease forwards';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        }
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializeFestivalRows();
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
+    </script>
+
+    <style> {# code for navigate the pages buttons #}
+        .pagination-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .pagination-btn:not(.disabled):hover::after {
+            content: "Double-click to jump to end";
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            white-space: nowrap;
+            color: #666;
+            background-color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pagination-btn.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .page-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+{% endblock %}

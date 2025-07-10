@@ -3,27 +3,51 @@
 namespace App\Entity;
 
 use App\Repository\UserDetailsRepository;
+use App\Validator\SqlInjectionSafe;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: UserDetailsRepository::class)]
 #[ORM\Table(name: "user_details")]
 class UserDetails
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Id] //this makes the property PK
+    #[ORM\OneToOne(targetEntity: UserAccount::class)]
+    #[ORM\JoinColumn(referencedColumnName: "id", nullable: false, onDelete: 'CASCADE')] //this makes it to be FK
+    private ?UserAccount $user = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "FirstName contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "LastName contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $lastName = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $age = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    #[Assert\Regex(
+        pattern: '\d+',
+        message: "Phone can contains only digits."
+    )]
+    #[SqlInjectionSafe]
     private ?string $phoneNo = null;
 
     #[ORM\Column(nullable: true)]
@@ -32,9 +56,21 @@ class UserDetails
     #[ORM\Column(nullable: true)]
     private ?\DateTime $updatedAt = null;
 
-    public function getId(): ?int
+    public function __construct() //set them in backend, user not need to insert data here
     {
-        return $this->id;
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    public function getUser(): ?UserAccount
+    {
+        return $this->user;
+    }
+
+    public function setUser(UserAccount $user): static
+    {
+        $this->user = $user;
+        return $this;
     }
 
     public function getFirstName(): ?string

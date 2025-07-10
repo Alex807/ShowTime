@@ -45,7 +45,7 @@ class FestivalFixtures extends Fixture implements FixtureGroupInterface
             // Contact email based on festival name
             $contactPrefix = $this->createEmailPrefix($festivalName);
             $contactDomain = self::CONTACT_DOMAINS[array_rand(self::CONTACT_DOMAINS)];
-            $festival->setFestivalContact($contactPrefix . $contactDomain);
+            $festival->setFestivalEmail($contactPrefix . $contactDomain);
 
             // Website (80% chance of having one)
             if (mt_rand(1, 10) <= 8) {

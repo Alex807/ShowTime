@@ -3,13 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\FestivalEditionRepository;
+use App\Validator\SqlInjectionSafe;
+use App\Validator\ValidPeriodBetweenDates;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalEditionRepository::class)]
 #[ORM\Table(name: "festival_edition")]
+#[UniqueEntity(fields: ['venue_name', 'start_date', 'end_date'], message: 'Two festival editions have conflicting dates for same stage.')]
 class FestivalEdition
 {
     #[ORM\Id]
@@ -18,15 +23,26 @@ class FestivalEdition
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $year_happened = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+        message: "Venue name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $venue_name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 500)]
     private ?string $description = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Choice(
+        choices: ['completed', 'upcoming', 'cancelled', 'postponed', 'sold_out'],
+        message: 'Please choose a valid status: completed, upcoming, cancelled, postponed, sold_out.'
+    )]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -36,40 +52,42 @@ class FestivalEdition
     private ?\DateTime $end_date = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $people_capacity = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 2000)]
     private ?string $terms_conditions = null;
 
     #[ORM\Column]
     private ?\DateTime $updated_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'festivalEditions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'festivalEditions')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Festival $festival = null;
 
     /**
      * @var Collection<int, EditionReview>
      */
-    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionReview::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
     private Collection $editionReviews;
 
     /**
      * @var Collection<int, EditionArtist>
      */
-    #[ORM\OneToMany(targetEntity: EditionArtist::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionArtist::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
     private Collection $editionArtists;
 
     /**
      * @var Collection<int, EditionAmenity>
      */
-    #[ORM\OneToMany(targetEntity: EditionAmenity::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: EditionAmenity::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
     private Collection $editionAmenities;
 
     /**
      * @var Collection<int, Purchase>
      */
-    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'edition', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'edition',  cascade: ['remove'], orphanRemoval: true)]
     private Collection $purchases;
 
     public function __construct()

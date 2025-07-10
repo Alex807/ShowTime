@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .logo {
+            width: 130px;
+            height: auto;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .festival-note {
+            margin-left: 60px;
+            padding: 20px;
+            border-left: 5px solid #007BFF;
+            background-color: #fee4ff;
+            max-width: 600px;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .festival-note h2 {
+            margin-top: 0;
+            color: #FEE4FFFF;
+        }
+
+        .festival-note p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .btn.details {
+            display: inline-block;
+            margin-left: 60px;
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .btn.details:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <div class="header-container">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo" class="logo">
+        <h1>Festival Details</h1>
+    </div>
+
+    <div class="festival-note">
+        <h2>{{ festival.name }}</h2>
+        <p><span class="label">ID:</span> {{ festival.id }}</p>
+        <p><span class="label">Country:</span> {{ festival.country }}</p>
+        <p><span class="label">City:</span> {{ festival.city }}</p>
+        <p><span class="label">Street:</span> {{ festival.streetName }}<a> nr.</a> {{ festival.streetNo }}</p>
+        <p><span class="label">Contact:</span> {{ festival.festivalEmail }}</p>
+        <p><span class="label">Website:</span>
+            {% if festival.website %}
+                <a href="{{ festival.website }}" target="_blank">{{ festival.website }}</a>
+            {% else %}
+                <em>No website provided</em>
+            {% endif %}
+        </p>
+        <p><span class="label">Last Updated:</span> {{ festival.updatedAt|date('Y-m-d H:i') }}</p>
+        <div class="festival-actions">
+            <a href="{{ path('festival_edition_list', {'festival': festival.id}) }}" class="btn-editions">
+                View Editions
+            </a>
+            {# Other actions #}
+        </div>
+    </div>
+
+    <a href="{{ path('festival_index') }}" class="btn details">Back</a>
+{% endblock %}

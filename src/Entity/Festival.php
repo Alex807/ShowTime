@@ -6,9 +6,13 @@ use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\SqlInjectionSafe;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ORM\Table(name: "festival")]
+#[UniqueEntity(fields: ['name'], message: 'This festival already exists.')]
 class Festival
 {
     #[ORM\Id]
@@ -17,27 +21,59 @@ class Festival
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "Name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "Name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $country = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\,\(\)]+$/u",
+        message: "City contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "Street Name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $street_name = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $street_no = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $festival_contact = null;
+    #[Assert\NotBlank]
+    #[Assert\Email(message: "Invalid email address.")]
+    #[SqlInjectionSafe]
+    private ?string $festival_email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
+    #[SqlInjectionSafe]
     private ?string $website = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Url]
+    #[SqlInjectionSafe]
     private ?string $logo_url = null;
 
     #[ORM\Column]
@@ -46,7 +82,7 @@ class Festival
     /**
      * @var Collection<int, FestivalEdition>
      */
-    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival')]
     private Collection $festivalEditions;
 
     public function __construct()
@@ -119,14 +155,14 @@ class Festival
         return $this;
     }
 
-    public function getFestivalContact(): ?string
+    public function getFestivalEmail(): ?string
     {
-        return $this->festival_contact;
+        return $this->festival_email;
     }
 
-    public function setFestivalContact(string $festival_contact): static
+    public function setFestivalEmail(string $festival_email): static
     {
-        $this->festival_contact = $festival_contact;
+        $this->festival_email = $festival_email;
 
         return $this;
     }

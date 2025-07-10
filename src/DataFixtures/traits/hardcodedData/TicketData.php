@@ -8,15 +8,6 @@ trait TicketData
                                         'VIP Experience', 'Single Day Pass'
                                     ];
 
-    // Staff roles that can check tickets
-    private const AUTHORIZED_STAFF_ROLES = [
-                                            'Security Staff',
-                                            'Gate Attendant',
-                                            'Event Coordinator',
-                                            'Venue Manager',
-                                            'Customer Service',
-                                            'Supervisor'
-                                        ];
     private const TICKET_TYPES_DATA = [
         [
             'name' => 'General Admission',

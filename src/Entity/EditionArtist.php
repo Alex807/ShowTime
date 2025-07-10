@@ -32,11 +32,11 @@ class EditionArtist
     private ?\DateTime $end_time = null;
 
     #[ORM\ManyToOne(inversedBy: 'editionArtists')]
-    #[ORM\JoinColumn(name:"edition_id", nullable: false)]
+    #[ORM\JoinColumn(name:"edition_id", nullable: false, onDelete: 'CASCADE')]
     private ?FestivalEdition $edition = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name:"artist_id", nullable: false)]
+    #[ORM\JoinColumn(name:"artist_id", nullable: false, onDelete: 'CASCADE')]
     private ?Artist $artist = null;
 
     public function getId(): ?int

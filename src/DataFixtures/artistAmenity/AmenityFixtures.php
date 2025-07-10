@@ -32,7 +32,7 @@ class AmenityFixtures extends Fixture implements FixtureGroupInterface
             $minPrice = $amenityData['price'][0];
             $maxPrice = $amenityData['price'][1];
             $price = mt_rand($minPrice * 100, $maxPrice * 100) / 100; // Maintain 2 decimal places
-            $amenity->setPrice(number_format($price, 2, '.', ''));
+            $amenity->setPrice($price);
 
             $manager->persist($amenity);
         }

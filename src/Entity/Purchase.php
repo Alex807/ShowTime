@@ -24,12 +24,12 @@ class Purchase
     #[ORM\Column]
     private ?\DateTime $purchase_date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'purchases')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: FestivalEdition::class, inversedBy: 'purchases')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FestivalEdition $edition = null;
 
-    #[ORM\ManyToOne(inversedBy: 'purchases')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: UserAccount::class, inversedBy: 'purchases')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?UserAccount $user = null;
 
     public function getId(): ?int

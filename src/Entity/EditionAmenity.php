@@ -24,11 +24,11 @@ class EditionAmenity
     private ?\DateTime $end_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'editionAmenities')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FestivalEdition $edition = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Amenity $amenity = null;
 
     public function getId(): ?int

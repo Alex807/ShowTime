@@ -1,0 +1,175 @@
+{% extends '../base.html.twig' %}
+
+{% block title %}My Purchases - SoundScape Hub{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .purchases-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .purchase-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .purchase-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .purchase-header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .purchase-content {
+            padding: 1.5rem;
+        }
+
+        .purchase-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .price-highlight {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="purchases-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-shopping-cart me-2"></i>My Purchases</h1>
+            <p class="mb-0">Your complete purchase history</p>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a href="{{ path('user_profile') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Profile
+            </a>
+        </div>
+
+        {% if purchases|length > 0 %}
+            <!-- Purchases List -->
+            {% for purchase in purchases %}
+                <div class="purchase-card">
+                    <div class="purchase-header">
+                        <h4 class="mb-1">
+                            <i class="fas fa-ticket-alt me-2"></i>
+                            {% if purchase.festivalEdition %}
+                                {{ purchase.festivalEdition.festival.name }} - {{ purchase.festivalEdition.year }}
+                            {% else %}
+                                Purchase #{{ purchase.id }}
+                            {% endif %}
+                        </h4>
+                    </div>
+
+                    <div class="purchase-content">
+                        <div class="purchase-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Purchase Date</span>
+                                <span class="detail-value">{{ purchase.purchaseDate|date('F j, Y \\a\\t g:i A') }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Quantity</span>
+                                <span class="detail-value">{{ purchase.quantity }} ticket(s)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Total Price</span>
+                                <span class="detail-value price-highlight">${{ purchase.totalPrice|number_format(2) }}</span>
+                            </div>
+                            {% if purchase.festivalEdition %}
+                                <div class="detail-item">
+                                    <span class="detail-label">Event Date</span>
+                                    <span class="detail-value">{{ purchase.festivalEdition.startDate|date('F j, Y') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>No Purchases Yet</h3>
+                <p>You haven't made any purchases yet. Browse our festivals and get your tickets!</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

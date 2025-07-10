@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        body {
+            background: linear-gradient(to right, #FAD0C4, #FFD1FF);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 30px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header img {
+            width: 230px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-top: 15px;
+            color: #4A148C;
+            letter-spacing: 1px;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background-color: #d1f0dc;
+            color: #256029;
+        }
+
+        .alert-error {
+            background-color: #ffe0e0;
+            color: #9f1d1d;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .artist-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .artist-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .artist-info {
+            margin-bottom: 15px;
+        }
+
+        .artist-info strong {
+            display: block;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 3px;
+        }
+
+        .artist-info span {
+            font-size: 18px;
+            color: #222;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .artist-card:hover .card-actions {
+            opacity: 1;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn.details {
+            background-color: #6a1b9a;
+            color: white;
+        }
+
+        .btn.delete {
+            background-color: #e53935;
+            color: white;
+        }
+
+        .pagination-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .pagination-btn {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 0 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .pagination-btn.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .page-number {
+            font-weight: bold;
+            margin: 0 15px;
+            color: #4A148C;
+        }
+    </style>
+
+    <div class="header">
+        <img src="{{ asset('images/AppLogo.png') }}" alt="Logo">
+        <h1>Meet the Artists</h1>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card-grid">
+        {% for artist in artists %}
+            <div class="artist-card">
+                <div class="artist-info">
+                    <strong>ID:</strong>
+                    <span>{{ artist.id }}</span>
+                </div>
+                <div class="artist-info">
+                    <strong>Stage Name:</strong>
+                    <span>{{ artist.stageName }}</span>
+                </div>
+                <div class="artist-info">
+                    <strong>Music Genre:</strong>
+                    <span>{{ artist.musicGenre }}</span>
+                </div>
+
+                <div class="card-actions">
+                    <a href="{{ path('artist_show', {id: artist.id}) }}" class="btn details">Details</a>
+                    <form method="post" action="{{ path('artist_delete', {id: artist.id}) }}"
+                          onsubmit="return confirm('Are you sure you want to delete this artist?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_artist_' ~ artist.id) }}">
+                        <button class="btn delete">Delete</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination-container">
+        {% if artists.pageCount > 1 %}
+            {% if artists.currentPageNumber > 1 %}
+                <a class="pagination-btn" href="{{ path('artist_index', {'page': artists.currentPageNumber - 1}) }}">
+                    Previous
+                </a>
+            {% else %}
+                <span class="pagination-btn disabled">Previous</span>
+            {% endif %}
+
+            <span class="page-number">Page {{ artists.currentPageNumber }} of {{ artists.pageCount }}</span>
+
+            {% if artists.currentPageNumber < artists.pageCount %}
+                <a class="pagination-btn" href="{{ path('artist_index', {'page': artists.currentPageNumber + 1}) }}">
+                    Next
+                </a>
+            {% else %}
+                <span class="pagination-btn disabled">Next</span>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <script> {# duble-click to go to start-end page #}
+        function initializePagination() {
+            const clicks = {};
+            const doubleClickThreshold = 300; // Reduced threshold for faster detection
+
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    if (this.classList.contains('disabled')) return;
+
+                    const currentTime = new Date().getTime();
+                    const lastClick = clicks[this.textContent] || 0;
+                    clicks[this.textContent] = currentTime;
+
+                    if (currentTime - lastClick < doubleClickThreshold) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Instant navigation using Turbo.visit with 'replace'
+                        if (this.textContent.includes('Previous')) {
+                            Turbo.visit("{{ path('artist_index', {'page': 1}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        } else if (this.textContent.includes('Next')) {
+                            Turbo.visit("{{ path('artist_index', {'page': artists.pageCount}) }}", {
+                                action: 'replace',
+                                scroll: 'top'
+                            });
+                        }
+                    }
+                });
+            })
+        }
+
+        // Handle popup messages
+        function initializePopupMessages() {
+            const popupMessages = document.querySelectorAll('.popup-message');
+            popupMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.animation = 'slideOutRight 0.5s ease forwards';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        }
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
+    </script>
+{% endblock %}
+
+

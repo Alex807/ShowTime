@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\ArtistRepository;
+use App\Validator\SqlInjectionSafe;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
 #[ORM\Table(name: "artist")]
+#[UniqueEntity(fields: ['real_name', 'stage_name'], message: 'This artist already exists.')]
 class Artist
 {
     #[ORM\Id]
@@ -15,21 +19,49 @@ class Artist
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "Artist real_name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $real_name = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "Artist stage_name contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $stage_name = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\,\(\)]+$/u",
+        message: "Music genre contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $music_genre = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100)] // always start with '@' as works tagging in Instagram
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9\s\-\&\.\@\,\(\)]+$/u",
+        message: "Instagram account contains invalid characters."
+    )]
+    #[SqlInjectionSafe]
     private ?string $instagram_account = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Url]
+    #[SqlInjectionSafe]
     private ?string $image_url = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Email(message: "Invalid email address.")]
+    #[SqlInjectionSafe]
     private ?string $manager_email = null;
 
     public function getId(): ?int

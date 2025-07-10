@@ -1,0 +1,205 @@
+{% block footer %}
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center footer-content">
+                <div class="col-12">
+                    <div class="footer-section d-flex align-items-center justify-content-between">
+                        <div class="logo-social d-flex align-items-center">
+                            <div class="festival-brand">
+                                <img src="{{ asset('images/AppLogo.png') }}" alt="Festival Hub Logo" class="footer-logo">
+                                <h4 class="festival-title">SoundScape Hub</h4>
+                            </div>
+                            <div class="social-icons d-flex gap-2 ms-3">
+                                <h5 class="link-category">Follow us !!</h5>
+                                <a href="https://www.facebook.com/ElectricCastle?locale=ro_RO" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://www.instagram.com/untoldfestival" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.youtube.com/@ElectricCastleFestival" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                                <a href="https://tiktok.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                        <div class="footer-links">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row text-center d-flex flex-row align-items-center">
+                                        <div class="col-3">
+                                            <h6 class="link-category">Rules & Regulations</h6>
+                                            <ul class="list-unstyled">
+                                                <li><a href="#">Privacy Policy</a></li>
+                                                <li><a href="#">Terms & Conditions</a></li>
+                                                <li><a href="#">Installments rules</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-3">
+                                            <h6 class="link-category">Press</h6>
+                                            <ul class="list-unstyled">
+                                                <li><a href="#">Contacts</a></li>
+                                                <li><a href="#">Careers</a></li>
+                                                <li><a href="#">Volunteers</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-3">
+                                            <h6 class="link-category">Partners & Sponsors</h6>
+                                            <ul class="list-unstyled">
+                                                <li><a href="#">Food Vendors</a></li>
+                                                <li><a href="#">Fashion & Fair Vendors</a></li>
+                                                <li><a href="#">Ambassadors</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-3">
+                                            <h6 class="link-category">Tickets Info</h6>
+                                            <ul class="list-unstyled">
+                                                <li><a href="#">Request Invoice</a></li>
+                                                <li><a href="#">Goodies</a></li>
+                                                <li><a href="#">ANPC</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-1 border-light">
+                    <div class="row align-items-center copyright">
+                        <div class="col-12">
+                            <p class="mb-0 text-muted text-center">© 2025 Festival Hub. All rights reserved.</p>
+                            <p class="mb-0 text-muted text-center"><small>Licensed by Music Events Authority | Certified Ticket Vendor | Secure Payment Processing</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <style>
+        .footer {
+            background: #222222FF;
+            color: #ffffff;
+            padding: 10px 0;
+            /*margin-top: 20px;*/
+            font-family: 'Arial', sans-serif;
+        }
+
+        .footer-content {
+            min-height: 20px;
+        }
+
+        .footer-section {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 5px 0;
+            flex-wrap: nowrap;
+        }
+
+        .logo-social {
+            display: flex;
+            align-items: center;
+        }
+
+        .festival-brand {
+            text-align: left;
+        }
+
+        .footer-logo {
+            width: 130px;
+            height: auto;
+            margin-bottom: 3px;
+        }
+
+        .festival-title {
+            font-size: 1rem;
+            color: #e0e0e0;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .social-icons a {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #000000, #ffffff);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.15);
+            background: linear-gradient(45deg, #008080, #ff7f50);
+        }
+
+        .footer-links .link-category {
+            font-size: 0.8rem;
+            color: #00CED1;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .footer-links ul.list-unstyled li a {
+            color: #ffffff;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links ul.list-unstyled li a:hover {
+            color: #ff7f50;
+        }
+
+        .copyright {
+            margin-top: 5px;
+            font-size: 0.7rem;
+        }
+
+        .copyright .text-muted {
+            color: #8a8a8a !important;
+        }
+
+        @media (max-width: 768px) {
+            .footer-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .logo-social {
+                justify-content: center;
+            }
+            .social-icons {
+                margin-top: 5px;
+            }
+            .footer-links .row {
+                justify-content: center;
+            }
+            .footer-links .col-3 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+            .copyright {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer-logo {
+                width: 35px;
+            }
+            .festival-title {
+                font-size: 0.9rem;
+            }
+            .footer-links .link-category {
+                font-size: 0.75rem;
+            }
+            .footer-links ul.list-unstyled li a {
+                font-size: 0.7rem;
+            }
+            .social-icons a {
+                width: 25px;
+                height: 25px;
+            }
+        }
+    </style>
+{% endblock %}

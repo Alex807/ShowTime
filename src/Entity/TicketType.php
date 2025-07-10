@@ -25,7 +25,7 @@ class TicketType
     private ?string $price = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FestivalEdition $edition = null;
 
     public function getId(): ?int
