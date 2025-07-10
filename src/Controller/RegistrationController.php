@@ -80,6 +80,7 @@ class RegistrationController extends AbstractController
                 foreach ($errors as $error) {
                     $this->addFlash('error', $error->getMessage());
                 }
+                $request->getSession()->getFlashBag()->clear(); //this line prevent the propagation of flash msj to redirected page after success
             }
         }
 

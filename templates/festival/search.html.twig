@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Festivals - SoundScape Hub{% endblock %}
+
+{% block body %}
+    <div class="container profile-container">
+        <div class="search-panel">
+            <div class="search-header">
+                <h3 class="search-title">
+                    <i class="fas fa-search me-2"></i>
+                    Search Festivals
+                </h3>
+            </div>
+            <div class="search-container">
+                <form method="get" action="{{ path('festival_search') }}">
+                    <div class="search-input-group">
+                        <input type="text" name="q" class="search-input" placeholder="Search festivals by name..." value="{{ query }}" autocomplete="off">
+                        <button type="submit" class="btn btn-primary position-absolute end-0 top-50 translate-middle-y" style="margin-right: 10px;">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                {% if festival %}
+                    <div class="category-header mt-4">
+                        <i class="fas fa-calendar-alt"></i>
+                        {{ festival.name }} Editions
+                    </div>
+                    {% if editions|length > 0 %}
+                        <div class="row">
+                            {% for edition in editions %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="info-card">
+                                        <h5 class="info-card-title">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            {{ edition.yearHappened }} - {{ edition.venueName }}
+                                        </h5>
+                                        <div class="info-item">
+                                            <span class="info-label">Date:</span>
+                                            <span class="info-value">
+                                            {{ edition.startDate|date('F j, Y') }} - {{ edition.endDate|date('F j, Y') }}
+                                        </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Status:</span>
+                                            <span class="info-value">{{ edition.status|capitalize }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Capacity:</span>
+                                            <span class="info-value">{{ edition.peopleCapacity }} people</span>
+                                        </div>
+                                        {% if edition.status in ['upcoming', 'sold_out'] %}
+                                            <a href="{{ path('purchase_new', {'editionId': edition.id}) }}" class="action-btn user-btn mt-3">
+                                                <i class="fas fa-shopping-cart"></i>
+                                                Purchase Tickets
+                                            </a>
+                                        {% else %}
+                                            <div class="alert alert-warning mt-3">
+                                                Tickets not available (Status: {{ edition.status|capitalize }})
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-results">
+                            <i class="fas fa-calendar-times"></i>
+                            <div>No editions found for this festival.</div>
+                        </div>
+                    {% endif %}
+                {% elseif query %}
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <div>No festivals found matching your search.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

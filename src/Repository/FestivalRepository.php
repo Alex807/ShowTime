@@ -16,6 +16,17 @@ class FestivalRepository extends ServiceEntityRepository
         parent::__construct($registry, Festival::class);
     }
 
+    public function searchByName(string $query, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('f')
+            ->where('f.name LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->setMaxResults($limit)
+            ->orderBy('f.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Festival[] Returns an array of Festival objects
     //     */

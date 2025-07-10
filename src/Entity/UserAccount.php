@@ -18,7 +18,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
 {
     private const LOWEST_ROLE_IN_HIERARCHY = ['ROLE_USER'];
-    private const ROLE_WHO_PROMOTES = 'ROLE_ADMIN';
 
     #[ORM\Id] //this makes the property PK
     #[ORM\GeneratedValue]

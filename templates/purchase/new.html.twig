@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Purchase Tickets - SoundScape Hub{% endblock %}
+
+{% block body %}
+    <div class="container profile-container">
+        <div class="action-panel">
+            <h3 class="action-title">
+                <i class="fas fa-shopping-cart me-2"></i>
+                Purchase Tickets for {{ edition.yearHappened }} - {{ edition.venueName }}
+            </h3>
+            {% for flash_message in app.flashes('success') %}
+                <div class="alert alert-success">{{ flash_message }}</div>
+            {% endfor %}
+            {% for flash_message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ flash_message }}</div>
+            {% endfor %}
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.ticket_type, {'label': 'Ticket Type', 'attr': {'class': 'form-select'}}) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.quantity, {'label': 'Quantity', 'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check"></i> Confirm Purchase
+            </button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

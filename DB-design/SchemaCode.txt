@@ -63,23 +63,6 @@ Table edition_review {
   }
 }
 
-Table amenity {
-  id integer [primary key]
-  name varchar [not null]
-  description text
-  people_capacity integer [not null] 
-  price decimal(10, 2) [not null]
-}
-
-Table edition_amenity {
-  id integer [primary key]
-
-  edition_id integer [not null]
-  amenity_id integer [not null] 
-  start_at timestamp 
-  end_at timestamp
-}
-
 Table artist {
   id integer [primary key]
   real_name varchar [unique, not null] 
@@ -103,7 +86,6 @@ Table edition_artist {
 
 Table ticket_type {
   id integer [primary key]
-  edition_id integer [not null]
   name enum [not null, note: 'VIP, Regular, EarlyBird, Parent, Elderly, Couple']
   benefits text
   price decimal(10, 2) [not null]
@@ -111,74 +93,28 @@ Table ticket_type {
 
 Table purchase {
   id integer [primary key]
-  user_id integer   
-  edition_id integer [not null]
-  status enum [not null, note: 'pending, confirmed, cancelled']
-  total_amount decimal(10, 2) [not null] //ticket + sum(amenities)
+  user_id integer   [not null]
+  edition_id integer [not null] 
+  quantity integer [not null] 
+  ticket_type_id integer [not null] 
   purchase_date timestamp [not null]
 } 
-
-Table purchased_ticket { //to can have in one purchase different types of tickets
-  id integer [primary key]
-  purchase_id integer [not null]
-  ticket_type_id integer [not null] //to can go to find the price/ticket_type
-  quantity integer [not null, default: 1]
-  tickets_used integer [not null, default: 0] // track how many have been used
-  valid_starting date [not null]  // When tickets become valid
-  expires_at date [not null]
-  
-  //ensure tickets_used never exceeds quantity
-  Note: 'CHECK (tickets_used <= quantity)'
-  
-  indexes {
-    (purchase_id, ticket_type_id) [unique] // one entry per ticket type per purchase(use quantity)
-  }
-}
-
-Table ticket_usage {
-  id integer [primary key]
-  purchased_ticket_id integer [not null]
-  used_at timestamp [not null]
-  entry_gate varchar  [not null]// where was used
-  staff_member_id integer  // which staff member scanned it
-  notes text // any mentions
-  
-}
-
-Table purchase_amenity { 
-  id integer [primary key]
-  purchase_id integer [not null]
-  amenity_id integer [not null]
-  edition_amenity_id integer [not null]
-  quantity integer [not null, default: 1]
-  
-}
 
 
 // Relationships
 Ref: user_account.id - user_details.user_id [delete: cascade]
 Ref: user_account.id < purchase.user_id
 Ref: user_account.id < edition_review.user_id [delete: cascade]
-Ref: user_account.id < ticket_usage.staff_member_id // staff who scanned
 
-Ref: festival.id < festival_edition.festival_id 
+Ref: festival.id < festival_edition.festival_id [delete: cascade]
 
-Ref: amenity.id < purchase_amenity.amenity_id
-Ref: amenity.id < edition_amenity.amenity_id [delete: cascade]
 
-Ref: festival_edition.id < edition_amenity.edition_id [delete: cascade]
-Ref: festival_edition.id < ticket_type.edition_id
 Ref: festival_edition.id < purchase.edition_id 
 Ref: festival_edition.id < edition_review.edition_id [delete: cascade]
 Ref: festival_edition.id < edition_artist.edition_id [delete: cascade]
 
 Ref: artist.id < edition_artist.artist_id [delete: cascade]
 
-Ref: purchase.id < purchased_ticket.purchase_id [delete: cascade]
-Ref: purchase.id < purchase_amenity.purchase_id [delete: cascade]
 
-Ref: ticket_type.id < purchased_ticket.ticket_type_id
+Ref: ticket_type.id < purchase.ticket_type_id
 
-Ref: purchased_ticket.id < ticket_usage.purchased_ticket_id [delete: cascade]
-
-Ref: edition_amenity.id < purchase_amenity.edition_amenity_id [delete: cascade]
