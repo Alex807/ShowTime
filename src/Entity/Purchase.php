@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PurchaseRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: PurchaseRepository::class)]
 #[ORM\Table(name: "purchase")]
@@ -15,48 +16,50 @@ class Purchase
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30)]
-    private ?string $status = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $total_amount = null;
-
-    #[ORM\Column]
-    private ?\DateTime $purchase_date = null;
-
     #[ORM\ManyToOne(targetEntity: FestivalEdition::class, inversedBy: 'purchases')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?FestivalEdition $edition = null;
 
     #[ORM\ManyToOne(targetEntity: UserAccount::class, inversedBy: 'purchases')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?UserAccount $user = null;
+
+    #[ORM\Column]
+    #[Assert\Positive]
+    private ?int $quantity = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?TicketType $ticket_type = null;
+
+    #[ORM\Column]
+    private ?\DateTime $purchase_date = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStatus(): ?string
+    public function getQuantity(): ?int
     {
-        return $this->status;
+        return $this->quantity;
     }
 
-    public function setStatus(string $status): static
+    public function setQuantity(int $quantity): static
     {
-        $this->status = $status;
+        $this->quantity = $quantity;
 
         return $this;
     }
 
-    public function getTotalAmount(): ?string
+    public function getTicketType(): ?TicketType
     {
-        return $this->total_amount;
+        return $this->ticket_type;
     }
 
-    public function setTotalAmount(string $total_amount): static
+    public function setTicketType(?TicketType $ticket_type): static
     {
-        $this->total_amount = $total_amount;
+        $this->ticket_type = $ticket_type;
 
         return $this;
     }

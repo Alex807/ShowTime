@@ -63,7 +63,7 @@ class FestivalEdition
     private ?\DateTime $updated_at = null;
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'festivalEditions')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Festival $festival = null;
 
     /**
@@ -79,12 +79,6 @@ class FestivalEdition
     private Collection $editionArtists;
 
     /**
-     * @var Collection<int, EditionAmenity>
-     */
-    #[ORM\OneToMany(targetEntity: EditionAmenity::class, mappedBy: 'edition', cascade: ['remove'], orphanRemoval: true)]
-    private Collection $editionAmenities;
-
-    /**
      * @var Collection<int, Purchase>
      */
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'edition',  cascade: ['remove'], orphanRemoval: true)]
@@ -94,7 +88,6 @@ class FestivalEdition
     {
         $this->editionReviews = new ArrayCollection();
         $this->editionArtists = new ArrayCollection();
-        $this->editionAmenities = new ArrayCollection();
         $this->purchases = new ArrayCollection();
     }
 
@@ -277,36 +270,6 @@ class FestivalEdition
             // set the owning side to null (unless already changed)
             if ($editionArtist->getEdition() === $this) {
                 $editionArtist->setEdition(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, EditionAmenity>
-     */
-    public function getEditionAmenities(): Collection
-    {
-        return $this->editionAmenities;
-    }
-
-    public function addEditionAmenity(EditionAmenity $editionAmenity): static
-    {
-        if (!$this->editionAmenities->contains($editionAmenity)) {
-            $this->editionAmenities->add($editionAmenity);
-            $editionAmenity->setEdition($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEditionAmenity(EditionAmenity $editionAmenity): static
-    {
-        if ($this->editionAmenities->removeElement($editionAmenity)) {
-            // set the owning side to null (unless already changed)
-            if ($editionAmenity->getEdition() === $this) {
-                $editionAmenity->setEdition(null);
             }
         }
 

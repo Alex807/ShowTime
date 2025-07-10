@@ -4,13 +4,13 @@ namespace App\DataFixtures\traits\hardcodedData;
 
 trait TicketData
 {
-    private const ESSENTIAL_TYPES = [   'General Admission', 'Weekend Pass',
+    private const ESSENTIAL_TYPES = [   'General Access', 'Weekend Pass',
                                         'VIP Experience', 'Single Day Pass'
                                     ];
 
     private const TICKET_TYPES_DATA = [
         [
-            'name' => 'General Admission',
+            'name' => 'General Access',
             'benefits' => 'Access to main festival grounds, all outdoor stages, food courts, and merchandise stands. Standing room only.',
             'base_price' => [45.00, 85.00]
         ],
@@ -133,110 +133,5 @@ trait TicketData
         'Late Night After-Party' => ['min' => 1, 'max' => 4],
         'Food & Beverage Package' => ['min' => 1, 'max' => 6],
         'Photography Pass' => ['min' => 1, 'max' => 1]
-    ];
-
-    // Usage rates for different ticket types (percentage of tickets typically used)
-    private const USAGE_RATES = [
-        'General Admission' => ['min' => 70, 'max' => 95], //how many are tickets are used/ticket_type (predefined ranges)
-        'Single Day Pass' => ['min' => 80, 'max' => 100],
-        'Weekend Pass' => ['min' => 65, 'max' => 90],
-        'VIP Experience' => ['min' => 85, 'max' => 100],
-        'Platinum VIP' => ['min' => 90, 'max' => 100],
-        'Student Discount' => ['min' => 75, 'max' => 95],
-        'Early Bird Special' => ['min' => 70, 'max' => 90],
-        'Group Package (4+)' => ['min' => 60, 'max' => 85],
-        'Family Pass (2 Adults + 2 Kids)' => ['min' => 80, 'max' => 100],
-        'Senior Citizen (65+)' => ['min' => 70, 'max' => 90],
-        'Press/Media Pass' => ['min' => 95, 'max' => 100],
-        'Artist/Industry Pass' => ['min' => 90, 'max' => 100],
-        'Camping Add-On' => ['min' => 85, 'max' => 100],
-        'Glamping Experience' => ['min' => 90, 'max' => 100],
-        'Day Parking Pass' => ['min' => 80, 'max' => 100],
-        'Premium Parking' => ['min' => 85, 'max' => 100],
-        'Accessibility Pass' => ['min' => 85, 'max' => 100],
-        'Late Night After-Party' => ['min' => 60, 'max' => 85],
-        'Food & Beverage Package' => ['min' => 75, 'max' => 95],
-        'Photography Pass' => ['min' => 90, 'max' => 100]
-    ];
-
-    // Entry gates for different festival areas
-    private const ENTRY_GATES = [
-        // Main entrance gates
-        'Main Gate A - North Entrance',
-        'Main Gate B - South Entrance',
-        'Main Gate C - East Entrance',
-        'Main Gate D - West Entrance',
-
-        // VIP and premium gates
-        'VIP Gate - Premium Access',
-        'Platinum Gate - Exclusive Entry',
-        'Artist Gate - Backstage Access',
-        'Industry Gate - Professional Entry',
-
-        // Special access gates
-        'Accessibility Gate - Special Needs',
-        'Family Gate - Family Area Access',
-        'Press Gate - Media Access',
-        'Staff Gate - Personnel Entry',
-
-        // Area-specific gates
-        'Camping Gate - Campground Access',
-        'Glamping Gate - Luxury Camping',
-        'Parking Gate A - General Parking',
-        'Parking Gate B - Premium Parking',
-
-        // Time-specific gates
-        'Late Night Gate - After Party Access',
-        'Early Access Gate - Setup Entry',
-        'Emergency Gate - Medical Access'
-    ];
-
-    // Gate assignments based on ticket types
-    private const GATE_ASSIGNMENTS = [
-        'General Admission' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance', 'Main Gate C - East Entrance', 'Main Gate D - West Entrance'],
-        'Single Day Pass' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance', 'Main Gate C - East Entrance'],
-        'Weekend Pass' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance', 'Main Gate C - East Entrance', 'Main Gate D - West Entrance'],
-        'VIP Experience' => ['VIP Gate - Premium Access', 'Main Gate A - North Entrance'],
-        'Platinum VIP' => ['Platinum Gate - Exclusive Entry', 'VIP Gate - Premium Access'],
-        'Student Discount' => ['Main Gate C - East Entrance', 'Main Gate D - West Entrance'],
-        'Early Bird Special' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance'],
-        'Group Package (4+)' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance'],
-        'Family Pass (2 Adults + 2 Kids)' => ['Family Gate - Family Area Access', 'Main Gate A - North Entrance'],
-        'Senior Citizen (65+)' => ['Accessibility Gate - Special Needs', 'Main Gate A - North Entrance'],
-        'Press/Media Pass' => ['Press Gate - Media Access', 'Industry Gate - Professional Entry'],
-        'Artist/Industry Pass' => ['Artist Gate - Backstage Access', 'Industry Gate - Professional Entry'],
-        'Camping Add-On' => ['Camping Gate - Campground Access'],
-        'Glamping Experience' => ['Glamping Gate - Luxury Camping'],
-        'Day Parking Pass' => ['Parking Gate A - General Parking'],
-        'Premium Parking' => ['Parking Gate B - Premium Parking'],
-        'Accessibility Pass' => ['Accessibility Gate - Special Needs'],
-        'Late Night After-Party' => ['Late Night Gate - After Party Access'],
-        'Food & Beverage Package' => ['Main Gate A - North Entrance', 'Main Gate B - South Entrance'],
-        'Photography Pass' => ['Press Gate - Media Access', 'Main Gate A - North Entrance']
-    ];
-
-    // Notes that might be added during ticket scanning
-    private const USAGE_NOTES = [
-        // Normal operations (80% of cases)
-        null, null, null, null, null, null, null, null, // 40% no notes
-        'Smooth entry', 'Quick scan', 'No issues', 'Standard entry', // 20% positive notes
-        'Verified ID', 'Group entry processed', 'Family checked in', 'VIP status confirmed', // 20% verification notes
-
-        // Special situations (15% of cases)
-        'Ticket reprinted due to damage',
-        'ID verification required',
-        'Group leader checked in others',
-        'Wheelchair access provided',
-        'Late arrival - after 10 PM',
-        'Early entry for setup',
-        'Medical assistance requested',
-        'Lost ticket - verified by purchase',
-
-        // Minor issues (5% of cases)
-        'Slight delay - system slow',
-        'Barcode required multiple scans',
-        'Customer had questions about venue',
-        'Directed to information booth',
-        'Parking directions provided'
     ];
 }

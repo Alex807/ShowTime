@@ -115,18 +115,6 @@ class UserAccount implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function promoteUser(UserAccount $currentUser): void
-    {
-        if (!in_array(self::ROLE_WHO_PROMOTES, $currentUser->getRoles())) {
-            throw new \LogicException('Only ' . self::ROLE_WHO_PROMOTES . ' can promote a user.');
-        }
-
-        $roles = $this->getRoles();
-        $roles[] = 'ROLE_ADMIN';
-
-        $this->setRoles($roles);
-    }
-
     /**
      * @return Collection<int, EditionReview>
      */

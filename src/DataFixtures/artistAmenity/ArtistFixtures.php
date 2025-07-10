@@ -9,7 +9,7 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ArtistFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class ArtistFixtures extends Fixture implements FixtureGroupInterface
 {
     use ArtistData;
     public function load(ObjectManager $manager): void
@@ -39,13 +39,6 @@ class ArtistFixtures extends Fixture implements DependentFixtureInterface, Fixtu
         }
 
         $manager->flush();
-    }
-
-    public function getDependencies(): array
-    {
-        return [
-            EditionAmenityFixtures::class,
-        ];
     }
 
     public static function getGroups(): array
