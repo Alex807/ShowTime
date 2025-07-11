@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Artist to {{ festivalEdition.yearHappened|default('Unknown Edition') }} - SoundScape Hub{% endblock %}
+
+{% block body %}
+    <style>
+        .festival-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .festival-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .festival-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .edition-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .edition-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn-new {
+            background: linear-gradient(135deg, #ff8c00 0%, #ff5f6d 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn-new:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .form-select, .form-control {
+            border-color: #667eea;
+        }
+        .alert-success, .alert-danger {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
+    <div class="festival-container">
+        <a href="{{ path('edition_artist_index', {'editionId': festivalEdition.id, 'festival': festivalId|default(0)}) }}" class="btn btn-secondary mb-3">← Back to Artists</a>
+
+        <div class="festival-header">
+            <h1 class="festival-title">Add Artist to {{ festivalEdition.yearHappened|default('Unknown Edition') }} - {{ festivalEdition.venueName|default('Unknown Venue') }}</h1>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="edition-card">
+            <h2>Add New Artist</h2>
+            {{ form_start(editionArtistForm) }}
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {{ form_row(editionArtistForm.artist, {'label': 'Select Artist', 'attr': {'class': 'form-select'}}) }}
+                </div>
+                <div class="col-md-2">
+                    {{ form_row(editionArtistForm.isHeadliner, {'label': 'Headliner', 'attr': {'class': 'form-select'}}) }}
+                </div>
+                <div class="col-md-2">
+                    {{ form_row(editionArtistForm.performanceDate, {'label': 'Performance Date', 'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="col-md-2">
+                    {{ form_row(editionArtistForm.startTime, {'label': 'Start Time', 'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="col-md-2">
+                    {{ form_row(editionArtistForm.endTime, {'label': 'End Time', 'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn-new mt-3" data-turbo="false">Add Artist</button>
+
+            {{ form_end(editionArtistForm) }}
+        </div>
+    </div>
+{% endblock %}

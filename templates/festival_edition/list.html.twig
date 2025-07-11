@@ -256,15 +256,40 @@
                             </div>
 
                             <div class="edition-actions">
-                                <a href="{{ path('festival_edition_edit', {'id': edition.id}) }}" class="btn-edit">
-                                    Edit
-                                </a>
-                                <form method="post" action="{{ path('festival_edition_delete', {'id': edition.id}) }}"
-                                      style="display: inline-block;"
-                                      onsubmit="return confirm('Are you sure you want to delete the {{ edition.yearHappened }} edition?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ edition.id) }}">
-                                    <button type="submit" class="btn-delete">Delete</button>
-                                </form>
+                                <div class="edition-details">
+                                    <strong>Artists:</strong>
+                                    {% if edition.editionArtists|length > 0 %}
+                                        <ul style="margin: 0; padding-left: 20px;">
+                                            {% for editionArtist in edition.editionArtists %}
+                                                <li>
+                                                    {{ editionArtist.artist ? editionArtist.artist.stageName : 'Unknown Artist' }}
+                                                    {% if editionArtist.isHeadliner %}
+                                                        <span class="badge bg-success ms-1">Headliner</span>
+                                                    {% endif %}
+                                                    ({{ editionArtist.performanceDate ? editionArtist.performanceDate|date('F j, Y') : 'Not set' }},
+                                                    {{ editionArtist.startTime ? editionArtist.startTime|date('H:i') : 'Not set' }} -
+                                                    {{ editionArtist.endTime ? editionArtist.endTime|date('H:i') : 'Not set' }})
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <span>No artists added.</span>
+                                    {% endif %}
+                                    <a href="{{ path('festival_edition_edit', {'id': edition.id}) }}" class="btn-edit">
+                                        Edit
+                                    </a>
+
+                                    <a href="{{ path('edition_artist_new', {'editionId': edition.id}) }}" class="btn-edit mt-2 d-inline-block">
+                                        Add Artists
+                                    </a>
+
+                                    <form method="post" action="{{ path('festival_edition_delete', {'id': edition.id}) }}"
+                                          style="display: inline-block;"
+                                          onsubmit="return confirm('Are you sure you want to delete the {{ edition.yearHappened }} edition?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ edition.id) }}">
+                                        <button type="submit" class="btn-delete">Delete Edition</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}

@@ -273,6 +273,48 @@
             gap: 10px;
         }
 
+        /* Search Panel */
+        .search-panel {
+            margin-top: 20px;
+        }
+
+        .search-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+
+        .search-spinner {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .no-results {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .role-image-frame {
@@ -434,10 +476,156 @@
                             </a>
                         </div>
                         <div class="col-lg-6 col-md-12 mb-3">
-                            <a href="{{ path('amenity_index') }}" class="action-btn user-btn">
+                            <a href="{{ path('user_account_index') }}" class="action-btn user-btn">
                                 <i class="fas fa-concierge-bell"></i>
-                                <span>Browse Amenities</span>
+                                <span>List Users</span>
                             </a>
+                        </div>
+                    </div>
+
+                    <!-- Search Festivals for Purchases -->
+                    <div class="category-header">
+                        <i class="fas fa-search"></i>
+                        Search Festivals for Purchases
+                    </div>
+                    <div class="search-panel">
+                        <div class="search-container">
+                            <form method="get" action="{{ path('festival_search') }}">
+                                <div class="search-input-group">
+                                    <input type="text" name="q" id="festivalPurchaseSearchInput" class="search-input" placeholder="Search festivals to buy tickets..." autocomplete="off">
+                                    <button type="submit" class="btn btn-primary position-absolute end-0 top-50 translate-middle-y" style="margin-right: 10px;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <div class="search-spinner" id="purchaseSearchSpinner" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                </div>
+                            </form>
+
+                            {% if festival is defined and festival %}
+                                <div class="category-header mt-4">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ festival.name }} Editions
+                                </div>
+                                {% if editions is defined and editions|length > 0 %}
+                                    <div class="row">
+                                        {% for edition in editions %}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="info-card">
+                                                    <h5 class="info-card-title">
+                                                        <i class="fas fa-ticket-alt"></i>
+                                                        {{ edition.yearHappened }} - {{ edition.venueName }}
+                                                    </h5>
+                                                    <div class="info-item">
+                                                        <span class="info-label">Date:</span>
+                                                        <span class="info-value">
+                                                            {{ edition.startDate|date('F j, Y') }} - {{ edition.endDate|date('F j, Y') }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="info-item">
+                                                        <span class="info-label">Status:</span>
+                                                        <span class="info-value">{{ edition.status|capitalize }}</span>
+                                                    </div>
+                                                    <div class="info-item">
+                                                        <span class="info-label">Capacity:</span>
+                                                        <span class="info-value">{{ edition.peopleCapacity }} people</span>
+                                                    </div>
+                                                    {% if edition.status in ['upcoming', 'sold_out'] %}
+                                                        <a href="{{ path('purchase_new', {'editionId': edition.id}) }}" class="action-btn user-btn mt-3">
+                                                            <i class="fas fa-shopping-cart"></i>
+                                                            Purchase Tickets
+                                                        </a>
+                                                    {% else %}
+                                                        <div class="alert alert-warning mt-3">
+                                                            Tickets not available (Status: {{ edition.status|capitalize }})
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="no-results">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <div>No editions found for this festival.</div>
+                                    </div>
+                                {% endif %}
+                            {% elseif query is defined and query %}
+                                <div class="no-results">
+                                    <i class="fas fa-search"></i>
+                                    <div>No festivals found matching your search.</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Search Festivals for Reviews -->
+                    <div class="category-header">
+                        <i class="fas fa-star"></i>
+                        Search Festivals for Reviews
+                    </div>
+                    <div class="search-panel">
+                        <div class="search-container">
+                            <form method="get" action="{{ path('festival_search') }}">
+                                <div class="search-input-group">
+                                    <input type="text" name="q" id="festivalReviewSearchInput" class="search-input" placeholder="Search festivals to review..." autocomplete="off">
+                                    <button type="submit" class="btn btn-primary position-absolute end-0 top-50 translate-middle-y" style="margin-right: 10px;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <div class="search-spinner" id="reviewSearchSpinner" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                </div>
+                            </form>
+
+                            {% if review_festival is defined and review_festival %}
+                                <div class="category-header mt-4">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ review_festival.name }} Editions
+                                </div>
+                                {% if review_editions is defined and review_editions|length > 0 %}
+                                    <div class="row">
+                                        {% for edition in review_editions %}
+                                            <div class="col-md-6 mb-3">
+                                                <div class="info-card">
+                                                    <h5 class="info-card-title">
+                                                        <i class="fas fa-ticket-alt"></i>
+                                                        {{ edition.yearHappened }} - {{ edition.venueName }}
+                                                    </h5>
+                                                    <div class="info-item">
+                                                        <span class="info-label">Date:</span>
+                                                        <span class="info-value">
+                                                            {{ edition.startDate|date('F j, Y') }} - {{ edition.endDate|date('F j, Y') }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="info-item">
+                                                        <span class="info-label">Status:</span>
+                                                        <span class="info-value">{{ edition.status|capitalize }}</span>
+                                                    </div>
+                                                    <div class="info-item">
+                                                        <span class="info-label">Capacity:</span>
+                                                        <span class="info-value">{{ edition.peopleCapacity }} people</span>
+                                                    </div>
+                                                    <a href="{{ path('review_new', {'editionId': edition.id}) }}" class="action-btn review-btn mt-3">
+                                                        <i class="fas fa-star"></i>
+                                                        Write Review
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="no-results">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <div>No editions found for this festival.</div>
+                                    </div>
+                                {% endif %}
+                            {% elseif review_query is defined and review_query %}
+                                <div class="no-results">
+                                    <i class="fas fa-search"></i>
+                                    <div>No festivals found matching your search.</div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -446,4 +634,38 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const purchaseForm = document.querySelector('form[action="{{ path('festival_search') }}"]:first-of-type');
+            const reviewForm = document.querySelector('form[action="{{ path('festival_search') }}"]:last-of-type');
+            const purchaseSearchInput = document.getElementById('festivalPurchaseSearchInput');
+            const reviewSearchInput = document.getElementById('festivalReviewSearchInput');
+            const purchaseSearchSpinner = document.getElementById('purchaseSearchSpinner');
+            const reviewSearchSpinner = document.getElementById('reviewSearchSpinner');
+
+            purchaseForm.addEventListener('submit', function () {
+                purchaseSearchSpinner.style.display = 'block';
+                purchaseSearchInput.disabled = true;
+            });
+
+            reviewForm.addEventListener('submit', function () {
+                reviewSearchSpinner.style.display = 'block';
+                reviewSearchInput.disabled = true;
+            });
+        });
+
+        // Initialize everything when the DOM loads
+        function initialize() {
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                initializePagination();
+                initializePopupMessages();
+            });
+        }
+
+        // Optimized event listeners
+        document.addEventListener('DOMContentLoaded', initialize, { once: true });
+        document.addEventListener('turbo:load', initialize);
+        document.addEventListener('turbo:render', initialize);
+    </script>
 {% endblock %}

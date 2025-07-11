@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}All Reviews - SoundScape Hub{% endblock %}
+
+{% block body %}
+    <div class="container profile-container">
+        <div class="action-panel">
+            <h3 class="action-title">
+                <i class="fas fa-star me-2"></i>
+                All Reviews
+            </h3>
+            {% if reviews|length > 0 %}
+                <div class="row">
+                    {% for review in reviews %}
+                        <div class="col-md-6 mb-3">
+                            <div class="info-card">
+                                <h5 class="info-card-title">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    {{ review.edition.yearHappened }} - {{ review.edition.venueName }}
+                                </h5>
+                                <div class="info-item">
+                                    <span class="info-label">User:</span>
+                                    <span class="info-value">{{ review.user.email|default('Anonymous') }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Rating:</span>
+                                    <span class="info-value">{{ review.ratingStars }} Star{{ review.ratingStars != 1 ? 's' : '' }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Comment:</span>
+                                    <span class="info-value">{{ review.comment|length > 100 ? review.comment|slice(0, 100) ~ '...' : review.comment }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Posted:</span>
+                                    <span class="info-value">{{ review.postedAt|date('F j, Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ knp_pagination_render(reviews) }}
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-star"></i>
+                    <div>No reviews found.</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

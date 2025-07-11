@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Artists for {{ festivalEdition.yearHappened|default('Unknown Edition') }} - SoundScape Hub{% endblock %}
+
+{% block body %}
+    <style>
+        .festival-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .festival-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .festival-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .edition-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .edition-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .edition-details {
+            margin-bottom: 15px;
+        }
+        .edition-detail {
+            margin-bottom: 8px;
+            color: #6c757d;
+        }
+        .edition-detail strong {
+            color: #495057;
+        }
+        .btn-new {
+            background: linear-gradient(135deg, #ff8c00 0%, #ff5f6d 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn-new:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+        }
+        .no-editions {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .navigation {
+            margin-top: 20px;
+        }
+        .alert-success, .alert-danger {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
+    <div class="festival-container">
+        <a href="{{ path('festival_edition_index', {'festival': festivalId|default(0)}) }}" class="back-link">← Back to Editions</a>
+
+        <div class="festival-header">
+            <h1 class="festival-title">Artists for {{ festivalEdition.yearHappened|default('Unknown Edition') }} - {{ festivalEdition.venueName|default('Unknown Venue') }}</h1>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="edition-card">
+            <div class="edition-details">
+                <a href="{{ path('edition_artist_new', {'editionId': festivalEdition.id, 'festival': festivalId|default(0)}) }}" class="btn-new">
+                    Add New Artist
+                </a>
+            </div>
+        </div>
+
+        <div class="edition-card">
+            <h2>Artists</h2>
+            {% if editionArtists|length > 0 %}
+                <div class="editions-grid">
+                    {% for editionArtist in editionArtists %}
+                        <div class="edition-card">
+                            <div class="edition-year">
+                                {{ editionArtist.artist ? editionArtist.artist.stageName : 'Unknown Artist' }}
+                                {% if editionArtist.isHeadliner %}
+                                    <span class="badge bg-success ms-1">Headliner</span>
+                                {% endif %}
+                            </div>
+                            <div class="edition-details">
+                                <div class="edition-detail">
+                                    <strong>Real Name:</strong> {{ editionArtist.artist ? editionArtist.artist.realName|default('Not provided') : 'Not provided' }}
+                                </div>
+                                <div class="edition-detail">
+                                    <strong>Music Genre:</strong> {{ editionArtist.artist ? editionArtist.artist.musicGenre|default('Not provided') : 'Not provided' }}
+                                </div>
+                                <div class="edition-detail">
+                                    <strong>Instagram:</strong>
+                                    {% if editionArtist.artist and editionArtist.artist.instagramAccount %}
+                                        <a href="https://instagram.com/{{ editionArtist.artist.instagramAccount|ltrim('@') }}" target="_blank">
+                                            {{ editionArtist.artist.instagramAccount }}
+                                        </a>
+                                    {% else %}
+                                        Not provided
+                                    {% endif %}
+                                </div>
+                                <div class="edition-detail">
+                                    <strong>Performance Date:</strong> {{ editionArtist.performanceDate ? editionArtist.performanceDate|date('Y-m-d') : 'Not provided' }}
+                                </div>
+                                <div class="edition-detail">
+                                    <strong>Time:</strong>
+                                    {{ editionArtist.startTime ? editionArtist.startTime|date('H:i') : 'Not set' }} -
+                                    {{ editionArtist.endTime ? editionArtist.endTime|date('H:i') : 'Not set' }}
+                                </div>
+                            </div>
+                            <div class="edition-actions">
+                                <form method="post" action="{{ path('edition_artist_delete', {
+                                    'editionId': festivalEdition.id,
+                                    'id': editionArtist.id,
+                                    'festival': festivalId|default(0)
+                                }) }}" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to remove {{ editionArtist.artist ? editionArtist.artist.stageName : 'this artist' }} from the edition?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_edition_artist_' ~ editionArtist.id) }}">
+                                    <button type="submit" class="btn-delete">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="navigation">
+                    {{ knp_pagination_render(editionArtists) }}
+                </div>
+            {% else %}
+                <div class="no-editions">
+                    <p>No artists have been added to this edition yet.</p>
+                    <p>Click "Add New Artist" to add the first artist!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
