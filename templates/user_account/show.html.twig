@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Details - SoundScape Hub{% endblock %}
+
+{% block body %}
+    <div class="container profile-container">
+        <div class="action-panel">
+            <h3 class="action-title">
+                <i class="fas fa-user-tie me-2"></i>
+                User Details: {{ userAccount.email|default('Unknown User') }}
+            </h3>
+            {% for flash_message in app.flashes('success') %}
+                <div class="alert alert-success">{{ flash_message }}</div>
+            {% endfor %}
+            {% for flash_message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ flash_message }}</div>
+            {% endfor %}
+            <div class="row g-4">
+                <!-- User Information -->
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h5 class="info-card-title">
+                            <i class="fas fa-id-card text-success"></i>
+                            Personal Information
+                        </h5>
+                        <div class="info-item">
+                            <span class="info-label">Full Name:</span>
+                            <span class="info-value">
+                            {{ userDetails ? (userDetails.firstName|default('Not provided') ~ ' ' ~ userDetails.lastName|default('')) : 'Not provided' }}
+                        </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ userAccount.email|default('Not provided') }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Age:</span>
+                            <span class="info-value">
+                            {{ userDetails and userDetails.age ? userDetails.age ~ ' years' : 'Not provided' }}
+                        </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone Number:</span>
+                            <span class="info-value">
+                            {{ userDetails ? userDetails.phoneNo|default('Not provided') : 'Not provided' }}
+                        </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Roles:</span>
+                            <span class="info-value">
+                            {{ userAccount.roles|length > 0 ? userAccount.roles|join(', ')|replace({'ROLE_': ''})|capitalize : 'None' }}
+                        </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Member Since:</span>
+                            <span class="info-value">
+                            {{ userDetails and userDetails.createdAt ? userDetails.createdAt|date('F j, Y') : 'Not provided' }}
+                        </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Last Updated:</span>
+                            <span class="info-value">
+                            {{ userDetails and userDetails.updatedAt ? userDetails.updatedAt|date('F j, Y') : 'Not provided' }}
+                        </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Activity -->
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h5 class="info-card-title">
+                            <i class="fas fa-chart-line text-primary"></i>
+                            Account Activity
+                        </h5>
+                        <div class="info-item">
+                            <span class="info-label">Reviews Created:</span>
+                            <span class="info-value">{{ reviews|length }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total Purchases:</span>
+                            <span class="info-value">{{ purchases|length }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-12">
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('user_account_index') }}" class="action-btn user-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to User List
+                        </a>
+                        <form method="post" action="{{ path('user_account_delete', {'id': userAccount.id}) }}" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_user_account_' ~ userAccount.id) }}">
+                            <button type="submit" class="action-btn danger-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete User
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <div class="col-12">
+                    <div class="category-header">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </div>
+                    {% if reviews|length > 0 %}
+                        <div class="row">
+                            {% for review in reviews %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="info-card">
+                                        <h5 class="info-card-title">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            {{ review.edition ? (review.edition.yearHappened ~ ' - ' ~ review.edition.venueName) : 'Unknown Edition' }}
+                                        </h5>
+                                        <div class="info-item">
+                                            <span class="info-label">Rating:</span>
+                                            <span class="info-value">
+                                            {{ review.ratingStars ? (review.ratingStars ~ ' Star' ~ (review.ratingStars != 1 ? 's' : '')) : 'Not rated' }}
+                                        </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Comment:</span>
+                                            <span class="info-value">
+                                            {{ review.comment ? (review.comment|length > 100 ? review.comment|slice(0, 100) ~ '...' : review.comment) : 'No comment' }}
+                                        </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Posted:</span>
+                                            <span class="info-value">{{ review.postedAt ? review.postedAt|date('F j, Y') : 'Unknown' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-results">
+                            <i class="fas fa-star"></i>
+                            <div>No reviews found for this user.</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Purchases -->
+                <div class="col-12">
+                    <div class="category-header">
+                        <i class="fas fa-shopping-cart"></i>
+                        Purchases
+                    </div>
+                    {% if purchases|length > 0 %}
+                        <div class="row">
+                            {% for purchase in purchases %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="info-card">
+                                        <h5 class="info-card-title">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            {{ purchase.edition ? (purchase.edition.yearHappened ~ ' - ' ~ purchase.edition.venueName) : 'Unknown Edition' }}
+                                        </h5>
+                                        <div class="info-item">
+                                            <span class="info-label">Ticket Type:</span>
+                                            <span class="info-value">{{ purchase.ticketType ? purchase.ticketType.name : 'Unknown' }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Quantity:</span>
+                                            <span class="info-value">{{ purchase.quantity|default('0') }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Total Price:</span>
+                                            <span class="info-value">
+                                            ${{ purchase.ticketType and purchase.quantity ? (purchase.ticketType.price * purchase.quantity)|number_format(2) : '0.00' }}
+                                        </span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Purchase Date:</span>
+                                            <span class="info-value">{{ purchase.purchaseDate ? purchase.purchaseDate|date('F j, Y') : 'Unknown' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-results">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div>No purchases found for this user.</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .danger-btn {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+        .danger-btn:hover {
+            background: var(--danger-color);
+            color: var(--white);
+        }
+    </style>
+{% endblock %}

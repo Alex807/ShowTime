@@ -82,7 +82,7 @@ class Festival
     /**
      * @var Collection<int, FestivalEdition>
      */
-    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival')]
+    #[ORM\OneToMany(targetEntity: FestivalEdition::class, mappedBy: 'festival', cascade: ['remove'], orphanRemoval: true)]
     private Collection $festivalEditions;
 
     public function __construct()

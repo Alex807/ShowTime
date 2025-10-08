@@ -73,6 +73,7 @@ final class FestivalController extends AbstractController
                 $errors = $form->getErrors(true);
                 foreach ($errors as $error) {
                     $this->addFlash('error', $error->getMessage());
+
                 }
             }
         }
